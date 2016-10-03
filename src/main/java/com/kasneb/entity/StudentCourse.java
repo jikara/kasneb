@@ -8,10 +8,12 @@ package com.kasneb.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kasneb.session.PaymentFacade;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -214,8 +216,8 @@ public class StudentCourse implements Serializable {
     public Date getNextRenewal() {
         try {
             nextRenewal = currentSubscription.getExpiry();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (java.lang.NullPointerException ex) {
+            Logger.getLogger(StudentCourse.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         return nextRenewal;
     }
@@ -289,7 +291,6 @@ public class StudentCourse implements Serializable {
     }
 
     public void setStudentCourseDeclarations(Collection<StudentDeclaration> studentCourseDeclarations) {
-
         this.studentCourseDeclarations = studentCourseDeclarations;
     }
 

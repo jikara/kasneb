@@ -104,38 +104,26 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public void updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException {
-        //Check if student is registered and confirmed  
+        //update
+
+//Check if student is registered and confirmed  
         if (entity.getId() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(120));
         }
         StudentCourse managed = super.find(entity.getId());
+
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
         }
         if (managed.getCurrentSubscription() != null && managed.getCurrentSubscription().getInvoice().getStatus().getStatus().equals("PAID")) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
         }
-        //System.out.println(managed.getCourse().getCourseType());
-        if (managed.getCourse().getCourseType() == 100) {
-            managed.setCurrentPart(em.find(Part.class, 1));
-            // managed.setCurrentSection(em.find(Section.class, 1));
-        } else if (managed.getCourse().getCourseType() == 200) {
-            managed.setCurrentLevel(new Level(1));
+        try {
+            super.copy(managed, entity);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //Check if student is registered and confirmed  
-        if (entity.getStudentRequirements() == null) {
-            //Check if managed
-            if (managed.getStudentRequirements() != null) {
-                entity.setStudentRequirements(managed.getStudentRequirements());
-            }
-        }
-        //Check if student is registered and confirmed  
-        if (entity.getStudentCourseDeclarations() == null) {
-            //Check if managed
-            if (managed.getStudentCourseDeclarations() != null) {
-                entity.setStudentCourseDeclarations(managed.getStudentCourseDeclarations());
-            }
-        }
+
         if (entity.getFirstSitting() != null) {
             //Check if registration is allowed  
             Sitting firstSitting = em.find(Sitting.class, entity.getFirstSitting().getId());
@@ -152,7 +140,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             subscription.setStudentCourse(managed);
             managed.setCurrentSubscription(subscription);
             //Set as current 
-
             subscription.setCurrent(Boolean.TRUE);
             managed.getSubscriptions().add(subscription);
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.ACTION, "Your registration has expired.", managed.getStudent());
@@ -160,23 +147,13 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             entity.setStudentRequirements(entity.getStudentRequirements());
             entity.setFirstSitting(firstSitting);
         }
-        //Check if student is registered and confirmed  
-        if (entity.getQualifications() == null) {
-            //Check if managed
-            if (managed.getQualifications() != null) {
-                entity.setQualifications(managed.getQualifications());
-            }
-        }
-        //Set current level
-        Course course = managed.getCourse();
-        //  Course course = em.find(Course.class, entity.getCourse());
-        if (course.getCourseType() == 100) {
+        if (entity.getCourse().getCourseType() == 100) {
             managed.setCurrentPart(em.find(Part.class, 1));
             managed.setCurrentSection(em.find(Section.class, 1));
-        } else if (course.getCourseType() == 200) {
+        } else if (entity.getCourse().getCourseType() == 200) {
             managed.setCurrentLevel(new Level(1));
         }
-        em.merge(managed);
+        em.merge(entity);
     }
 
     public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException {

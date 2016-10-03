@@ -170,7 +170,7 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course id is required");
             }
             studentCourseFacade.createStudentCourse(entity);
-            anyResponse=null;
+            anyResponse = null;
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());

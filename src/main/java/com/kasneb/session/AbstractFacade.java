@@ -5,8 +5,8 @@
  */
 package com.kasneb.session;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -15,13 +15,18 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+//import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 /**
  *
  * @author jikara
  * @param <T>
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractFacade<T> extends BeanUtilsBean {
 
     private Class<T> entityClass;
 
@@ -88,27 +93,25 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
 
-    public <T> T mergeObjects(T first, T second) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
-        Class<?> clazz = first.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Object returnValue = clazz.newInstance();
-        for (Field field : fields) {
-            setFinalStatic(field, 1L);
-            field.setAccessible(true);
-            Object value1 = field.get(first);
-            Object value2 = field.get(second);
-            Object value = (value1 != null) ? value1 : value2;
-            field.set(returnValue, value);
-        }
-        return (T) returnValue;
+    public void copy(T managedEntity, T newEntity) throws IllegalAccessException, InvocationTargetException {
+        BeanUtilsBean.getInstance().getConvertUtils().register(false, false, 0);
+        BeanUtils.copyProperties(managedEntity, newEntity, getNullPropertyNames(managedEntity));
     }
 
-    void setFinalStatic(Field field, Long newValue) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(null, newValue);
+    private String[] getNullPropertyNames(Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set emptyNames = new HashSet();
+        for (java.beans.PropertyDescriptor pd : pds) {
+            //check if value of this property is null then add it to the collection
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) {
+                emptyNames.add(pd.getName());
+            }
+        }
+        String[] result = new String[emptyNames.size()];
+        return (String[]) emptyNames.toArray(result);
     }
 
 }
