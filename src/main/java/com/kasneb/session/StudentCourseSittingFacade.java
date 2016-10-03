@@ -90,30 +90,25 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
         }
-        try {
-            super.copy(managed, entity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if (entity.getSittingCentre() != null) {
             if (managed.getInvoice() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
             }
             if (!"PAID".equals(managed.getInvoice().getStatus().getStatus())) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
-            }
+        }
         }
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
         if (entity.getPapers() != null && entity.getPapers().size() > 0) {
             for (StudentCourseSittingPaper paper : entity.getPapers()) {
-                entity.addStudentCourseSittingPaper(paper);
+                managed.addStudentCourseSittingPaper(paper);
             }
             map = getBillingMethod(entity);
             examEntryInvoice = generateInvoice(entity, map);
-            entity.setInvoice(examEntryInvoice);
+            managed.setInvoice(examEntryInvoice);
         }
-        em.merge(entity);
+        em.merge(managed);
     }
 
     public void updateCentre(StudentCourseSitting entity) throws CustomHttpException {
