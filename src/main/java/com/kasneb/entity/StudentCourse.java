@@ -8,7 +8,6 @@ package com.kasneb.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.kasneb.session.PaymentFacade;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -147,6 +146,9 @@ public class StudentCourse implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Transient
     private Date nextRenewal;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "invoiceId", referencedColumnName = "id")
+    private Invoice exemptionInvoice;
 
     public StudentCourse() {
     }
@@ -364,6 +366,14 @@ public class StudentCourse implements Serializable {
 
     public void setCurrentSubscription(StudentCourseSubscription currentSubscription) {
         this.currentSubscription = currentSubscription;
+    }
+
+    public Invoice getExemptionInvoice() {
+        return exemptionInvoice;
+    }
+
+    public void setExemptionInvoice(Invoice exemptionInvoice) {
+        this.exemptionInvoice = exemptionInvoice;
     }
 
     @Override

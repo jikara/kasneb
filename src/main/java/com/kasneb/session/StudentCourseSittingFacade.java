@@ -90,25 +90,36 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
         }
-        if (entity.getSittingCentre() != null) {
-            if (managed.getInvoice() == null) {
+        StudentCourseSitting toUpdate = new StudentCourseSitting();
+        try {
+            super.copy(managed, toUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            super.copy(entity, toUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (toUpdate.getSittingCentre() != null) {
+            if (toUpdate.getInvoice() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
             }
-            if (!"PAID".equals(managed.getInvoice().getStatus().getStatus())) {
+            if (!"PAID".equals(toUpdate.getInvoice().getStatus().getStatus())) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
-        }
+            }
         }
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
-        if (entity.getPapers() != null && entity.getPapers().size() > 0) {
-            for (StudentCourseSittingPaper paper : entity.getPapers()) {
-                managed.addStudentCourseSittingPaper(paper);
+        if (toUpdate.getPapers() != null && toUpdate.getPapers().size() > 0) {
+            for (StudentCourseSittingPaper paper : toUpdate.getPapers()) {
+                toUpdate.addStudentCourseSittingPaper(paper);
             }
             map = getBillingMethod(entity);
             examEntryInvoice = generateInvoice(entity, map);
-            managed.setInvoice(examEntryInvoice);
+            toUpdate.setInvoice(examEntryInvoice);
         }
-        em.merge(managed);
+        em.merge(toUpdate);
     }
 
     public void updateCentre(StudentCourseSitting entity) throws CustomHttpException {

@@ -14,6 +14,7 @@ import com.kasneb.entity.Fee;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
+import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Paper_;
 import com.kasneb.entity.Part;
@@ -23,6 +24,7 @@ import com.kasneb.entity.NotificationStatus;
 import com.kasneb.entity.NotificationType;
 import com.kasneb.entity.PaperStatus;
 import com.kasneb.entity.Permission;
+import com.kasneb.entity.Qualification;
 import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.SittingPeriod;
@@ -81,6 +83,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     private static final String REGISTRATION_RENEWAL_FEE = "REGISTRATION_RENEWAL_FEE";
 
+    private static final String EXEMPTION_FEE = "EXEMPTION_FEE";
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -104,14 +108,12 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public void updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException {
-        //update
-
-      //Check if student is registered and confirmed  
+        //Check if student is registered and confirmed  
         if (entity.getId() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(120));
         }
         StudentCourse managed = super.find(entity.getId());
-        StudentCourse toUpdate=new StudentCourse();
+        StudentCourse toUpdate = new StudentCourse();
         try {
             super.copy(managed, toUpdate);
         } catch (Exception e) {
@@ -246,6 +248,26 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return invoice;
     }
 
+    private Invoice generateExemptionInvoice(Student student, Collection<Paper> exemptedPapers) throws CustomHttpException {
+        BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
+        //Generate invoice
+        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
+        for (Paper paper : exemptedPapers) {
+            Fee exemptionFee = feeTypeFacade.getExemptionFee(paper);
+            invoice.addInvoiceDetail(new InvoiceDetail(exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), exemptionFee.getGbpAmount(), "Exemption fee"));
+            //Add to totals
+            kesTotal = kesTotal.add(exemptionFee.getKesAmount());
+            usdTotal = usdTotal.add(exemptionFee.getUsdAmount());
+            gbpTotal = gbpTotal.add(exemptionFee.getGbpAmount());
+        }
+        invoice.setStudent(student);
+        invoice.setKesTotal(kesTotal);
+        invoice.setUsdTotal(usdTotal);
+        invoice.setGbpTotal(gbpTotal);
+        invoice.setFeeCode(new FeeCode(EXEMPTION_FEE));
+        return invoice;
+    }
+
     private Date getNextRenewalDate(StudentCourse entity) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -305,6 +327,17 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         Set<Paper> exemptions = new HashSet<>();
         for (StudentCourseQualification qualification : studentCourse.getQualifications()) {
             for (CourseExemption c : qualification.getQualification().getCourseExemptions()) {
+                exemptions.add(c.getPaper());
+            }
+        }
+        return exemptions;
+    }
+
+    public Collection getExemptedPapers(Collection<StudentCourseQualification> qualifications) {
+        Set<Paper> exemptions = new HashSet<>();
+        for (StudentCourseQualification qualification : qualifications) {
+            Qualification q = em.find(Qualification.class, qualification.getStudentCourseQualificationPK().getQualificationId());
+            for (CourseExemption c : q.getCourseExemptions()) {
                 exemptions.add(c.getPaper());
             }
         }
@@ -421,8 +454,26 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course does not exist");
         }
-        managed.setQualifications(entity.getQualifications());
-        em.merge(managed);
+        StudentCourse toUpdate = new StudentCourse();
+        try {
+            super.copy(managed, toUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            super.copy(entity, toUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        toUpdate.setQualifications(entity.getQualifications());
+        if (toUpdate.getExemptionInvoice() != null) {
+            toUpdate.getExemptionInvoice().setStatus(new InvoiceStatus("CANCELLED"));
+        }
+        Invoice invoice = generateExemptionInvoice(managed.getStudent(), getExemptedPapers(entity.getQualifications()));
+        //Create invoice
+        toUpdate.setExemptionInvoice(invoice);
+        em.merge(toUpdate);
     }
 
 }

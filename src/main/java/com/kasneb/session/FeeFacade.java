@@ -294,6 +294,30 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
+    public Fee getExemptionFee(Part part) throws CustomHttpException {
+        Fee feeType = null;
+        part = em.find(Part.class, part.getId());
+        if (part == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Part does not exist");
+        }
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
+        Root<Fee> ft = cq.from(Fee.class);
+
+        cq.where(cb.equal(ft.get(Fee_.part), part),
+                cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("EXEMPTION_FEE"))),
+                cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exemptions_per_part"))));
+        TypedQuery<Fee> query = em.createQuery(cq);
+        try {
+            feeType = query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
+        } catch (javax.persistence.NonUniqueResultException e) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
+        }
+        return feeType;
+    }
+
     public Fee getSyllabusPulicationFee() throws CustomHttpException {
         Fee feeType = null;
         CriteriaBuilder cb = em.getCriteriaBuilder();
