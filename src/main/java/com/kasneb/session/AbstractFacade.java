@@ -93,9 +93,9 @@ public abstract class AbstractFacade<T> extends BeanUtilsBean {
         return ((Long) q.getSingleResult()).intValue();
     }
 
-    public void copy(T managedEntity, T newEntity) throws IllegalAccessException, InvocationTargetException {
+    public void copy(T source, T target) throws IllegalAccessException, InvocationTargetException {
         BeanUtilsBean.getInstance().getConvertUtils().register(false, false, 0);
-        BeanUtils.copyProperties(managedEntity, newEntity, getNullPropertyNames(managedEntity));
+        BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
 
     private String[] getNullPropertyNames(Object source) {

@@ -106,11 +106,17 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     public void updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException {
         //update
 
-//Check if student is registered and confirmed  
+      //Check if student is registered and confirmed  
         if (entity.getId() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(120));
         }
         StudentCourse managed = super.find(entity.getId());
+        StudentCourse toUpdate=new StudentCourse();
+        try {
+            super.copy(managed, toUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
@@ -119,7 +125,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
         }
         try {
-            super.copy(managed, entity);
+            super.copy(entity, toUpdate);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,26 +140,26 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(101));
             }
             //Create subscription
-            Invoice invoice = generateRegistrationInvoice(managed.getStudent(), managed.getCourse(), firstSitting);
+            Invoice invoice = generateRegistrationInvoice(toUpdate.getStudent(), toUpdate.getCourse(), firstSitting);
             //Integer studentCourseId, Integer year, Date expiry, Invoice invoice
-            StudentCourseSubscription subscription = new StudentCourseSubscription(managed, 2017, getNextRenewalDate(entity), invoice);
+            StudentCourseSubscription subscription = new StudentCourseSubscription(toUpdate, 2017, getNextRenewalDate(entity), invoice);
             subscription.setStudentCourse(managed);
-            managed.setCurrentSubscription(subscription);
+            toUpdate.setCurrentSubscription(subscription);
             //Set as current 
             subscription.setCurrent(Boolean.TRUE);
-            managed.getSubscriptions().add(subscription);
+            toUpdate.getSubscriptions().add(subscription);
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.ACTION, "Your registration has expired.", managed.getStudent());
             //Set next renewal date
-            entity.setStudentRequirements(entity.getStudentRequirements());
-            entity.setFirstSitting(firstSitting);
+            toUpdate.setStudentRequirements(entity.getStudentRequirements());
+            toUpdate.setFirstSitting(firstSitting);
         }
-        if (entity.getCourse().getCourseType() == 100) {
-            managed.setCurrentPart(em.find(Part.class, 1));
-            managed.setCurrentSection(em.find(Section.class, 1));
+        if (toUpdate.getCourse().getCourseType() == 100) {
+            toUpdate.setCurrentPart(em.find(Part.class, 1));
+            toUpdate.setCurrentSection(em.find(Section.class, 1));
         } else if (entity.getCourse().getCourseType() == 200) {
-            managed.setCurrentLevel(new Level(1));
+            toUpdate.setCurrentLevel(new Level(1));
         }
-        em.merge(entity);
+        em.merge(toUpdate);
     }
 
     public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException {
