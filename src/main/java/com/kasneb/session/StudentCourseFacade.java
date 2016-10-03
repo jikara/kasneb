@@ -98,6 +98,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         } else if (course.getCourseType() == 200) {
             entity.setCurrentLevel(new Level(1));
         }
+        //Set others as inactive
         em.persist(entity);
         return entity;
     }
@@ -404,6 +405,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
+        } catch (javax.persistence.NonUniqueResultException e) {
+            return query.getResultList().get(0);
         }
     }
 
