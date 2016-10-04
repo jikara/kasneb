@@ -10,6 +10,6 @@ package com.kasneb.entity;
  * @author jikara
  */
 public enum SittingPeriod {
-    MAY_JUNE,
-    NOVEMBER_DECEMBER
+    MAY,
+    NOVEMBER
 }

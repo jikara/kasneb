@@ -141,7 +141,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             if (new Date().after(firstSitting.getLateRegistrationDeadline())) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(101));
             }
-            //Create subscription
+            //Create subscription 
             Invoice invoice = generateRegistrationInvoice(toUpdate.getStudent(), toUpdate.getCourse(), firstSitting);
             //Integer studentCourseId, Integer year, Date expiry, Invoice invoice
             StudentCourseSubscription subscription = new StudentCourseSubscription(toUpdate, 2017, getNextRenewalDate(entity), invoice);
@@ -276,9 +276,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         SittingPeriod sittingPeriod = entity.getFirstSitting().getSittingPeriod();
         Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
         try {
-            if (SittingPeriod.MAY_JUNE == SittingPeriod.MAY_JUNE && Objects.equals(sittingYear, currentYear)) {
+            if (SittingPeriod.MAY == SittingPeriod.MAY && Objects.equals(sittingYear, currentYear)) {
                 nextRenewalDate = sdf.parse(currentYear + "-06-30");
-            } else if (SittingPeriod.NOVEMBER_DECEMBER == SittingPeriod.NOVEMBER_DECEMBER) {
+            } else if (SittingPeriod.NOVEMBER == SittingPeriod.NOVEMBER) {
                 nextRenewalDate = sdf.parse((currentYear + 1) + "-06-30");
             }
         } catch (ParseException ex) {
