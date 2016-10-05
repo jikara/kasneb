@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -137,6 +138,8 @@ public class Student implements Serializable {
     @OneToMany(mappedBy = "student")
     @JsonManagedReference
     private Collection<Invoice> invoices;
+    @Transient
+    private StudentCourse currentCourse;
 
     public Student() {
     }
@@ -296,6 +299,19 @@ public class Student implements Serializable {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public StudentCourse getCurrentCourse() {
+        for (StudentCourse course : studentCourses) {
+            if (course.isActive()) {
+                currentCourse = course;
+            }
+        }
+        return currentCourse;
+    }
+
+    public void setCurrentCourse(StudentCourse currentCourse) {
+        this.currentCourse = currentCourse;
     }
 
     @XmlTransient
