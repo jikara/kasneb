@@ -54,6 +54,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -96,12 +97,24 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
         Course course = em.find(Course.class, entity.getCourse().getId());
+        Student student = em.find(Student.class, entity.getStudent().getId());
+        if (studentCourseExists(student, course)) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course already exists.");
+        }
         if (course.getCourseType() == 100) {
             entity.setCurrentPart(em.find(Part.class, 1));
             entity.setCurrentSection(em.find(Section.class, 1));
         } else if (course.getCourseType() == 200) {
             entity.setCurrentLevel(new Level(1));
         }
+        //Check if there are existing active courses and set to inactiv e
+//        try {
+//            StudentCourse current = entity.getStudent().getCurrentCourse();
+//            current.setActive(false);
+//            em.merge(current);
+//        } catch (java.lang.NullPointerException ex) {
+//            Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
         //Set others as inactive
         em.persist(entity);
         return entity;
@@ -113,20 +126,20 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(120));
         }
         StudentCourse managed = super.find(entity.getId());
-        boolean before = em.contains(managed);
-       // em.detach(managed);
-        boolean after = em.contains(managed);
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
         }
         if (managed.getCurrentSubscription() != null && managed.getCurrentSubscription().getInvoice().getStatus().getStatus().equals("PAID")) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(104));
         }
+        em.detach(managed);
         try {
             super.copy(entity, managed);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.print(managed);
 
         if (entity.getFirstSitting() != null) {
             //Check if registration is allowed  
@@ -470,6 +483,23 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         //Create invoice
         toUpdate.setExemptionInvoice(invoice);
         em.merge(toUpdate);
+    }
+
+    private boolean studentCourseExists(Student student, Course course) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StudentCourse> cq = cb.createQuery(StudentCourse.class);
+        Root<StudentCourse> st = cq.from(StudentCourse.class);
+        cq.where(cb.equal(st.get(StudentCourse_.student), student),
+                cb.and(cb.equal(st.get(StudentCourse_.course), course)));
+        TypedQuery<StudentCourse> query = em.createQuery(cq);
+        try {
+            query.getSingleResult();
+            return true;
+        } catch (NoResultException ex) {
+            return false;
+        } catch (NonUniqueResultException ex) {
+            return true;
+        }
     }
 
 }

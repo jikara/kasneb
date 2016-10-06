@@ -169,14 +169,15 @@ public class StudentCourseRest {
             if (entity.getCourse() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course id is required");
             }
-            studentCourseFacade.createStudentCourse(entity);
-            anyResponse = null;
+            entity = (StudentCourse) studentCourseFacade.createStudentCourse(entity);
+            anyResponse = studentCourseFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
