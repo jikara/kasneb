@@ -23,15 +23,15 @@ public class ApplicationConfig extends Application {
     }
 
     /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
+     * Do not modify addRestResourceClasses() method. It is automatically
+     * populated with all resources defined in the project. If required, comment
+     * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.kasneb.api.CentreClusterRest.class);
         resources.add(com.kasneb.api.CentreRegionRest.class);
         resources.add(com.kasneb.api.CentreZoneRest.class);
+        resources.add(com.kasneb.api.CoreRest.class);
         resources.add(com.kasneb.api.CountryRest.class);
         resources.add(com.kasneb.api.CountyRest.class);
         resources.add(com.kasneb.api.CourseRest.class);
@@ -86,5 +86,5 @@ public class ApplicationConfig extends Application {
         resources.add(org.eclipse.persistence.jpa.rs.resources.unversioned.QueryResource.class);
         resources.add(org.eclipse.persistence.jpa.rs.resources.unversioned.SingleResultQueryResource.class);
     }
-    
+
 }
