@@ -104,7 +104,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         super(StudentCourse.class);
     }
 
-    public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException {
+    public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
         }
@@ -143,7 +143,11 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         if (managed.getVerified()) {
             //Current Suscription has already been verified and course cannot be changed so get by course id
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(109));
+            if (!entity.getCourse().equals(managed.getCourse())) {
+                //else create a new student course
+                return createStudentCourse(entity);
+                //  throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(109));
+            }
         }
         try {
             em.detach(managed);
