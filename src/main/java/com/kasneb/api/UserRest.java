@@ -8,6 +8,8 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.User;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -44,13 +46,16 @@ public class UserRest {
      * Retrieves representation of an instance of com.kasneb.api.UserRest
      *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = userFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = userFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

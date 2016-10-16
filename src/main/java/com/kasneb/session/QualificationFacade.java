@@ -6,12 +6,9 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.Qualification;
-import com.kasneb.entity.QualificationType;
-import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -30,13 +27,6 @@ public class QualificationFacade extends AbstractFacade<Qualification> {
 
     public QualificationFacade() {
         super(Qualification.class);
-    }
-
-    public Collection<Qualification> findByType(QualificationType type) {
-        TypedQuery<Qualification> query
-                = em.createQuery("SELECT q FROM Qualification q WHERE q.type=:type", Qualification.class);
-        query.setParameter("type", type);
-        return query.getResultList();
     }
 
 }

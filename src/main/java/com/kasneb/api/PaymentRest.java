@@ -59,12 +59,11 @@ public class PaymentRest {
      *
      * @param entity
      * @return
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Payment entity) throws JsonProcessingException {
+    public Response create(Payment entity) {
         try {
             anyResponse = paymentFacade.createPayment(entity);
             httpStatus = Response.Status.OK;
@@ -75,7 +74,11 @@ public class PaymentRest {
         } catch (Exception ex) {
             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

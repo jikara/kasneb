@@ -7,6 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -41,17 +43,20 @@ public class CountryRest {
      * Retrieves representation of an instance of com.kasneb.api.CountryRest
      *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = countryFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
-        return Response
-                .status(Response.Status.OK)
-                .entity(json)
-                .build();
+    public Response findAll(){
+        try {
+            anyResponse = countryFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(json)
+                    .build();
     }
 
     /**

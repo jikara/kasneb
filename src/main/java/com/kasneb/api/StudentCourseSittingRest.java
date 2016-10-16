@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -45,9 +47,13 @@ public class StudentCourseSittingRest {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        anyResponse = studentCourseSittingFacade.find(id);
-        json = mapper.writeValueAsString(anyResponse);
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            anyResponse = studentCourseSittingFacade.find(id);
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -56,9 +62,13 @@ public class StudentCourseSittingRest {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = studentCourseSittingFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = studentCourseSittingFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -70,14 +80,17 @@ public class StudentCourseSittingRest {
      * com.kasneb.api.StudentCourseSittingRest
      *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findList() throws JsonProcessingException {
-        anyResponse = studentCourseSittingFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findList() {
+        try {
+            anyResponse = studentCourseSittingFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -87,7 +100,7 @@ public class StudentCourseSittingRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(StudentCourseSitting entity) throws JsonProcessingException {
+    public Response create(StudentCourseSitting entity) {
         try {
             studentCourseSittingFacade.createStudentCourse(entity);
             anyResponse = studentCourseSittingFacade.find(entity.getId());
@@ -96,7 +109,11 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -109,12 +126,11 @@ public class StudentCourseSittingRest {
      *
      * @param entity
      * @return
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(StudentCourseSitting entity) throws JsonProcessingException {
+    public Response edit(StudentCourseSitting entity) {
         try {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
@@ -126,7 +142,11 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -137,7 +157,7 @@ public class StudentCourseSittingRest {
     @Path("centre")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setCentre(StudentCourseSitting entity) throws JsonProcessingException {
+    public Response setCentre(StudentCourseSitting entity) {
         try {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
@@ -149,7 +169,11 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

@@ -5,7 +5,7 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.entity.QualificationType;
+import com.kasneb.entity.KasnebCourseType;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author jikara
  */
 @Stateless
-public class QualificationTypeFacade extends AbstractFacade<QualificationType> {
+public class KasnebCourseTypeFacade extends AbstractFacade<KasnebCourseType> {
 
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
@@ -25,8 +25,8 @@ public class QualificationTypeFacade extends AbstractFacade<QualificationType> {
         return em;
     }
 
-    public QualificationTypeFacade() {
-        super(QualificationType.class);
+    public KasnebCourseTypeFacade() {
+        super(KasnebCourseType.class);
     }
     
 }

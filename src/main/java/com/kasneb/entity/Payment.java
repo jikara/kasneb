@@ -95,7 +95,11 @@ public class Payment implements Serializable {
     }
 
     public String getPhoneNumber() {
-        phoneNumber = "254" + phoneNumber.substring(Math.max(phoneNumber.length() - 9, 0));
+        try {
+            phoneNumber = "254" + phoneNumber.substring(Math.max(phoneNumber.length() - 9, 0));
+        } catch (java.lang.NullPointerException e) {
+
+        }
         return phoneNumber;
     }
 

@@ -37,6 +37,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.kasneb.api.CourseRest.class);
         resources.add(com.kasneb.api.CourseTypeRest.class);
         resources.add(com.kasneb.api.DeclarationRest.class);
+        resources.add(com.kasneb.api.DocumentTypeRest.class);
         resources.add(com.kasneb.api.ExamCentreRest.class);
         resources.add(com.kasneb.api.FeeTypeRest.class);
         resources.add(com.kasneb.api.GuideRest.class);
@@ -44,11 +45,12 @@ public class ApplicationConfig extends Application {
         resources.add(com.kasneb.api.LoginRest.class);
         resources.add(com.kasneb.api.PaymentRest.class);
         resources.add(com.kasneb.api.QualificationRest.class);
-        resources.add(com.kasneb.api.QualificationTypeRest.class);
+        resources.add(com.kasneb.api.RenewalRest.class);
         resources.add(com.kasneb.api.SittingRest.class);
         resources.add(com.kasneb.api.StudentCourseRest.class);
         resources.add(com.kasneb.api.StudentCourseSittingRest.class);
         resources.add(com.kasneb.api.StudentRest.class);
+        resources.add(com.kasneb.api.TransactionRest.class);
         resources.add(com.kasneb.api.UserRest.class);
         resources.add(org.eclipse.persistence.jpa.rs.exceptions.ClassNotFoundExceptionMapper.class);
         resources.add(org.eclipse.persistence.jpa.rs.exceptions.ConversionExceptionMapper.class);

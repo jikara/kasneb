@@ -7,11 +7,11 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
@@ -23,49 +23,52 @@ import javax.ws.rs.core.Response;
  *
  * @author jikara
  */
-@Path("qualificationtype")
-public class QualificationTypeRest {
+@Path("documenttype")
+public class DocumentTypeRest {
 
-    @Context
-    private UriInfo context;
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
-    com.kasneb.session.QualificationTypeFacade qualificationTypeFacade;
+    com.kasneb.session.DocumentTypeFacade documentTypeFacade;
 
     /**
-     * Creates a new instance of QualificationTypeRest
+     * Creates a new instance of DocumentTypeRest
      */
-    public QualificationTypeRest() {
+    public DocumentTypeRest() {
     }
 
     /**
      * Retrieves representation of an instance of
-     * com.kasneb.api.QualificationTypeRest
+     * com.kasneb.api.DocumentTypeRest
      *
      * @return an instance of javax.ws.rs.core.Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = qualificationTypeFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = documentTypeFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+            Logger.getLogger(CourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
 
     /**
-     * PUT method for updating or creating an instance of QualificationTypeRest
+     * PUT method for updating or creating an instance of DocumentTypeRest
      *
      * @param content representation for the resource
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public void putJson(Response content) {
+    public void edit(Response content) {
     }
 }

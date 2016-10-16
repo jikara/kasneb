@@ -7,11 +7,15 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kasneb.entity.Course;
+import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -39,6 +43,8 @@ public class StudentCourseRest {
     String json;
     @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
+    @EJB
+    com.kasneb.session.CourseFacade courseFacade;
 
     /**
      * Creates a new instance of StudentCourseRest
@@ -48,9 +54,13 @@ public class StudentCourseRest {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = studentCourseFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = studentCourseFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -62,14 +72,17 @@ public class StudentCourseRest {
      * com.kasneb.api.StudentCourseRest
      *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPending() throws JsonProcessingException {
-        anyResponse = studentCourseFacade.findPending();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findPending() {
+        try {
+            anyResponse = studentCourseFacade.findPending();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -79,9 +92,13 @@ public class StudentCourseRest {
     @GET
     @Path("verified")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVerified() throws JsonProcessingException {
-        anyResponse = studentCourseFacade.findVerified();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findVerified() {
+        try {
+            anyResponse = studentCourseFacade.findVerified();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -91,7 +108,7 @@ public class StudentCourseRest {
     @GET
     @Path("active/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
+    public Response findActive(@PathParam("id") Integer id) {
         Collection<Paper> papers = null;
         try {
             StudentCourse studentCourse = studentCourseFacade.findActive(id);
@@ -99,12 +116,11 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
             //get part papers
-            if (studentCourse.getCourse().getCourseType() == 100) {
+            if (studentCourse.getCourse().getCourseType().getCode() == 100) {
                 studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
-            } else if (studentCourse.getCourse().getCourseType() == 200) {
+            } else if (studentCourse.getCourse().getCourseType().getCode() == 200) {
                 studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
             }
-            studentCourse.setExemptedPapers(studentCourseFacade.getExemptedPapers(studentCourse));
             anyResponse = studentCourse;
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -112,7 +128,11 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -122,7 +142,7 @@ public class StudentCourseRest {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
+    public Response find(@PathParam("id") Integer id) {
         Collection<Paper> papers = null;
         try {
             StudentCourse studentCourse = studentCourseFacade.find(id);
@@ -130,9 +150,9 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student course does not exist");
             }
             //get part papers
-            if (studentCourse.getCourse().getCourseType() == 100) {
+            if (studentCourse.getCourse().getCourseType().getCode() == 100) {
                 studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
-            } else if (studentCourse.getCourse().getCourseType() == 200) {
+            } else if (studentCourse.getCourse().getCourseType().getCode() == 200) {
                 studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
             }
             httpStatus = Response.Status.OK;
@@ -143,9 +163,46 @@ public class StudentCourseRest {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
+    @Path("eligible_exemptions/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getEligibleExemptions(@PathParam("id") Integer id) {
+        Set<Paper> eligibleExemptions = new HashSet<>();
+        try {
+            Course qualification = courseFacade.find(id);
+            if (qualification == null) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This qualification course does not exist");
+            }
+            for (CourseExemption c : qualification.getCourseExemptions()) {
+                eligibleExemptions.add(c.getPaper());
+            }
+            anyResponse = eligibleExemptions;
+            httpStatus = Response.Status.OK;
+        } catch (CustomHttpException ex) {
+            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            httpStatus = ex.getStatusCode();
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -156,12 +213,11 @@ public class StudentCourseRest {
      *
      * @param entity
      * @return
-     * @throws JsonProcessingException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response create(StudentCourse entity) throws JsonProcessingException {
+    public Response create(StudentCourse entity) {
         try {
             if (entity.getStudent() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student id is required");
@@ -173,6 +229,7 @@ public class StudentCourseRest {
             anyResponse = studentCourseFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
+            ex.printStackTrace();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
@@ -180,7 +237,11 @@ public class StudentCourseRest {
             ex.printStackTrace();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -190,10 +251,9 @@ public class StudentCourseRest {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response update(StudentCourse entity) throws JsonProcessingException {
+    public Response update(StudentCourse entity) {
         try {
-            studentCourseFacade.updateStudentCourse(entity);
-            anyResponse = studentCourseFacade.find(entity.getId());
+            anyResponse = studentCourseFacade.updateStudentCourse(entity);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
@@ -202,7 +262,11 @@ public class StudentCourseRest {
         } catch (Exception ex) {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -210,12 +274,13 @@ public class StudentCourseRest {
     }
 
     @PUT
-    @Path("exemption")
+    @Path("exemption/complete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response exemption(StudentCourse entity) throws JsonProcessingException {
+    public Response completeExemption(StudentCourse entity) {
         try {
-            studentCourseFacade.createExemption(entity);
+            String objJson = mapper.writeValueAsString(entity);
+            studentCourseFacade.completeExemption(entity);
             anyResponse = studentCourseFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -223,10 +288,14 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            httpStatus = Response.Status.OK;
+            httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -237,7 +306,7 @@ public class StudentCourseRest {
     @Path("verify")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response verify(StudentCourse entity) throws JsonProcessingException {
+    public Response verify(StudentCourse entity) {
         try {
             anyResponse = studentCourseFacade.verifyStudentCourse(entity);
             httpStatus = Response.Status.OK;
@@ -246,7 +315,11 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

@@ -6,15 +6,14 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -30,12 +29,8 @@ import javax.persistence.Temporal;
 public class StudentCourseSubscription implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
-    @Column(name = "rYear", nullable = false)
-    private Integer year;
+    @EmbeddedId
+    private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
     private StudentCourse studentCourse;
@@ -57,27 +52,18 @@ public class StudentCourseSubscription implements Serializable {
     public StudentCourseSubscription() {
     }
 
-    public StudentCourseSubscription(StudentCourse studentCourse, Integer year, Date expiry, Invoice invoice) {
-        this.studentCourse = studentCourse;
-        this.year = year;
+    public StudentCourseSubscription(StudentCourseSubscriptionPK studentCourseSubscriptionPK, Date expiry, Invoice invoice) {
+        this.studentCourseSubscriptionPK = studentCourseSubscriptionPK;
         this.expiry = expiry;
         this.invoice = invoice;
     }
 
-    public Integer getId() {
-        return id;
+    public StudentCourseSubscriptionPK getStudentCourseSubscriptionPK() {
+        return studentCourseSubscriptionPK;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setStudentCourseSubscriptionPK(StudentCourseSubscriptionPK studentCourseSubscriptionPK) {
+        this.studentCourseSubscriptionPK = studentCourseSubscriptionPK;
     }
 
     public StudentCourse getStudentCourse() {

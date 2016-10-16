@@ -5,24 +5,21 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,6 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "courseType")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "CourseType.findAll", query = "SELECT c FROM CourseType c"),
@@ -48,14 +47,6 @@ public class CourseType implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "name", nullable = false)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseTypeCode", fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private Collection<Course> courseCollection;
-    @OneToMany(mappedBy = "courseTypeCode")
-    @JsonBackReference
-    private Collection<Fee> feeTypes;
-    @OneToMany(mappedBy = "courseType")
-    private Collection<Requirement> courseRequirements;
 
     public CourseType() {
     }
@@ -83,32 +74,6 @@ public class CourseType implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @XmlTransient
-    public Collection<Course> getCourseCollection() {
-        return courseCollection;
-    }
-
-    public void setCourseCollection(Collection<Course> courseCollection) {
-        this.courseCollection = courseCollection;
-    }
-
-    public Collection<Requirement> getCourseRequirements() {
-        return courseRequirements;
-    }
-
-    public void setCourseRequirements(Collection<Requirement> courseRequirements) {
-        this.courseRequirements = courseRequirements;
-    }
-
-    @XmlTransient
-    public Collection<Fee> getFeeTypes() {
-        return feeTypes;
-    }
-
-    public void setFeeTypes(Collection<Fee> feeTypes) {
-        this.feeTypes = feeTypes;
     }
 
     @Override

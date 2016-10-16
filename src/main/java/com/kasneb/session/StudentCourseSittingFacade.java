@@ -90,36 +90,31 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
         }
-        StudentCourseSitting toUpdate = new StudentCourseSitting();
         try {
-            super.copy(managed, toUpdate);
+            super.copy(entity, managed);
+            em.detach(managed);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            super.copy(entity, toUpdate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (toUpdate.getSittingCentre() != null) {
-            if (toUpdate.getInvoice() == null) {
+        if (managed.getSittingCentre() != null) {
+            if (managed.getInvoice() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
             }
-            if (!"PAID".equals(toUpdate.getInvoice().getStatus().getStatus())) {
+            if (!"PAID".equals(managed.getInvoice().getStatus().getStatus())) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
             }
         }
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
-        if (toUpdate.getPapers() != null && toUpdate.getPapers().size() > 0) {
-            for (StudentCourseSittingPaper paper : toUpdate.getPapers()) {
-                toUpdate.addStudentCourseSittingPaper(paper);
+        if (managed.getPapers() != null && managed.getPapers().size() > 0) {
+            for (StudentCourseSittingPaper paper : managed.getPapers()) {
+                managed.addStudentCourseSittingPaper(paper);
             }
             map = getBillingMethod(entity);
             examEntryInvoice = generateInvoice(entity, map);
-            toUpdate.setInvoice(examEntryInvoice);
+            managed.setInvoice(examEntryInvoice);
         }
-        em.merge(toUpdate);
+        em.merge(managed);
     }
 
     public void updateCentre(StudentCourseSitting entity) throws CustomHttpException {
@@ -144,22 +139,10 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (!examCentre.getExamsOffered().contains(course)) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This exam is not offerred in selected centre");
         }
-        // SittingCentre sittingCentre = createOrUpdate(managed, centreId);
         managed.setSittingCentre(entity.getSittingCentre());
         em.merge(managed);
     }
 
-//    private SittingCentre createOrUpdate(StudentCourseSitting managed, Integer centreId) throws CustomHttpException {
-//        ExamCentre examCentre = em.find(ExamCentre.class, centreId);
-//        if (examCentre == null) {
-//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Exam centre does not exist");
-//        }
-//        SittingCentre sittingCentre = new SittingCentre(examCentre.getCode(), examCentre.getCapacity());
-//        sittingCentre.setBooked(0);
-//        sittingCentre.setRemaining(100);
-//        sittingCentre.setSitting(managed.getSitting());
-//        return em.merge(sittingCentre);
-//    }
     private Invoice generateInvoice(StudentCourseSitting entity, Map<String, Collection<Paper>> map) throws CustomHttpException {
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
@@ -215,7 +198,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         invoice.setUsdTotal(usdTotal);
         invoice.setGbpTotal(gbpTotal);
         invoice.setFeeCode(new FeeCode(FEE_CODE));
-        invoice.setStudent(managed.getStudentCourse().getStudent());
+        invoice.setStudentCourse(managed.getStudentCourse());
         return invoice;
     }
 
@@ -241,7 +224,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             }
             sittingPapers.add(paper);
             //check course type
-            int courseType = paper.getCourse().getCourseType();
+            int courseType = paper.getCourse().getCourseTypeCode();
             switch (courseType) {
                 case 100:
                     parts.add(paper.getPart());
@@ -289,7 +272,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 map.put("PER_PAPER", sittingPapers);
             }
         }
-        System.out.println(map);
         return map;
     }
 

@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -71,13 +73,11 @@ public class StudentCourse implements Serializable {
     @Size(max = 45)
     private String document;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "active", nullable = false)
-    private boolean active = false;
+    private Boolean active = false;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "verified", nullable = false)
-    private boolean verified = false;
+    private Boolean verified = false;
     @Column(name = "dateVerified")
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -92,7 +92,7 @@ public class StudentCourse implements Serializable {
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     @JsonManagedReference
-    private Course course;
+    private KasnebCourse course;
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     @JsonIgnore
@@ -127,28 +127,42 @@ public class StudentCourse implements Serializable {
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Level currentLevel;
-    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Collection<StudentCourseQualification> qualifications;
     @Transient
     private ElligiblePart eligiblePart;
     @Transient
     private ElligibleLevel eligibleLevel;
-    @Transient
-    private Collection<Paper> exemptedPapers;
-    @OneToMany(mappedBy = "studentCourse")
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<StudentCourseSubscription> subscriptions;
-    @OneToOne(optional = false)
-    @JoinColumn(name = "currentSubscriptionId", referencedColumnName = "id")
+    @Transient
     @JsonIgnore
     private StudentCourseSubscription currentSubscription;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Transient
     private Date nextRenewal;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "invoiceId", referencedColumnName = "id")
-    private Invoice exemptionInvoice;
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<KasnebStudentCourseQualification> kasnebQualifications;
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<OtherStudentCourseQualification> otherQualifications;
+    @Transient
+    @JsonIgnore
+    private Set<StudentCourseQualification> qualifications;
+    @OneToMany(mappedBy = "studentCourse")
+    @JsonManagedReference
+    private Set<StudentCourseExemptionPaper> exemptions;
+    @Transient
+    private Set<Paper> eligibleExemptions;
+    @Transient
+    private Set<Paper> exemptedPapers = new HashSet<>();
+    @Transient
+    private KasnebStudentCourseQualification kasnebQualification;
+    @Transient
+    private OtherStudentCourseQualification otherQualification;
+    @OneToMany(mappedBy = "studentCourse", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Collection<Invoice> invoices;
 
     public StudentCourse() {
     }
@@ -195,14 +209,6 @@ public class StudentCourse implements Serializable {
         this.document = document;
     }
 
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
     public User getVerifiedBy() {
         return verifiedBy;
     }
@@ -211,13 +217,11 @@ public class StudentCourse implements Serializable {
         this.verifiedBy = verifiedBy;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public Date getNextRenewal() {
         try {
-            nextRenewal = currentSubscription.getExpiry();
+            if (getCurrentSubscription() != null) {
+                nextRenewal = getCurrentSubscription().getExpiry();
+            }
         } catch (java.lang.NullPointerException ex) {
             Logger.getLogger(StudentCourse.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -226,10 +230,6 @@ public class StudentCourse implements Serializable {
 
     public void setNextRenewal(Date nextRenewal) {
         this.nextRenewal = nextRenewal;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public Date getDateVerified() {
@@ -248,11 +248,11 @@ public class StudentCourse implements Serializable {
         this.remarks = remarks;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
 
@@ -336,22 +336,6 @@ public class StudentCourse implements Serializable {
         this.eligibleLevel = eligibleLevel;
     }
 
-    public Collection<StudentCourseQualification> getQualifications() {
-        return qualifications;
-    }
-
-    public void setQualifications(Collection<StudentCourseQualification> qualifications) {
-        this.qualifications = qualifications;
-    }
-
-    public Collection<Paper> getExemptedPapers() {
-        return exemptedPapers;
-    }
-
-    public void setExemptedPapers(Collection<Paper> exemptedPapers) {
-        this.exemptedPapers = exemptedPapers;
-    }
-
     public Collection<StudentCourseSubscription> getSubscriptions() {
         return subscriptions;
     }
@@ -368,12 +352,121 @@ public class StudentCourse implements Serializable {
         this.currentSubscription = currentSubscription;
     }
 
-    public Invoice getExemptionInvoice() {
-        return exemptionInvoice;
+    public Set<KasnebStudentCourseQualification> getKasnebQualifications() {
+        return kasnebQualifications;
     }
 
-    public void setExemptionInvoice(Invoice exemptionInvoice) {
-        this.exemptionInvoice = exemptionInvoice;
+    public void setKasnebQualifications(Set<KasnebStudentCourseQualification> kasnebQualifications) {
+        this.kasnebQualifications = kasnebQualifications;
+    }
+
+    public Set<OtherStudentCourseQualification> getOtherQualifications() {
+        return otherQualifications;
+    }
+
+    public void setOtherQualifications(Set<OtherStudentCourseQualification> otherQualifications) {
+        this.otherQualifications = otherQualifications;
+    }
+
+    public Set<StudentCourseExemptionPaper> getExemptions() {
+        return exemptions;
+    }
+
+    public void setExemptions(Set<StudentCourseExemptionPaper> exemptions) {
+        this.exemptions = exemptions;
+    }
+
+    public Set<StudentCourseQualification> getQualifications() {
+        qualifications = new HashSet<>();
+        try {
+            for (OtherStudentCourseQualification oq : otherQualifications) {
+                qualifications.add(oq);
+            }
+        } catch (java.lang.NullPointerException npe) {
+
+        }
+        try {
+            for (StudentCourseQualification kq : kasnebQualifications) {
+                qualifications.add(kq);
+            }
+        } catch (java.lang.NullPointerException npe) {
+
+        }
+        return qualifications;
+    }
+
+    public Set<Paper> getEligibleExemptions() {
+        eligibleExemptions = new HashSet<>();
+        try {
+            for (StudentCourseQualification qualification : getQualifications()) {
+                for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
+                    eligibleExemptions.add(courseExemption.getPaper());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return eligibleExemptions;
+    }
+
+    public void setEligibleExemptions(Set<Paper> eligibleExemptions) {
+        this.eligibleExemptions = eligibleExemptions;
+    }
+
+    public Set<Paper> getExemptedPapers() {
+        if (getExemptions() != null) {
+            for (StudentCourseExemptionPaper e : getExemptions()) {
+                if (e != null) {
+                    Object x = e.getPaper();
+                    exemptedPapers.add(e.getPaper());
+                }
+            }
+        }
+        return exemptedPapers;
+    }
+
+    public void setExemptedPapers(Set<Paper> exemptedPapers) {
+        this.exemptedPapers = exemptedPapers;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
+    public KasnebStudentCourseQualification getKasnebQualification() {
+        return kasnebQualification;
+    }
+
+    public void setKasnebQualification(KasnebStudentCourseQualification kasnebQualification) {
+        this.kasnebQualification = kasnebQualification;
+    }
+
+    public OtherStudentCourseQualification getOtherQualification() {
+        return otherQualification;
+    }
+
+    public void setOtherQualification(OtherStudentCourseQualification otherQualification) {
+        this.otherQualification = otherQualification;
+    }
+
+    public Collection<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Collection<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     @Override
@@ -395,7 +488,10 @@ public class StudentCourse implements Serializable {
             return false;
         }
         final StudentCourse other = (StudentCourse) obj;
-        return Objects.equals(this.id, other.id);
+        if (!Objects.equals(this.course.getId(), other.course.getId())) {
+            return false;
+        }
+        return Objects.equals(this.student.getId(), other.student.getId());
     }
 
 }

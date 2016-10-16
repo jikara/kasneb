@@ -7,6 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -39,14 +41,18 @@ public class CountyRest {
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.CountyRest
+     *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = countyFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = countyFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CountyRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -55,6 +61,7 @@ public class CountyRest {
 
     /**
      * PUT method for updating or creating an instance of CountyRest
+     *
      * @param content representation for the resource
      */
     @PUT

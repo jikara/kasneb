@@ -93,9 +93,9 @@ public class Invoice implements Serializable {
     @JsonBackReference
     private StudentCourseSitting studentCourseSitting;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "studentCourseId")
     @JsonBackReference
-    private Student student;
+    private StudentCourse studentCourse;
 
     public Invoice() {
     }
@@ -198,12 +198,12 @@ public class Invoice implements Serializable {
         this.studentCourseSubscription = studentCourseSubscription;
     }
 
-    public Student getStudent() {
-        return student;
+    public StudentCourse getStudentCourse() {
+        return studentCourse;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentCourse(StudentCourse studentCourse) {
+        this.studentCourse = studentCourse;
     }
 
     //Helper

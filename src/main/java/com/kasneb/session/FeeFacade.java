@@ -5,11 +5,11 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.entity.Course;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Fee;
 import com.kasneb.entity.FeeTypeCode;
 import com.kasneb.entity.Fee_;
+import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Level;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Part;
@@ -43,7 +43,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         super(Fee.class);
     }
 
-    public Fee getCourseRegistrationFeeType(Course course) throws CustomHttpException {
+    public Fee getCourseRegistrationFeeType(KasnebCourse course) throws CustomHttpException {
         Fee feeType = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -52,7 +52,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseTypeCode), course.getCourseTypeCode()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -66,7 +66,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
-    public Fee getLateCourseRegistrationFeeType(Course course) throws CustomHttpException {
+    public Fee getLateCourseRegistrationFeeType(KasnebCourse course) throws CustomHttpException {
         Fee feeType = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -74,7 +74,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
-        cq.where(cb.equal(ft.get(Fee_.courseTypeCode), course.getCourseTypeCode()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -88,7 +88,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
-    public Fee getAnnualRegistrationRenewalFee(Course course) throws CustomHttpException {
+    public Fee getAnnualRegistrationRenewalFee(KasnebCourse course) throws CustomHttpException {
         Fee feeType = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -97,7 +97,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseTypeCode), course.getCourseTypeCode()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_RENEWAL_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("annual_registration_renewal_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -111,7 +111,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
-    public Fee getRegistrationReactivationFee(Course course) throws CustomHttpException {
+    public Fee getRegistrationReactivationFee(KasnebCourse course) throws CustomHttpException {
         Fee feeType = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -120,7 +120,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseTypeCode), course.getCourseTypeCode()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("registration_reactivation_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -134,7 +134,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
-    public Fee getStudentCardReplacementFee(Course course) throws CustomHttpException {
+    public Fee getStudentCardReplacementFee(KasnebCourse course) throws CustomHttpException {
         Fee feeType = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -143,7 +143,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseTypeCode), course.getCourseTypeCode()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("student_identity_card_replacement_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);

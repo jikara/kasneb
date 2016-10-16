@@ -6,9 +6,12 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.Institution;
+import com.kasneb.entity.OtherCourseType;
+import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -28,5 +31,12 @@ public class InstitutionFacade extends AbstractFacade<Institution> {
     public InstitutionFacade() {
         super(Institution.class);
     }
-    
+
+    public Collection<Institution> findByCourseType(OtherCourseType courseType) {
+        TypedQuery<Institution> query
+                = em.createQuery("SELECT i FROM Institution i WHERE i.courseType = :courseType", Institution.class);
+        query.setParameter("courseType", courseType);
+        return query.getResultList();
+    }
+
 }

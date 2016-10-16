@@ -24,16 +24,18 @@ import javax.persistence.Table;
 public class CourseExemption implements Serializable {
 
     @EmbeddedId
-    @JsonIgnore
+    //@JsonIgnore
     private CourseExemptionPK courseExemptionPK;
     @ManyToOne
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonManagedReference
-    private Qualification qualification;
+    @JsonIgnore
+    private Course qualification;
     @ManyToOne
-    @JoinColumn(name = "courseCode", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonManagedReference
-    private Course course;
+    @JsonIgnore
+    private KasnebCourse course;
     @ManyToOne
     @JoinColumn(name = "paperCode", referencedColumnName = "code", insertable = false, updatable = false)
     @JsonManagedReference
@@ -47,19 +49,19 @@ public class CourseExemption implements Serializable {
         this.courseExemptionPK = courseExemptionPK;
     }
 
-    public Qualification getQualification() {
+    public Course getQualification() {
         return qualification;
     }
 
-    public void setQualification(Qualification qualification) {
+    public void setQualification(Course qualification) {
         this.qualification = qualification;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
 

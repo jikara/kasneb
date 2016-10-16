@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -32,7 +33,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -64,7 +64,6 @@ public class Student implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-
     @Size(min = 1, max = 45)
     @Column(name = "firstName", nullable = false)
     private String firstName;
@@ -88,12 +87,10 @@ public class Student implements Serializable {
     private Date dob = new Date();
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
-
     @Size(min = 1, max = 45)
     @Column(name = "email", nullable = false)
     private String email;
     @Basic(optional = false)
-
     @Column(name = "created", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -101,9 +98,9 @@ public class Student implements Serializable {
     @Size(max = 45)
     @Column(name = "passportPhoto")
     private String passportPhoto;
-    @Size(max = 45)
-    @Column(name = "documentType")
-    private String documentType;
+    @ManyToOne
+    @JoinColumn(name = "documentType", referencedColumnName = "id")
+    private DocumentType documentType;
     @Size(max = 45)
     @Column(name = "documentNo")
     private String documentNo;
@@ -135,11 +132,10 @@ public class Student implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
     @JsonManagedReference
     private Collection<Notification> notifications;
-    @OneToMany(mappedBy = "student")
-    @JsonManagedReference
-    private Collection<Invoice> invoices;
     @Transient
     private StudentCourse currentCourse;
+    @Transient
+    private Collection<Invoice> invoices = new ArrayList<>();
 
     public Student() {
     }
@@ -237,11 +233,11 @@ public class Student implements Serializable {
         this.passportPhoto = passportPhoto;
     }
 
-    public String getDocumentType() {
+    public DocumentType getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
     }
 
@@ -303,7 +299,7 @@ public class Student implements Serializable {
 
     public StudentCourse getCurrentCourse() {
         for (StudentCourse course : studentCourses) {
-            if (course.isActive()) {
+            if (course.getActive()) {
                 currentCourse = course;
             }
         }
@@ -314,7 +310,6 @@ public class Student implements Serializable {
         this.currentCourse = currentCourse;
     }
 
-    @XmlTransient
     public Collection<StudentCourse> getStudentCourses() {
         return studentCourses;
     }
@@ -332,6 +327,11 @@ public class Student implements Serializable {
     }
 
     public Collection<Invoice> getInvoices() {
+        if (getStudentCourses() != null) {
+            for (StudentCourse studentCourse : getStudentCourses()) {
+                invoices.addAll(studentCourse.getInvoices());
+            }
+        }
         return invoices;
     }
 

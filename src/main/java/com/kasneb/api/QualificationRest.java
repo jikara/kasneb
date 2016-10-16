@@ -7,9 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasneb.entity.QualificationType;
-import com.kasneb.exception.CustomHttpException;
-import com.kasneb.exception.CustomMessage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -38,8 +37,6 @@ public class QualificationRest {
     String json;
     @EJB
     com.kasneb.session.QualificationFacade qualificationFacade;
-    @EJB
-    com.kasneb.session.QualificationTypeFacade qualificationTypeFacade;
 
     /**
      * Creates a new instance of QualificationRest
@@ -53,30 +50,20 @@ public class QualificationRest {
      *
      * @param typeId
      * @return an instance of javax.ws.rs.core.Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("type_id") Integer typeId) throws JsonProcessingException {
+    public Response findAll(@QueryParam("type_id") Integer typeId) {
         try {
-            if (typeId != null) {
-                QualificationType type = qualificationTypeFacade.find(typeId);
-                if (type == null) {
-                    throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification type does not exist");
-                }
-                anyResponse = qualificationFacade.findByType(type);
-            } else {
-                anyResponse = qualificationFacade.findAll();
-            }
-        } catch (CustomHttpException ex) {
-            httpStatus = ex.getStatusCode();
-            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            anyResponse = qualificationFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(QualificationRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
-        return Response
-                .status(Response.Status.OK)
-                .entity(json)
-                .build();
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(json)
+                    .build();
     }
 
     /**

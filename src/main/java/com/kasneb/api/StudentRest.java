@@ -39,7 +39,7 @@ import org.glassfish.jersey.server.mvc.Viewable;
  */
 @Path("student")
 public class StudentRest {
-    
+
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
@@ -59,25 +59,32 @@ public class StudentRest {
      * Retrieves representation of an instance of com.kasneb.api.StudentRest
      *
      * @return an instance of javax.ws.rs.core.Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = studentFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = studentFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
                 .build();
     }
-    
+
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPendingAll() throws JsonProcessingException {
-        anyResponse = studentFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findPendingAll() {
+        try {
+            anyResponse = studentFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -88,15 +95,18 @@ public class StudentRest {
      *
      * @param id
      * @return
-     * @throws JsonProcessingException
      */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        anyResponse = studentFacade.find(id);
-        json = mapper.writeValueAsString(anyResponse);
-        httpStatus = Response.Status.OK;
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            anyResponse = studentFacade.find(id);
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -108,15 +118,13 @@ public class StudentRest {
      *
      * @param entity
      * @return
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(Student entity) throws JsonProcessingException {
+    public Response update(Student entity) {
         try {
             Login loginId = studentFacade.find(entity.getId()).getLoginId();
-            System.out.println(entity.toString());
             entity.setLoginId(loginId);
             entity = studentFacade.edit(entity);
             anyResponse = entity;
@@ -126,7 +134,11 @@ public class StudentRest {
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -137,12 +149,11 @@ public class StudentRest {
      *
      * @param entity
      * @return
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Student entity) throws JsonProcessingException {
+    public Response create(Student entity) {
         Map emailProps = new HashMap<>();
         try {
             entity = studentFacade.createStudent(entity);
@@ -159,20 +170,28 @@ public class StudentRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MessagingException ex) {
+            anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
                 .build();
     }
-    
+
     @POST
     @Path("resend")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response resendEmail(Login entity) throws JsonProcessingException {
+    public Response resendEmail(Login entity) {
         Map emailProps = new HashMap<>();
         try {
             Login managed = loginFacade.findByEmail(entity.getEmail());
@@ -193,30 +212,38 @@ public class StudentRest {
         } catch (MessagingException ex) {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
                 .build();
     }
-    
+
     @GET
     @Path("invoices/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response invoices(@PathParam("id") Integer id) throws JsonProcessingException {
-        anyResponse = studentFacade.findInvoices(id);
-        json = mapper.writeValueAsString(anyResponse);
+    public Response invoices(@PathParam("id") Integer id) {
+        try {
+            anyResponse = studentFacade.findInvoices(id);
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
                 .build();
     }
-    
+
     @PUT
     @Path("verify")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response verify(Login login) throws JsonProcessingException {
+    public Response verify(Login login) {
         try {
             studentFacade.verifyAccount(login.getVerificationToken());
             httpStatus = Response.Status.OK;
@@ -226,13 +253,17 @@ public class StudentRest {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
                 .build();
     }
-    
+
     @GET
     @Path("email")
     @Template
@@ -240,5 +271,5 @@ public class StudentRest {
     public Viewable get() {
         return new Viewable("index.foo", "FOO");
     }
-    
+
 }

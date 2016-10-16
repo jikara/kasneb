@@ -72,7 +72,7 @@ public class Paper implements Serializable {
     @JoinColumn(name = "courseId", nullable = false)
     @JsonBackReference
     @JsonIgnore
-    private Course course;
+    private KasnebCourse course;
     @OneToMany(mappedBy = "paper")
     @JsonBackReference
     @JsonIgnore
@@ -138,11 +138,11 @@ public class Paper implements Serializable {
         this.section = section;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
 
@@ -156,8 +156,8 @@ public class Paper implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.code);
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
@@ -176,9 +176,5 @@ public class Paper implements Serializable {
         return Objects.equals(this.code, other.code);
     }
 
-    @Override
-    public String toString() {
-        return "Paper{" + "code=" + code + ", name=" + name + '}';
-    }
-
+    
 }

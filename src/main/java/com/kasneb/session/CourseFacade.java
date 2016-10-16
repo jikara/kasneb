@@ -7,11 +7,9 @@ package com.kasneb.session;
 
 import com.kasneb.entity.Course;
 import com.kasneb.entity.StudentCourse;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -30,13 +28,6 @@ public class CourseFacade extends AbstractFacade<Course> {
 
     public CourseFacade() {
         super(Course.class);
-    }
-
-    public List<Course> findByType(Integer code) {
-        TypedQuery<Course> query
-                = em.createNamedQuery("Course.findByCourseType", Course.class);
-        query.setParameter("courseTypeCode", code);
-        return query.getResultList();
     }
 
     public Course findByStudentCourse(StudentCourse studentCourse) {

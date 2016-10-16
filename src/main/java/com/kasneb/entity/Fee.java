@@ -79,11 +79,11 @@ public class Fee implements Serializable {
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true)
     @JsonBackReference
-    private Course course;
+    private KasnebCourse course;
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
     @ManyToOne(optional = true)
     @JsonManagedReference
-    private CourseType courseTypeCode;
+    private CourseType courseType;
     @JoinColumn(name = "levelId", referencedColumnName = "id")
     @ManyToOne(optional = true)
     private Level level;
@@ -167,20 +167,20 @@ public class Fee implements Serializable {
         this.feeCode = feeCode;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
 
-    public CourseType getCourseTypeCode() {
-        return courseTypeCode;
+    public CourseType getCourseType() {
+        return courseType;
     }
 
-    public void setCourseTypeCode(CourseType courseTypeCode) {
-        this.courseTypeCode = courseTypeCode;
+    public void setCourseType(CourseType courseType) {
+        this.courseType = courseType;
     }
 
     public Level getLevel() {

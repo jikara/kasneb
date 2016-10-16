@@ -52,23 +52,26 @@ public class CentreRegionRest {
      * com.kasneb.api.CentreRegionRest
      *
      * @return an instance of javax.ws.rs.core.Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = centreRegionFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
-        return Response
-                .status(Response.Status.OK)
-                .entity(json)
-                .build();
+    public Response findAll(){
+        try {
+            anyResponse = centreRegionFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CentreRegionRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(json)
+                    .build();
     }
 
     @GET
     @Path("filter")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByRegion(@QueryParam("zone_id") Integer zoneId) throws JsonProcessingException {
+    public Response findByRegion(@QueryParam("zone_id") Integer zoneId) {
         try {
             anyResponse = centreRegionFacade.findByZone(zoneId);
             httpStatus = Response.Status.OK;
@@ -77,7 +80,11 @@ public class CentreRegionRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CentreRegionRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

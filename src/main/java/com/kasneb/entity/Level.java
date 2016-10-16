@@ -56,7 +56,7 @@ public class Level implements Serializable {
     @JoinColumn(name = "courseId", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonBackReference
-    private Course course;
+    private KasnebCourse course;
     @OneToMany(mappedBy = "level")
     @JsonBackReference
     private Collection<Paper> paperCollection;
@@ -98,11 +98,11 @@ public class Level implements Serializable {
         this.optional = optional;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
 

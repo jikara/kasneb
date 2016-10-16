@@ -56,7 +56,7 @@ public class Part implements Serializable {
     @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     @JsonBackReference
-    private Course course;
+    private KasnebCourse course;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "part")
     @JsonManagedReference
     private Collection<Section> sectionCollection;
@@ -100,11 +100,11 @@ public class Part implements Serializable {
         this.courseId = courseId;
     }
 
-    public Course getCourse() {
+    public KasnebCourse getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(KasnebCourse course) {
         this.course = course;
     }
     public Collection<Section> getSectionCollection() {

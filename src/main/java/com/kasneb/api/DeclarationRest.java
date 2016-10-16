@@ -47,13 +47,16 @@ public class DeclarationRest {
      * Retrieves representation of an instance of com.kasneb.api.StudentRest
      *
      * @return an instance of javax.ws.rs.core.Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() throws JsonProcessingException {
-        anyResponse = declarationFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response findAll() {
+        try {
+            anyResponse = declarationFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(DeclarationRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -64,15 +67,18 @@ public class DeclarationRest {
      *
      * @param id
      * @return
-     * @throws JsonProcessingException
      */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        anyResponse = declarationFacade.find(id);
-        json = mapper.writeValueAsString(anyResponse);
-        httpStatus = Response.Status.OK;
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            anyResponse = declarationFacade.find(id);
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(DeclarationRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -103,13 +109,12 @@ public class DeclarationRest {
      *
      * @param studentDeclaration
      * @return
-     * @throws JsonProcessingException
      */
     @PUT
     @Path("register")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(StudentDeclaration studentDeclaration) throws JsonProcessingException {
+    public Response update(StudentDeclaration studentDeclaration)  {
         try {
             declarationFacade.update(studentDeclaration);
             anyResponse = "Declaration  updated successfully";
@@ -119,7 +124,11 @@ public class DeclarationRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(DeclarationRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

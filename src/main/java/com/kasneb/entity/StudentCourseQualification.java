@@ -5,18 +5,17 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kasneb.entity.pk.StudentCourseQualificationPK;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import java.util.Objects;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -25,29 +24,22 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "studentCourseQualification")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
 public class StudentCourseQualification implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     private StudentCourseQualificationPK studentCourseQualificationPK;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonManagedReference
-    @JsonIgnore
     private StudentCourse studentCourse;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonManagedReference
-    private Qualification qualification;
-    @Basic(optional = false)
-    @Column(name = "document", nullable = false)
-    private String document;
-    @ManyToOne
-    @JoinColumn(name = "institutionId", referencedColumnName = "id")
-    @JsonManagedReference
-    private Institution institution;
-    @Column(name = "institutionName")
-    private String institutionName;  //specified
+    private Course qualification;
+
+    public StudentCourseQualification() {
+    }
 
     public StudentCourseQualificationPK getStudentCourseQualificationPK() {
         return studentCourseQualificationPK;
@@ -65,40 +57,37 @@ public class StudentCourseQualification implements Serializable {
         this.studentCourse = studentCourse;
     }
 
-    public Qualification getQualification() {
+    public Course getQualification() {
         return qualification;
     }
 
-    public void setQualification(Qualification qualification) {
+    public void setQualification(Course qualification) {
         this.qualification = qualification;
     }
 
-    public String getDocument() {
-        return document;
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.studentCourseQualificationPK);
+        return hash;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
-    }
-
-    public Institution getInstitution() {
-        return institution;
-    }
-
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
-    }
-
-    public String getInstitutionName() {
-        return institutionName;
-    }
-
-    public void setInstitutionName(String institutionName) {
-        if (this.institution != null) {
-            this.institutionName = null;
-        } else {
-            this.institutionName = institutionName;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StudentCourseQualification other = (StudentCourseQualification) obj;
+        if (!Objects.equals(this.studentCourseQualificationPK, other.studentCourseQualificationPK)) {
+            return false;
+        }
+        return true;
     }
 
 }

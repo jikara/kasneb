@@ -52,7 +52,7 @@ public class ExamCentre implements Serializable {
     private CentreCluster clusterId;
     @ManyToMany(mappedBy = "examCentres")
     @JsonManagedReference
-    private Collection<Course> examsOffered;
+    private Collection<KasnebCourse> examsOffered;
 
     public Integer getCode() {
         return code;
@@ -94,11 +94,11 @@ public class ExamCentre implements Serializable {
         this.clusterId = clusterId;
     }
 
-    public Collection<Course> getExamsOffered() {
+    public Collection<KasnebCourse> getExamsOffered() {
         return examsOffered;
     }
 
-    public void setExamsOffered(Collection<Course> examsOffered) {
+    public void setExamsOffered(Collection<KasnebCourse> examsOffered) {
         this.examsOffered = examsOffered;
     }
 

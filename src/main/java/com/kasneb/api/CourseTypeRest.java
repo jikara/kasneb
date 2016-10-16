@@ -7,6 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -31,6 +33,10 @@ public class CourseTypeRest {
     String json;
     @EJB
     com.kasneb.session.CourseTypeFacade courseTypeFacade;
+    @EJB
+    com.kasneb.session.KasnebCourseTypeFacade kasnebCourseTypeFacade;
+    @EJB
+    com.kasneb.session.OtherCourseTypeFacade otherCourseTypeFacade;
 
     /**
      * Creates a new instance of CoursetypeRest
@@ -42,13 +48,32 @@ public class CourseTypeRest {
      * Retrieves representation of an instance of com.kasneb.api.CourseTypeRest
      *
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() throws JsonProcessingException {
-        anyResponse = courseTypeFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+    public Response getAll() {
+        try {
+            anyResponse = kasnebCourseTypeFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
+    }
+
+    @GET
+    @Path("other")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOther() {
+        try {
+            anyResponse = otherCourseTypeFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -58,9 +83,13 @@ public class CourseTypeRest {
     @GET
     @Path("{code}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@PathParam("code") Integer code) throws JsonProcessingException {
-        anyResponse = courseTypeFacade.find(code);
-        json = mapper.writeValueAsString(anyResponse);
+    public Response getAll(@PathParam("code") Integer code) {
+        try {
+            anyResponse = courseTypeFacade.find(code);
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)

@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
@@ -36,13 +35,12 @@ public class Institution implements Serializable {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "type", referencedColumnName = "code", nullable = false)
-    @JsonManagedReference
-    private QualificationType type;
+    @ManyToOne
+    @JoinColumn(name = "courseTypeId", referencedColumnName = "code")
+    private CourseType courseType;
     @OneToMany(mappedBy = "institution")
-    @JsonBackReference
-    private Collection<StudentCourseQualification> studentCourseQualifications;
+    @JsonManagedReference
+    private Collection<OtherCourse> courses;
 
     public Integer getId() {
         return id;
@@ -60,20 +58,20 @@ public class Institution implements Serializable {
         this.name = name;
     }
 
-    public QualificationType getType() {
-        return type;
+    public CourseType getCourseType() {
+        return courseType;
     }
 
-    public void setType(QualificationType type) {
-        this.type = type;
+    public void setCourseType(CourseType courseType) {
+        this.courseType = courseType;
     }
 
-    public Collection<StudentCourseQualification> getStudentCourseQualifications() {
-        return studentCourseQualifications;
+    public Collection<OtherCourse> getCourses() {
+        return courses;
     }
 
-    public void setStudentCourseQualifications(Collection<StudentCourseQualification> studentCourseQualifications) {
-        this.studentCourseQualifications = studentCourseQualifications;
+    public void setCourses(Collection<OtherCourse> courses) {
+        this.courses = courses;
     }
 
     @Override

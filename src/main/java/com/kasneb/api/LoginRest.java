@@ -47,7 +47,7 @@ public class LoginRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@Context HttpHeaders headers, Login login) throws JsonProcessingException {
+    public Response login(@Context HttpHeaders headers, Login login) {
         String token = null;
         int loginAttempts = 0;
         try {
@@ -76,7 +76,11 @@ public class LoginRest {
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(LoginRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -87,9 +91,13 @@ public class LoginRest {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        anyResponse = loginFacade.find(id);
-        json = mapper.writeValueAsString(anyResponse);
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            anyResponse = loginFacade.find(id);
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(LoginRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(Response.Status.OK)
                 .entity(json)

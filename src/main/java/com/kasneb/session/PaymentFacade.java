@@ -13,6 +13,7 @@ import com.kasneb.entity.Currency;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.Payment;
+import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.CompletePaymentResponse;
 import com.kasneb.model.LoginResponse;
@@ -22,12 +23,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.EnumUtils;
@@ -169,7 +172,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         post.setHeader("app_key", APP_KEY);
         List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("PhoneNumber", entity.getPhoneNumber()));
-        urlParameters.add(new BasicNameValuePair("PaidBy", invoice.getStudent().getFirstName()));
+        urlParameters.add(new BasicNameValuePair("PaidBy", invoice.getStudentCourse().getStudent().getFirstName()));
         urlParameters.add(new BasicNameValuePair("PaymentTypeID", "1"));
         urlParameters.add(new BasicNameValuePair("Stream", "merchantpayment"));
         urlParameters.add(new BasicNameValuePair("Amount", String.valueOf(entity.getAmount())));
@@ -222,6 +225,14 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         }
         completePaymentResponse = mapper.readValue(result.toString(), CompletePaymentResponse.class);
         return completePaymentResponse;
+    }
+
+    public Collection<Payment> findByStudent(Student student) {
+        TypedQuery<Payment> query
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student", Payment.class);
+        query.setParameter("student", student);
+        Object x = query.getResultList();
+        return query.getResultList();
     }
 
 }

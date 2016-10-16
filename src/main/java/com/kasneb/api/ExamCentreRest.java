@@ -51,11 +51,10 @@ public class ExamCentreRest {
      *
      * @param courseId
      * @return an instance of Response
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("course_id") Integer courseId) throws JsonProcessingException {
+    public Response findAll(@QueryParam("course_id") Integer courseId) {
         try {
             if (courseId == null) {
                 anyResponse = examCentreFacade.findAll();
@@ -68,7 +67,11 @@ public class ExamCentreRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -78,7 +81,7 @@ public class ExamCentreRest {
     @GET
     @Path("cluster/filter")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByCluster(@QueryParam("course_id") Integer courseId, @QueryParam("cluster_id") Integer clusterId) throws JsonProcessingException {
+    public Response findByCluster(@QueryParam("course_id") Integer courseId, @QueryParam("cluster_id") Integer clusterId) {
         try {
             if (courseId == null) {
                 anyResponse = examCentreFacade.findByCluster(clusterId);
@@ -91,7 +94,11 @@ public class ExamCentreRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -101,7 +108,7 @@ public class ExamCentreRest {
     @GET
     @Path("zone/filter")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByZone(@QueryParam("course_id") Integer courseId, @QueryParam("zone_id") Integer zoneId) throws JsonProcessingException {
+    public Response findByZone(@QueryParam("course_id") Integer courseId, @QueryParam("zone_id") Integer zoneId)  {
         try {
             if (courseId == null) {
                 anyResponse = examCentreFacade.findByZone(zoneId);
@@ -114,7 +121,11 @@ public class ExamCentreRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -124,7 +135,7 @@ public class ExamCentreRest {
     @GET
     @Path("region/filter")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByRegion(@QueryParam("course_id") Integer courseId, @QueryParam("region_id") Integer regionId) throws JsonProcessingException {
+    public Response findByRegion(@QueryParam("course_id") Integer courseId, @QueryParam("region_id") Integer regionId) {
         try {
             if (courseId == null) {
                 anyResponse = examCentreFacade.findByRegion(regionId);
@@ -137,7 +148,11 @@ public class ExamCentreRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(anyResponse);
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response
                 .status(httpStatus)
                 .entity(json)

@@ -18,8 +18,8 @@ public class CourseExemptionPK implements Serializable {
 
     @Column(name = "qualificationId")
     Integer qualificationId;
-    @Column(name = "courseCode")
-    Integer courseCode;
+    @Column(name = "courseId")
+    Integer courseId;
     @Column(name = "paperCode")
     String paperCode;
 
@@ -31,12 +31,12 @@ public class CourseExemptionPK implements Serializable {
         this.qualificationId = qualificationId;
     }
 
-    public Integer getCourseCode() {
-        return courseCode;
+    public Integer getCourseId() {
+        return courseId;
     }
 
-    public void setCourseCode(Integer courseCode) {
-        this.courseCode = courseCode;
+    public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
     }
 
     public String getPaperCode() {
