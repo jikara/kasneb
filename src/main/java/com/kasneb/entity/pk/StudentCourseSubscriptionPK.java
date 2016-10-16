@@ -69,9 +69,6 @@ public class StudentCourseSubscriptionPK implements Serializable {
         if (!Objects.equals(this.studentCourseId, other.studentCourseId)) {
             return false;
         }
-        if (!Objects.equals(this.year, other.year)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.year, other.year);
     }
 }
