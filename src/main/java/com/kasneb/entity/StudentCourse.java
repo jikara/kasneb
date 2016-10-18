@@ -34,7 +34,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -60,7 +59,6 @@ public class StudentCourse implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Column(name = "registrationNumber")
-    @Size(max = 45)
     private String registrationNumber;
     @Basic(optional = false)
     @Column(name = "created", nullable = false)
@@ -68,7 +66,6 @@ public class StudentCourse implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date created = new Date();
     @Column(name = "document")
-    @Size(max = 45)
     private String document;
     @Basic(optional = false)
     @Column(name = "active", nullable = false)
@@ -85,7 +82,6 @@ public class StudentCourse implements Serializable {
     @JsonManagedReference
     private User verifiedBy;
     @Column(name = "remarks")
-    @Size(max = 200)
     private String remarks;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
