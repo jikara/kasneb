@@ -7,7 +7,6 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasneb.entity.OtherCourse;
 import com.kasneb.entity.OtherCourseType;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
@@ -54,7 +53,6 @@ public class InstitutionRest {
      * Retrieves representation of an instance of com.kasneb.api.InstitutionRest
      *
      * @param courseTypeId
-     * @param courseId
      * @return an instance of javax.ws.rs.core.Response
      */
     @GET

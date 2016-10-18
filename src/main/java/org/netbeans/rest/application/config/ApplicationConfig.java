@@ -39,10 +39,12 @@ public class ApplicationConfig extends Application {
         resources.add(com.kasneb.api.DeclarationRest.class);
         resources.add(com.kasneb.api.DocumentTypeRest.class);
         resources.add(com.kasneb.api.ExamCentreRest.class);
+        resources.add(com.kasneb.api.ExemptionRest.class);
         resources.add(com.kasneb.api.FeeTypeRest.class);
         resources.add(com.kasneb.api.GuideRest.class);
         resources.add(com.kasneb.api.InstitutionRest.class);
         resources.add(com.kasneb.api.LoginRest.class);
+        resources.add(com.kasneb.api.NotificationRest.class);
         resources.add(com.kasneb.api.PaymentRest.class);
         resources.add(com.kasneb.api.QualificationRest.class);
         resources.add(com.kasneb.api.RenewalRest.class);

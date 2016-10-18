@@ -12,8 +12,11 @@ import com.kasneb.entity.Login;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.Email;
+import com.kasneb.model.Sms;
 import com.kasneb.util.EmailUtil;
 import com.kasneb.util.SecurityUtil;
+import com.kasneb.util.SmsUtil;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,6 +30,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.server.mvc.Template;
@@ -48,6 +53,8 @@ public class StudentRest {
     com.kasneb.session.StudentFacade studentFacade;
     @EJB
     com.kasneb.session.LoginFacade loginFacade;
+
+    private static final String DEVICE_HEADER_NAME = "Client-Id";
 
     /**
      * Creates a new instance of StudentRest
@@ -147,22 +154,31 @@ public class StudentRest {
 
     /**
      *
+     * @param headers
      * @param entity
      * @return
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Student entity) {
+    public Response create(@Context HttpHeaders headers, Student entity) {
         Map emailProps = new HashMap<>();
         try {
             entity = studentFacade.createStudent(entity);
             String key = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Verification Key", 1000 * 60 * 60 * 24);
+            String smsToken = SecurityUtil.createSmsToken(entity.getId());
             entity.getLoginId().setVerificationToken(key);
+            entity.getLoginId().setSmsToken(smsToken);
             entity.getLoginId().setStudent(entity);
             entity = studentFacade.edit(entity);
-            emailProps.put("login", entity.getLoginId());
-            EmailUtil.sendEmail(new Email(entity.getLoginId().getEmail(), "Account Verification", emailProps));
+            if (headers.getRequestHeader(DEVICE_HEADER_NAME) != null && !headers.getRequestHeader(DEVICE_HEADER_NAME).get(0).isEmpty()) {
+                //Send SMS
+                SmsUtil.sendSMS(new Sms(entity.getPhoneNumber(), smsToken));
+            } else {
+                //Send SMS
+                emailProps.put("login", entity.getLoginId());
+                EmailUtil.sendEmail(new Email(entity.getLoginId().getEmail(), "Account Verification", emailProps));
+            }
             anyResponse = entity;
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -243,9 +259,14 @@ public class StudentRest {
     @Path("verify")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response verify(Login login) {
+    public Response verify(@Context HttpHeaders headers, Login login) {
         try {
-            studentFacade.verifyAccount(login.getVerificationToken());
+            if (headers.getRequestHeader(DEVICE_HEADER_NAME) != null && !headers.getRequestHeader(DEVICE_HEADER_NAME).get(0).isEmpty()) {
+                //Send SMS
+                studentFacade.verifySmsAccount(login.getSmsToken());
+            } else {
+                studentFacade.verifyAccount(login.getVerificationToken());
+            }
             httpStatus = Response.Status.OK;
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), "Account successfully verified");
         } catch (CustomHttpException e) {
@@ -270,6 +291,31 @@ public class StudentRest {
     @Produces({MediaType.TEXT_PLAIN})
     public Viewable get() {
         return new Viewable("index.foo", "FOO");
+    }
+
+    @POST
+    @Path("balance")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getBalance(Student student) {
+        try {
+            BigDecimal balance = studentFacade.getBalance(student);
+            httpStatus = Response.Status.OK;
+            anyResponse = new CustomMessage(httpStatus.getStatusCode(), "Account balance is Ksh " + balance);
+        } catch (CustomHttpException e) {
+            httpStatus = e.getStatusCode();
+            anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
+        }
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
     }
 
 }

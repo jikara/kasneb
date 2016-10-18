@@ -209,6 +209,40 @@ public class StudentCourseRest {
                 .build();
     }
 
+    @GET
+    @Path("eligible_exemptions")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getKasnebEligibleExemptions() {
+        Set<Paper> eligibleExemptions = new HashSet<>();
+        try {
+            //Get previous courses            
+            Course qualification = courseFacade.find(1);
+            if (qualification == null) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This qualification course does not exist");
+            }
+            for (CourseExemption c : qualification.getCourseExemptions()) {
+                eligibleExemptions.add(c.getPaper());
+            }
+            anyResponse = eligibleExemptions;
+            httpStatus = Response.Status.OK;
+        } catch (CustomHttpException ex) {
+            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            httpStatus = ex.getStatusCode();
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
     /**
      *
      * @param entity
@@ -229,12 +263,10 @@ public class StudentCourseRest {
             anyResponse = studentCourseFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
-            ex.printStackTrace();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
@@ -279,7 +311,6 @@ public class StudentCourseRest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response completeExemption(StudentCourse entity) {
         try {
-            String objJson = mapper.writeValueAsString(entity);
             studentCourseFacade.completeExemption(entity);
             anyResponse = studentCourseFacade.find(entity.getId());
             httpStatus = Response.Status.OK;

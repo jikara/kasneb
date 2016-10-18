@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /**
  *
@@ -32,6 +33,8 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
     private String courseName;
     @OneToMany(mappedBy = "otherStudentCourseQualification", cascade = CascadeType.ALL)
     Collection<QualificationDocument> documents;
+    @Transient
+    private String type = "Other";
 
     @Override
     public StudentCourseQualificationPK getStudentCourseQualificationPK() {
@@ -77,5 +80,15 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(String type) {
+        this.type = type;
     }
 }

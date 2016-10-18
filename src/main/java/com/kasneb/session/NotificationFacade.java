@@ -6,9 +6,12 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.Notification;
+import com.kasneb.entity.Student;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,6 +30,12 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     public NotificationFacade() {
         super(Notification.class);
+    }
+
+    public List<Notification> findByStudent(Student student) {
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.student =:student", Notification.class);
+        query.setParameter("student", student);
+        return query.getResultList(); 
     }
 
 }

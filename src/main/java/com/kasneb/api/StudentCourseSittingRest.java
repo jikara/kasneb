@@ -100,7 +100,7 @@ public class StudentCourseSittingRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(StudentCourseSitting entity) {
+    public Response create(StudentCourseSitting entity) throws JsonProcessingException {
         try {
             studentCourseSittingFacade.createStudentCourse(entity);
             anyResponse = studentCourseSittingFacade.find(entity.getId());
@@ -109,11 +109,7 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -130,11 +126,8 @@ public class StudentCourseSittingRest {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(StudentCourseSitting entity) {
+    public Response edit(StudentCourseSitting entity) throws JsonProcessingException {
         try {
-            if (entity.getId() == null) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
-            }
             studentCourseSittingFacade.update(entity);
             anyResponse = studentCourseSittingFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
@@ -142,11 +135,7 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -157,7 +146,7 @@ public class StudentCourseSittingRest {
     @Path("centre")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setCentre(StudentCourseSitting entity) {
+    public Response setCentre(StudentCourseSitting entity) throws JsonProcessingException {
         try {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
@@ -166,14 +155,11 @@ public class StudentCourseSittingRest {
             anyResponse = studentCourseSittingFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
+            ex.printStackTrace();
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

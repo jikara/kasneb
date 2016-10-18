@@ -8,6 +8,7 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.Student;
+import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class RenewalRest {
     com.kasneb.session.StudentFacade studentFacade;
     @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
+    @EJB
+    com.kasneb.session.StudentCourseSubscriptionFacade studentCourseSubscriptionFacade;
 
     /**
      * Creates a new instance of RenewalRest
@@ -64,9 +67,11 @@ public class RenewalRest {
             if (student.getCurrentCourse() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student has no active course");
             }
-            if (new Date().after(student.getCurrentCourse().getCurrentSubscription().getExpiry())) {
+            //Get most recent subscription
+            StudentCourseSubscription subscription = studentCourseSubscriptionFacade.getLastSubscription(student.getCurrentCourse());
+            if (new Date().after(subscription.getExpiry())) {
                 //Genereta invoice
-                anyResponse = studentCourseFacade.generateRenewalInvoice(student.getCurrentCourse());
+                anyResponse = studentCourseFacade.prepareNextRenewal(student.getCurrentCourse());
             } else {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Current Subscription is still active");
             }

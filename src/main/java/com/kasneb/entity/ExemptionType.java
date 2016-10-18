@@ -9,6 +9,6 @@ package com.kasneb.entity;
  *
  * @author jikara
  */
-public enum VerificationStatus {
-    PENDING, APPROVED, REJECTED
+public enum ExemptionType {
+    KASNEB, OTHER
 }

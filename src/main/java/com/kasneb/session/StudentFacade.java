@@ -9,6 +9,7 @@ import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.SecurityUtil;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -60,14 +61,35 @@ public class StudentFacade extends AbstractFacade<Student> {
         } catch (NoResultException e) {
             throw new CustomHttpException(Status.FORBIDDEN, "Token does not exist");
         } catch (Exception ex) {
+            throw new CustomHttpException(Status.FORBIDDEN, ex.getMessage());
+        }
+    }
+
+    public void verifySmsAccount(String smsToken) throws CustomHttpException {
+        Student student;
+        Query query = getEntityManager().createQuery("SELECT s FROM Student s WHERE s.loginId.smsToken =:smsToken");
+        query.setParameter("smsToken", smsToken);
+        try {
+            Integer studentId = SecurityUtil.parseSmsToken(smsToken);
+            student = getEntityManager().find(Student.class, studentId);
+            if (student.getLoginId().getActivated()) {
+                throw new CustomHttpException(Status.NOT_ACCEPTABLE, "Account already activated");
+            }
+            student = (Student) query.getSingleResult();
+            student.getLoginId().setActivated(true); //Mark as activated
+            student.getLoginId().setSmsToken(null);
+            getEntityManager().merge(student);
+        } catch (NoResultException e) {
+            throw new CustomHttpException(Status.FORBIDDEN, "Token does not exist");
+        } catch (Exception ex) {
             ex.printStackTrace();
-            throw new CustomHttpException(Status.FORBIDDEN, "An error occured.Your token could not be verified");
+            throw new CustomHttpException(Status.FORBIDDEN, ex.getMessage());
         }
     }
 
     public List<Invoice> findInvoices(Integer id) {
-        TypedQuery<Invoice> query = getEntityManager().createQuery("SELECT i FROM Invoice i WHERE i.student.id=:id", Invoice.class);
-        query.setParameter("id", id);
+        TypedQuery<Invoice> query = getEntityManager().createQuery("SELECT i FROM Invoice i WHERE i.studentCourse.student =:student", Invoice.class);
+        query.setParameter("student", new Student(id));
         return query.getResultList();
     }
 
@@ -78,7 +100,16 @@ public class StudentFacade extends AbstractFacade<Student> {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Email already taken");
         }
         getEntityManager().persist(entity);
+        createWallet(entity);
         return entity;
+    }
+
+    public BigDecimal getBalance(Student student) throws CustomHttpException {
+        return new BigDecimal("500.27");
+    }
+
+    public void createWallet(Student student) throws CustomHttpException {
+
     }
 
 }

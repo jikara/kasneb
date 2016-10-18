@@ -3,12 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kasneb.entity;
+package com.kasneb.util;
+
+import com.kasneb.model.Sms;
 
 /**
  *
  * @author jikara
  */
-public enum VerificationStatus {
-    PENDING, APPROVED, REJECTED
+public class SmsUtil {
+
+    public static void sendSMS(Sms sms) {
+
+    }
 }

@@ -5,11 +5,12 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kasneb.entity.pk.StudentCourseQualificationPK;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -17,6 +18,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -33,10 +35,14 @@ public class StudentCourseQualification implements Serializable {
     private StudentCourseQualificationPK studentCourseQualificationPK;
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     private StudentCourse studentCourse;
     @ManyToOne(optional = false)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonManagedReference
     private Course qualification;
+    @Transient
+    private String type;
 
     public StudentCourseQualification() {
     }
@@ -63,6 +69,14 @@ public class StudentCourseQualification implements Serializable {
 
     public void setQualification(Course qualification) {
         this.qualification = qualification;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

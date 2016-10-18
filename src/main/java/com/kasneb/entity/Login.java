@@ -62,11 +62,15 @@ public class Login implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "password", nullable = false)
     @JsonIgnore
-    private String password;
+    private String password;    
     @Size(max = 200)
     @Column(name = "verificationToken")
     @JsonIgnore
-    private String verificationToken;
+    private String verificationToken;    
+    @Size(max = 200)
+    @Column(name = "smsToken")
+    @JsonIgnore
+    private String smsToken;    
     @Basic(optional = false)
     @Column(name = "loginAttempts", nullable = false)
     private int loginAttempts = 0;
@@ -136,6 +140,14 @@ public class Login implements Serializable {
 
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+    }
+
+    public String getSmsToken() {
+        return smsToken;
+    }
+
+    public void setSmsToken(String smsToken) {
+        this.smsToken = smsToken;
     }
 
     public int getLoginAttempts() {

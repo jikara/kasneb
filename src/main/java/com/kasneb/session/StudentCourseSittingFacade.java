@@ -11,6 +11,7 @@ import com.kasneb.entity.Fee;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
+import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Level;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Part;
@@ -20,6 +21,7 @@ import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.StudentCourseSittingPaper;
 import com.kasneb.exception.CustomHttpException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
@@ -51,6 +54,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     com.kasneb.session.FeeFacade feeTypeFacade;
     @EJB
     com.kasneb.session.CourseFacade courseFacade;
+    @EJB
+    com.kasneb.session.KasnebCourseFacade kasnebCourseFacade;
     @Resource
     private SessionContext ctx;
     private static final String FEE_CODE = "EXAM_ENTRY_FEE";
@@ -73,11 +78,11 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
         if (entity.getPapers() != null && entity.getPapers().size() > 0) {
-            for (StudentCourseSittingPaper paper : entity.getPapers()) {
+            entity.getPapers().stream().forEach((paper) -> {
                 //Get managed
                 StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
                 entity.addStudentCourseSittingPaper(paper);
-            }
+            });
             map = getBillingMethod(entity);
             examEntryInvoice = generateInvoice(entity, map);
             entity.addInvoice(examEntryInvoice);
@@ -93,8 +98,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         try {
             super.copy(entity, managed);
             em.detach(managed);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            Logger.getLogger(StudentCourseSittingFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         if (managed.getSittingCentre() != null) {
             if (managed.getInvoice() == null) {
@@ -106,12 +111,12 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         }
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
-        if (managed.getPapers() != null && managed.getPapers().size() > 0) {
-            for (StudentCourseSittingPaper paper : managed.getPapers()) {
+        if (entity.getPapers() != null && entity.getPapers().size() > 0) {
+            entity.getPapers().stream().forEach((paper) -> {
                 managed.addStudentCourseSittingPaper(paper);
-            }
-            map = getBillingMethod(entity);
-            examEntryInvoice = generateInvoice(entity, map);
+            });
+            map = getBillingMethod(managed);
+            examEntryInvoice = generateInvoice(managed, map);
             managed.setInvoice(examEntryInvoice);
         }
         em.merge(managed);
@@ -133,10 +138,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (examCentre == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Exam centre does not exist");
         }
-
-        Course course = courseFacade.findByStudentCourse(managed.getStudentCourse());
-
-        if (!examCentre.getExamsOffered().contains(course)) {
+        Collection<KasnebCourse> examsOffered = examCentre.getExamsOffered();
+        if (!examsOffered.contains(managed.getStudentCourse().getCourse())) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This exam is not offerred in selected centre");
         }
         managed.setSittingCentre(entity.getSittingCentre());
@@ -160,7 +163,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Total fee for " + part.getName()));
+                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + part.getName()));
                 }
                 break;
                 case "PER_SECTION": {
@@ -169,7 +172,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Total fee for " + section.getName()));
+                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + section.getName()));
                 }
                 break;
                 case "PER_LEVEL": {
@@ -178,7 +181,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Total fee for " + level.getName()));
+                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + level.getName()));
                 }
                 break;
                 case "PER_PAPER": {
@@ -187,7 +190,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                         kesTotal = kesTotal.add(fee.getKesAmount());
                         usdTotal = usdTotal.add(fee.getUsdAmount());
                         gbpTotal = gbpTotal.add(fee.getGbpAmount());
-                        invoice.addInvoiceDetail(new InvoiceDetail(fee.getKesAmount(), fee.getUsdAmount(), fee.getGbpAmount(), "Single paper fee for " + paper.getCode()));
+                        invoice.addInvoiceDetail(new InvoiceDetail(fee.getKesAmount(), fee.getUsdAmount(), fee.getGbpAmount(), "Examination Fee | " + paper.getCode()));
                     }
                 }
                 break;
@@ -215,8 +218,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         Collection<Paper> partPapers = new ArrayList<>();
         Collection<Paper> sectionPapers = new ArrayList<>();
         Collection<Paper> levelPapers = new ArrayList<>();
-
         Collection<Paper> sittingPapers = new ArrayList<>();
+
         for (StudentCourseSittingPaper studentCourseSittingPaper : entity.getPapers()) {
             Paper paper = em.find(Paper.class, studentCourseSittingPaper.getPaperCode());
             if (paper == null) {

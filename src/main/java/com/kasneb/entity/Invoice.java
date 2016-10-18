@@ -18,11 +18,16 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -39,6 +44,9 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "invoice")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
+@DiscriminatorValue(value = "DEFAULT")
 @NamedQueries({
     @NamedQuery(name = "Invoice.findAll", query = "SELECT i FROM Invoice i"),
     @NamedQuery(name = "Invoice.findById", query = "SELECT i FROM Invoice i WHERE i.id = :id"),
@@ -75,9 +83,11 @@ public class Invoice implements Serializable {
     @OneToOne
     @JoinColumn(name = "invoiceStatusId", referencedColumnName = "status", nullable = false)
     private InvoiceStatus status = new InvoiceStatus("PENDING");
+
     @OneToMany(mappedBy = "invoice", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<InvoiceDetail> invoiceDetails;
+
     @ManyToOne
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
     @JsonManagedReference

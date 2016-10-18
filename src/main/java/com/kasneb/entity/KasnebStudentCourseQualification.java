@@ -8,6 +8,7 @@ package com.kasneb.entity;
 import com.kasneb.entity.pk.StudentCourseQualificationPK;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  *
@@ -17,6 +18,7 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "KASNEB")
 public class KasnebStudentCourseQualification extends StudentCourseQualification {
 
+    @Transient
     private String type = "Kasneb";
 
     @Override
@@ -29,10 +31,12 @@ public class KasnebStudentCourseQualification extends StudentCourseQualification
         super.setStudentCourseQualificationPK(studentCourseQualificationPK); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     public void setType(String type) {
         this.type = type;
     }

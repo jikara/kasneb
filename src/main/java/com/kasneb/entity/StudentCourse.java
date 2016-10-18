@@ -147,7 +147,7 @@ public class StudentCourse implements Serializable {
     @Transient
     @JsonIgnore
     private Set<StudentCourseQualification> qualifications;
-    @OneToMany(mappedBy = "studentCourse")
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<StudentCourseExemptionPaper> exemptions;
     @Transient
@@ -343,6 +343,13 @@ public class StudentCourse implements Serializable {
     }
 
     public StudentCourseSubscription getCurrentSubscription() {
+        if (getSubscriptions() != null) {
+            for (StudentCourseSubscription subscription : getSubscriptions()) {
+                if (subscription.isCurrent()) {
+                    currentSubscription = subscription;
+                }
+            }
+        }
         return currentSubscription;
     }
 

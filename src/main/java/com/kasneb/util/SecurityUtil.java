@@ -10,6 +10,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import io.jsonwebtoken.*;
 import java.util.Date;
+import org.hashids.Hashids;
 
 /**
  *
@@ -59,6 +60,19 @@ public class SecurityUtil {
         System.out.println("Issuer: " + claims.getIssuer());
         System.out.println("Expiration: " + claims.getExpiration());
         return Integer.parseInt(claims.getId());
+    }
+
+    public static String createSmsToken(Integer userId) {
+        Hashids hashids = new Hashids(SECRET_KEY);
+        return hashids.encode(userId);
+    }
+
+    public static Integer parseSmsToken(String smsToken) {
+        Hashids hashids = new Hashids(SECRET_KEY);
+        long[] numbers = hashids.decode(smsToken);
+        Long userId = numbers[0];
+        System.out.println(userId);
+        return userId.intValue();
     }
 
 }

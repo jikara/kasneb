@@ -66,6 +66,10 @@ public class ExamCentreRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            anyResponse = new CustomMessage(500, ex.getMessage());
+            httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+            Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             json = mapper.writeValueAsString(anyResponse);
@@ -108,7 +112,7 @@ public class ExamCentreRest {
     @GET
     @Path("zone/filter")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByZone(@QueryParam("course_id") Integer courseId, @QueryParam("zone_id") Integer zoneId)  {
+    public Response findByZone(@QueryParam("course_id") Integer courseId, @QueryParam("zone_id") Integer zoneId) {
         try {
             if (courseId == null) {
                 anyResponse = examCentreFacade.findByZone(zoneId);
