@@ -143,11 +143,13 @@ public class StudentCourse implements Serializable {
     @Transient
     @JsonIgnore
     private Set<StudentCourseQualification> qualifications;
-    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentCourse")
     @JsonManagedReference
     private Set<StudentCourseExemptionPaper> exemptions;
     @Transient
     private Set<Paper> eligibleExemptions;
+    @Transient
+    private Set<Paper> kasnebQualificationExemptions;
     @Transient
     private Set<Paper> exemptedPapers = new HashSet<>();
     @Transient
@@ -414,11 +416,18 @@ public class StudentCourse implements Serializable {
         this.eligibleExemptions = eligibleExemptions;
     }
 
+    public Set<Paper> getKasnebQualificationExemptions() {
+        return kasnebQualificationExemptions;
+    }
+
+    public void setKasnebQualificationExemptions(Set<Paper> kasnebQualificationExemptions) {
+        this.kasnebQualificationExemptions = kasnebQualificationExemptions;
+    }
+
     public Set<Paper> getExemptedPapers() {
         if (getExemptions() != null) {
             for (StudentCourseExemptionPaper e : getExemptions()) {
-                if (e != null) {
-                    Object x = e.getPaper();
+                if (e != null && e.getPaid() && e.getVerified()) {
                     exemptedPapers.add(e.getPaper());
                 }
             }

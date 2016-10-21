@@ -5,7 +5,6 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.entity.Course;
 import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.Fee;
 import com.kasneb.entity.FeeCode;
@@ -101,14 +100,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseSittingFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        if (managed.getSittingCentre() != null) {
-            if (managed.getInvoice() == null) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
-            }
-            if (!"PAID".equals(managed.getInvoice().getStatus().getStatus())) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
-            }
-        }
+        managed.setSittingCentre(null);
         Map<String, Collection<Paper>> map;
         Invoice examEntryInvoice;
         if (entity.getPapers() != null && entity.getPapers().size() > 0) {

@@ -7,15 +7,11 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasneb.entity.Course;
-import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -45,6 +41,8 @@ public class StudentCourseRest {
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
     @EJB
     com.kasneb.session.CourseFacade courseFacade;
+    @EJB
+    com.kasneb.session.OtherCourseFacade otherCourseFacade;
 
     /**
      * Creates a new instance of StudentCourseRest
@@ -177,53 +175,11 @@ public class StudentCourseRest {
     }
 
     @GET
-    @Path("eligible_exemptions/{id}")
+    @Path("eligible_exemptions/{studentCourseId}/{qualification_id}/{code_type}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getEligibleExemptions(@PathParam("id") Integer id) {
-        Set<Paper> eligibleExemptions = new HashSet<>();
+    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") Integer qualificationId, @PathParam("code_type") Integer codeType) {
         try {
-            Course qualification = courseFacade.find(id);
-            if (qualification == null) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This qualification course does not exist");
-            }
-            for (CourseExemption c : qualification.getCourseExemptions()) {
-                eligibleExemptions.add(c.getPaper());
-            }
-            anyResponse = eligibleExemptions;
-            httpStatus = Response.Status.OK;
-        } catch (CustomHttpException ex) {
-            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            httpStatus = ex.getStatusCode();
-            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return Response
-                .status(httpStatus)
-                .entity(json)
-                .build();
-    }
-
-    @GET
-    @Path("eligible_exemptions")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getKasnebEligibleExemptions() {
-        Set<Paper> eligibleExemptions = new HashSet<>();
-        try {
-            //Get previous courses            
-            Course qualification = courseFacade.find(1);
-            if (qualification == null) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This qualification course does not exist");
-            }
-            for (CourseExemption c : qualification.getCourseExemptions()) {
-                eligibleExemptions.add(c.getPaper());
-            }
-            anyResponse = eligibleExemptions;
+            anyResponse = studentCourseFacade.getEligibleExemptions(studentCourseId, qualificationId, codeType);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());

@@ -35,7 +35,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     public List<Notification> findByStudent(Student student) {
         TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.student =:student", Notification.class);
         query.setParameter("student", student);
-        return query.getResultList(); 
+        query.setMaxResults(1);
+        return query.getResultList();
     }
 
 }

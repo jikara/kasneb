@@ -15,6 +15,7 @@ import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.Payment;
 import com.kasneb.entity.Student;
+import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.CompletePaymentResponse;
 import com.kasneb.model.LoginResponse;
@@ -51,28 +52,32 @@ import org.apache.http.client.methods.HttpPut;
  */
 @Stateless
 public class PaymentFacade extends AbstractFacade<Payment> {
-    
+
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     private static final String CORPORATE_URL = "http://197.254.58.150/JamboPayServices/";
     private static final String APP_KEY = "F2A2A256-0C82-E511-9406-7427EA2F7F59";
     private static final String MERCHANT_CODE = "123456";
-    
+
     private static final String REGISTRATION_FEE = "REGISTRATION_FEE";
-    
+
     private static final String REGISTRATION_RENEWAL_FEE = "REGISTRATION_RENEWAL_FEE";
-    
+
+    private static final String EXAM_ENTRY_FEE = "EXAM_ENTRY_FEE";
+
     private static final String EXEMPTION_FEE = "EXEMPTION_FEE";
-    
+
+    private static final String PUBLICATION_FEE = "PUBLICATION_FEE";
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     public PaymentFacade() {
         super(Payment.class);
     }
-    
+
     public Payment createPayment(Payment entity) throws CustomHttpException {
         //Validat data
         if (entity.getAmount() == null) {
@@ -120,23 +125,44 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         entity.setChannel("JAMBOPAY E_WALLET");
         em.persist(entity);
         //update related entities
-        if (invoice.getFeeCode().getCode().equals(EXEMPTION_FEE)) {
-            ExemptionInvoice exemptionInvoice = (ExemptionInvoice) invoice;
-            //Update exemptions
-            exemptionInvoice.getExemptionInvoiceDetails().stream().forEach((detail) -> {
-                detail.getStudentCourseExemptionPaper().setPaid(Boolean.TRUE);
-                detail.getStudentCourseExemptionPaper().setDatePaid(new Date());
-            });
-            exemptionInvoice.setStatus(new InvoiceStatus("PAID"));
-            em.merge(exemptionInvoice);
-        } else {
-            //update invoice as paid
-            invoice.setStatus(new InvoiceStatus("PAID"));
-            em.merge(invoice);
+        switch (invoice.getFeeCode().getCode()) {
+            case EXEMPTION_FEE:
+                ExemptionInvoice exemptionInvoice = (ExemptionInvoice) invoice;
+                //Update exemptions
+                exemptionInvoice.getExemptionInvoiceDetails().stream().forEach((detail) -> {
+                    detail.getStudentCourseExemptionPaper().setPaid(Boolean.TRUE);
+                    detail.getStudentCourseExemptionPaper().setDatePaid(new Date());
+                });
+                exemptionInvoice.setStatus(new InvoiceStatus("PAID"));
+                em.merge(exemptionInvoice);
+                break;
+            case REGISTRATION_FEE:
+                //update invoice as paid
+                invoice.setStatus(new InvoiceStatus("PAID"));
+                em.merge(invoice);
+                break;
+            case REGISTRATION_RENEWAL_FEE:
+                //update invoice as paid
+                invoice.setStatus(new InvoiceStatus("PAID"));
+                em.merge(invoice);
+                break;
+            case EXAM_ENTRY_FEE:
+                invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.CONFIRMED);
+                //update invoice as paid
+                invoice.setStatus(new InvoiceStatus("PAID"));
+                em.merge(invoice);
+                break;
+            case PUBLICATION_FEE:
+                //update invoice as paid
+                invoice.setStatus(new InvoiceStatus("PAID"));
+                em.merge(invoice);
+                break;
+            default:
+                break;
         }
         return entity;
     }
-    
+
     private void completeJambopayPayment(Payment entity, Invoice invoice) throws CustomHttpException {
         try {  //Login
             LoginResponse loginResponse = getToken(entity.getPhoneNumber(), entity.getPin());
@@ -149,7 +175,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         }
         //  throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Jambopay payment method not set");
     }
-    
+
     private static LoginResponse getToken(String username, String password) throws CustomHttpException, UnsupportedEncodingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -179,7 +205,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         corporateLoginResponse = mapper.readValue(result.toString(), LoginResponse.class);
         return corporateLoginResponse;
     }
-    
+
     private static PreparePaymentResponse preparePayment(LoginResponse loginResponse, Payment entity, Invoice invoice) throws CustomHttpException, UnsupportedEncodingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -215,7 +241,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         preparePaymentResponse = mapper.readValue(result.toString(), PreparePaymentResponse.class);
         return preparePaymentResponse;
     }
-    
+
     private static CompletePaymentResponse completePayment(LoginResponse loginResponse, PreparePaymentResponse preparePaymentResponse, String phoneNumber, String pin) throws UnsupportedEncodingException, IOException, CustomHttpException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -228,7 +254,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         // add header
         put.setHeader("Authorization", "bearer " + loginResponse.getAccess_token());
         put.setHeader("app_key", APP_KEY);
-        
+
         List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("Stream", "merchantpayment"));
         urlParameters.add(new BasicNameValuePair("PhoneNumber", phoneNumber));
@@ -248,13 +274,19 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         completePaymentResponse = mapper.readValue(result.toString(), CompletePaymentResponse.class);
         return completePaymentResponse;
     }
-    
+
     public Collection<Payment> findByStudent(Student student) {
         TypedQuery<Payment> query
                 = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student", Payment.class);
         query.setParameter("student", student);
-        Object x = query.getResultList();
         return query.getResultList();
     }
-    
+
+    public Collection<Payment> findByCode(String feeCode) {
+        TypedQuery<Payment> query
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode.code =:feeCode", Payment.class);
+        query.setParameter("feeCode", feeCode);
+        return query.getResultList();
+    }
+
 }

@@ -83,11 +83,9 @@ public class Invoice implements Serializable {
     @OneToOne
     @JoinColumn(name = "invoiceStatusId", referencedColumnName = "status", nullable = false)
     private InvoiceStatus status = new InvoiceStatus("PENDING");
-
     @OneToMany(mappedBy = "invoice", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<InvoiceDetail> invoiceDetails;
-
     @ManyToOne
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
     @JsonManagedReference
@@ -96,10 +94,10 @@ public class Invoice implements Serializable {
     @JsonManagedReference
     @JsonIgnore
     private Payment payment;
-    @OneToOne(mappedBy = "invoice")
+    @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL)
     @JsonBackReference
     private StudentCourseSubscription studentCourseSubscription;
-    @OneToOne(mappedBy = "invoice")
+    @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL)
     @JsonBackReference
     private StudentCourseSitting studentCourseSitting;
     @ManyToOne(fetch = FetchType.EAGER)

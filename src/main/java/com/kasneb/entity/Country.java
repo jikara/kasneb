@@ -39,22 +39,18 @@ public class Country implements Serializable {
 
     @Id
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 5)
     @Column(name = "code", nullable = false)
     private String code;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "name", nullable = false)
     private String name;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "nationality", nullable = false)
     private String nationality;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "phoneCode")
     private int phoneCode;
     @JsonBackReference

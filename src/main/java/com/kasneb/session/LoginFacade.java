@@ -7,7 +7,11 @@ package com.kasneb.session;
 
 import com.kasneb.entity.Login;
 import com.kasneb.entity.Login_;
+import com.kasneb.entity.Notification;
+import com.kasneb.entity.NotificationStatus;
+import com.kasneb.entity.NotificationType;
 import com.kasneb.entity.StudentCourse;
+import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.exception.CustomHttpException;
 import java.util.Date;
 import javax.ejb.EJB;
@@ -33,6 +37,10 @@ public class LoginFacade extends AbstractFacade<Login> {
     private EntityManager em;
     @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
+    @EJB
+    com.kasneb.session.StudentCourseSubscriptionFacade studentCourseSubscriptionFacade;
+    @EJB
+    com.kasneb.session.NotificationFacade notificationFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -71,8 +79,10 @@ public class LoginFacade extends AbstractFacade<Login> {
             }
             //Routine check for next renewal
             StudentCourse active = studentCourseFacade.findActiveCourse(login.getStudent());
-            if (active != null && new Date().after(active.getCurrentSubscription().getExpiry())) {
-                studentCourseFacade.prepareNextRenewal(active);
+            StudentCourseSubscription latest = studentCourseSubscriptionFacade.getLastSubscription(active);
+            if (active != null && new Date().after(latest.getExpiry())) {
+                Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.ACTION, "Your registration has expired.", active.getStudent());
+                notificationFacade.create(notification);
             }
         } catch (NoResultException e) {
             throw new CustomHttpException(Response.Status.FORBIDDEN, "User not found");
@@ -93,7 +103,7 @@ public class LoginFacade extends AbstractFacade<Login> {
                 throw new CustomHttpException(Response.Status.BAD_REQUEST, "Password is required");
             }
             Query query = getEntityManager().
-                    createQuery("SELECT l FROM Login l WHERE l.email=:email"); 
+                    createQuery("SELECT l FROM Login l WHERE l.email=:email");
             query.setParameter("email", email);
             login = (Login) query.getSingleResult();
             if (login.getUser() == null) {

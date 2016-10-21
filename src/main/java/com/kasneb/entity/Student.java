@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.Past;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -74,11 +73,10 @@ public class Student implements Serializable {
     @Basic(optional = false)
     @Column(name = "gender", nullable = true)
     private String gender;
-    @Past
     @Column(name = "dateOfBirth")
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dob = new Date();
+    private Date dob=new Date();
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @Column(name = "email", nullable = false)
@@ -290,9 +288,11 @@ public class Student implements Serializable {
     }
 
     public StudentCourse getCurrentCourse() {
-        for (StudentCourse course : studentCourses) {
-            if (course.getActive()) {
-                currentCourse = course;
+        if (getStudentCourses() != null) {
+            for (StudentCourse course : getStudentCourses()) {
+                if (course.getActive()) {
+                    currentCourse = course;
+                }
             }
         }
         return currentCourse;

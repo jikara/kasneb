@@ -18,7 +18,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -43,12 +42,10 @@ public class County implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 5)
     @Column(name = "code", nullable = false)
     private String code;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "name", nullable = false)
     private String name;

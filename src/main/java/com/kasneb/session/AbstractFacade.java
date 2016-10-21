@@ -38,7 +38,6 @@ public abstract class AbstractFacade<T> extends BeanUtilsBean {
 
     public T create(T entity) {
         getEntityManager().persist(entity);
-        getEntityManager().flush();
         return entity;
     }
 
@@ -54,7 +53,7 @@ public abstract class AbstractFacade<T> extends BeanUtilsBean {
             Iterator<ConstraintViolation<T>> iterator = constraintViolations.iterator();
             while (iterator.hasNext()) {
                 ConstraintViolation<T> cv = iterator.next();
-                System.err.println(cv.getRootBeanClass().getName() + "." + cv.getPropertyPath() + " " + cv.getMessage());
+                System.out.println(cv.getRootBeanClass().getName() + "." + cv.getPropertyPath() + " " + cv.getMessage());
             }
         } else {
             getEntityManager().merge(entity);

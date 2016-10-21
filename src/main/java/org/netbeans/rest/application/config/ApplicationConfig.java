@@ -28,6 +28,7 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(com.kasneb.api.AdministratorRest.class);
         resources.add(com.kasneb.api.CentreClusterRest.class);
         resources.add(com.kasneb.api.CentreRegionRest.class);
         resources.add(com.kasneb.api.CentreZoneRest.class);

@@ -35,6 +35,8 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
     Collection<QualificationDocument> documents;
     @Transient
     private String type = "Other";
+    @Transient
+    private Integer codeType;
 
     @Override
     public StudentCourseQualificationPK getStudentCourseQualificationPK() {
@@ -80,6 +82,14 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public Integer getCodeType() {
+        return codeType;
+    }
+
+    public void setCodeType(Integer codeType) {
+        this.codeType = codeType;
     }
 
     @Override
