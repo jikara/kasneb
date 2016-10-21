@@ -10,5 +10,5 @@ package com.kasneb.entity;
  * @author jikara
  */
 public enum NotificationType {
-    WARNING, INFO, SUCCESS, ACTION
+    PAYMENT, DUEDATE
 }

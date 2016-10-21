@@ -9,14 +9,17 @@ import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.SecurityUtil;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 /**
@@ -110,6 +113,25 @@ public class StudentFacade extends AbstractFacade<Student> {
 
     public void createWallet(Student student) throws CustomHttpException {
 
+    }
+
+    public Student updateStudent(Student entity) throws CustomHttpException {
+        //Check if student is registered and confirmed  
+        if (entity.getId() == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student id is required");
+        }
+        Student managed = super.find(entity.getId());
+        if (managed == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student  does not exist");
+        }
+        try {
+            super.copy(entity, managed);
+            em.detach(managed);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        em.merge(managed);
+        return managed;
     }
 
 }

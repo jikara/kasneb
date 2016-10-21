@@ -55,7 +55,7 @@ public class StudentCourseExemptionPaper implements Serializable {
     })
     @JsonManagedReference
     private StudentCourseQualification qualification;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "created", updatable = false)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date created = new Date();

@@ -22,6 +22,10 @@ import javax.persistence.Transient;
 @DiscriminatorValue("OTHER")
 public class OtherCourse extends Course {
 
+    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
+    @ManyToOne(optional = false)
+    @JsonBackReference
+    private OtherCourseType otherCourseType;
     @ManyToOne
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
     @JsonBackReference
@@ -33,6 +37,16 @@ public class OtherCourse extends Course {
     @JoinColumn(name = "institutionId", referencedColumnName = "id")
     @JsonBackReference
     private Institution institution;
+
+    public OtherCourse() {
+        super();
+    }
+
+    public OtherCourse(OtherCourseType otherCourseType, Collection courseExemptions, Institution institution) {
+        this.otherCourseType = otherCourseType;
+        this.courseExemptions = courseExemptions;
+        this.institution = institution;
+    }
 
     public OtherQualification getOtherQualification() {
         return otherQualification;
@@ -48,6 +62,14 @@ public class OtherCourse extends Course {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+    }
+
+    public OtherCourseType getOtherCourseType() {
+        return otherCourseType;
+    }
+
+    public void setOtherCourseType(OtherCourseType otherCourseType) {
+        this.otherCourseType = otherCourseType;
     }
 
     @Override

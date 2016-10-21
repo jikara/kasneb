@@ -63,7 +63,7 @@ public class StudentCourse implements Serializable {
     @Basic(optional = false)
     @Column(name = "created", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date created = new Date();
     @Column(name = "document")
     private String document;
@@ -75,7 +75,7 @@ public class StudentCourse implements Serializable {
     private Boolean verified = false;
     @Column(name = "dateVerified")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date dateVerified;
     @ManyToOne(optional = true)
     @JoinColumn(name = "verifiedBy")
@@ -129,9 +129,9 @@ public class StudentCourse implements Serializable {
     @JsonIgnore
     private Collection<StudentCourseSubscription> subscriptions;
     @Transient
-    @JsonIgnore
+    @JsonManagedReference
     private StudentCourseSubscription currentSubscription;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Transient
     private Date nextRenewal;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
@@ -417,6 +417,16 @@ public class StudentCourse implements Serializable {
     }
 
     public Set<Paper> getKasnebQualificationExemptions() {
+        kasnebQualificationExemptions = new HashSet<>();
+        try {
+            for (StudentCourseQualification qualification : getKasnebQualifications()) {
+                for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
+                    kasnebQualificationExemptions.add(courseExemption.getPaper());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return kasnebQualificationExemptions;
     }
 

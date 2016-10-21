@@ -7,6 +7,7 @@ package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,8 +76,8 @@ public class Student implements Serializable {
     private String gender;
     @Column(name = "dateOfBirth")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dob=new Date();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date dob = new Date();
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @Column(name = "email", nullable = false)
@@ -84,7 +85,7 @@ public class Student implements Serializable {
     @Basic(optional = false)
     @Column(name = "created", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date created = new Date();
     @Column(name = "passportPhoto")
     private String passportPhoto;
@@ -98,7 +99,7 @@ public class Student implements Serializable {
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JsonManagedReference
-    private Contact contact;
+    private Contact contact;    
     @JoinColumn(name = "nationality", referencedColumnName = "code")
     @ManyToOne(optional = true)
     @JsonManagedReference
@@ -107,8 +108,8 @@ public class Student implements Serializable {
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Country countryId;
+    @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
-    @ManyToOne
     @JsonManagedReference
     private County countyId;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "student")
@@ -125,6 +126,7 @@ public class Student implements Serializable {
     @Transient
     private Collection<Invoice> invoices = new ArrayList<>();
     @Transient
+    @JsonIgnore
     private String jpPin;
 
     public Student() {

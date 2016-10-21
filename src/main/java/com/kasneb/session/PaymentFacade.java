@@ -13,6 +13,9 @@ import com.kasneb.entity.Currency;
 import com.kasneb.entity.ExemptionInvoice;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceStatus;
+import com.kasneb.entity.Notification;
+import com.kasneb.entity.NotificationStatus;
+import com.kasneb.entity.NotificationType;
 import com.kasneb.entity.Payment;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourseSittingStatus;
@@ -30,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -55,6 +59,8 @@ public class PaymentFacade extends AbstractFacade<Payment> {
 
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
+    @EJB
+    com.kasneb.session.NotificationFacade notificationFacade;
     private static final String CORPORATE_URL = "http://197.254.58.150/JamboPayServices/";
     private static final String APP_KEY = "F2A2A256-0C82-E511-9406-7427EA2F7F59";
     private static final String MERCHANT_CODE = "123456";
@@ -124,6 +130,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         completeJambopayPayment(entity, invoice);
         entity.setChannel("JAMBOPAY E_WALLET");
         em.persist(entity);
+        Notification notification = null;
         //update related entities
         switch (invoice.getFeeCode().getCode()) {
             case EXEMPTION_FEE:
@@ -140,26 +147,31 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Registration fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case REGISTRATION_RENEWAL_FEE:
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Registration renewal fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case EXAM_ENTRY_FEE:
                 invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.CONFIRMED);
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Exam entry fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case PUBLICATION_FEE:
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Publication fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             default:
                 break;
         }
+        notificationFacade.create(notification);
         return entity;
     }
 
@@ -277,14 +289,14 @@ public class PaymentFacade extends AbstractFacade<Payment> {
 
     public Collection<Payment> findByStudent(Student student) {
         TypedQuery<Payment> query
-                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student", Payment.class);
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student ORDER by p.paymentTimestamp DESC", Payment.class);
         query.setParameter("student", student);
         return query.getResultList();
     }
 
     public Collection<Payment> findByCode(String feeCode) {
         TypedQuery<Payment> query
-                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode.code =:feeCode", Payment.class);
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode.code =:feeCode ORDER by p.paymentTimestamp DESC", Payment.class);
         query.setParameter("feeCode", feeCode);
         return query.getResultList();
     }

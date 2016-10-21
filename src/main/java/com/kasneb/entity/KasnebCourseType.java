@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
 @DiscriminatorValue("KASNEB")
 public class KasnebCourseType extends CourseType {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseType", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kasnebCourseType", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<KasnebCourse> courseCollection;
     @OneToMany(mappedBy = "courseType")

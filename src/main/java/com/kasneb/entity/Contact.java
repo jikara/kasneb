@@ -49,7 +49,7 @@ public class Contact implements Serializable {
     @ManyToOne
     @JoinColumn(name = "countryId", referencedColumnName = "code")
     private Country countryId;
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     @JsonManagedReference
     private County countyId;
@@ -107,6 +107,10 @@ public class Contact implements Serializable {
     }
 
     public void setCountyId(County countyId) {
+        if (countyId.getId() == null) {
+            this.countyId = null;
+            return;
+        }
         this.countyId = countyId;
     }
 

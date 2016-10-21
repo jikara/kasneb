@@ -46,7 +46,7 @@ public class Sitting implements Serializable {
     private Integer id;
     @Temporal(javax.persistence.TemporalType.DATE)
     @Column(name = "registrationDeadline", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date registrationDeadline;
     @Basic(optional = false)
     @Column(name = "sittingPeriod")
@@ -63,7 +63,7 @@ public class Sitting implements Serializable {
     private String status;
     @Temporal(javax.persistence.TemporalType.DATE)
     @Column(name = "lateRegistrationDeadline", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date lateRegistrationDeadline;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sitting")
     @JsonBackReference

@@ -115,6 +115,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         KasnebCourse course = em.find(KasnebCourse.class, entity.getCourse().getId());
         Student student = em.find(Student.class, entity.getStudent().getId());
+        if (student.getCurrentCourse() != null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student already has an active course");
+        }
         if (student == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist.");
         }
@@ -154,8 +157,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             }
         }
         try {
-            em.detach(managed);
             super.copy(entity, managed);
+            em.detach(managed);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -184,13 +187,13 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             //Set as current 
             subscription.setCurrent(Boolean.TRUE);
             managed.getSubscriptions().add(subscription);
-            Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.ACTION, "Your registration has expired.", managed.getStudent());
+            Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", managed.getStudent());
         }
         KasnebCourse dbCourse = em.find(KasnebCourse.class, managed.getCourse().getId());
-        if (dbCourse.getCourseType().getCode() == 100) {
+        if (dbCourse.getKasnebCourseType().getCode() == 100) {
             managed.setCurrentPart(em.find(Part.class, 1));
             managed.setCurrentSection(em.find(Section.class, 1));
-        } else if (dbCourse.getCourseType().getCode() == 200) {
+        } else if (dbCourse.getKasnebCourseType().getCode() == 200) {
             managed.setCurrentLevel(new Level(1));
         }
         em.merge(managed);
@@ -391,11 +394,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public Collection<ElligibleSection> getElligibleSections(StudentCourse studentCourse) {
         Collection<ElligibleSection> elligibleSections = new ArrayList<>();
-        studentCourse.getCurrentPart().getSectionCollection().stream().forEach((section) -> {
+        for (Section section : studentCourse.getCurrentPart().getSectionCollection()) {
             Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(studentCourse), getPassedPapers(studentCourse));
             elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
-        });
-
+        }
         return elligibleSections;
     }
 

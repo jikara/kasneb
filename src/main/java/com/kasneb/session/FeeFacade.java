@@ -52,7 +52,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getKasnebCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -74,7 +74,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
-        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getKasnebCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -97,7 +97,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getKasnebCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_RENEWAL_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("annual_registration_renewal_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -120,7 +120,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getKasnebCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("registration_reactivation_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
@@ -143,7 +143,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
 
-        cq.where(cb.equal(ft.get(Fee_.courseType), course.getCourseType()),
+        cq.where(cb.equal(ft.get(Fee_.courseType), course.getKasnebCourseType()),
                 cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("REGISTRATION_FEE"))),
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("student_identity_card_replacement_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);

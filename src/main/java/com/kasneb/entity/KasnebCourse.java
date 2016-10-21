@@ -32,19 +32,19 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = "KasnebCourse.findAll", query = "SELECT c FROM KasnebCourse c"),
     @NamedQuery(name = "KasnebCourse.findById", query = "SELECT c FROM KasnebCourse c WHERE c.id = :id"),
-    @NamedQuery(name = "KasnebCourse.findByCourseType", query = "SELECT c FROM KasnebCourse c WHERE c.courseType = :courseType")})
+    @NamedQuery(name = "KasnebCourse.findByCourseType", query = "SELECT c FROM KasnebCourse c WHERE c.kasnebCourseType = :courseType")})
 public class KasnebCourse extends Course {
 
+    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
+    @ManyToOne(optional = false)
+    @JsonBackReference
+    private KasnebCourseType kasnebCourseType;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     @JsonManagedReference
     private Collection<Level> levelCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     @JsonManagedReference
     private Collection<Fee> feeTypeCollection;
-    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
-    @ManyToOne(optional = false)
-    @JsonBackReference
-    private CourseType courseType;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     @JsonBackReference
     private Collection<StudentCourse> studentCourseCollection;
@@ -150,17 +150,17 @@ public class KasnebCourse extends Course {
         this.examCentres = examCentres;
     }
 
-    public CourseType getCourseType() {
-        return courseType;
+    public KasnebCourseType getKasnebCourseType() {
+        return kasnebCourseType;
     }
 
-    public void setCourseType(CourseType courseType) {
-        this.courseType = courseType;
+    public void setKasnebCourseType(KasnebCourseType kasnebCourseType) {
+        this.kasnebCourseType = kasnebCourseType;
     }
 
     public Integer getCourseTypeCode() {
-        if (getCourseType() != null) {
-            courseTypeCode = getCourseType().getCode();
+        if (getKasnebCourseType() != null) {
+            courseTypeCode = getKasnebCourseType().getCode();
         }
         return courseTypeCode;
     }

@@ -5,6 +5,8 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
@@ -32,12 +34,15 @@ public class StudentCourseSubscription implements Serializable {
     private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference
     private StudentCourse studentCourse;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false)
     private Date created = new Date();
     @Basic(optional = false)
     @Column(name = "expiry", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date expiry;
     @ManyToOne(cascade = CascadeType.ALL)

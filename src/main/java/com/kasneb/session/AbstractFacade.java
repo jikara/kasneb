@@ -41,11 +41,11 @@ public abstract class AbstractFacade<T> extends BeanUtilsBean {
         return entity;
     }
 
-    public T edit1(T entity) {
+    public T edit(T entity) {
         return getEntityManager().merge(entity);
     }
 
-    public T edit(T entity) {
+    public T edit1(T entity) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);

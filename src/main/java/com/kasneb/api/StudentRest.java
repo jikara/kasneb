@@ -131,9 +131,7 @@ public class StudentRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(Student entity) {
         try {
-            Login loginId = studentFacade.find(entity.getId()).getLoginId();
-            entity.setLoginId(loginId);
-            entity = studentFacade.edit(entity);
+            entity = studentFacade.updateStudent(entity);
             anyResponse = entity;
             httpStatus = Response.Status.OK;
         } catch (Exception ex) {

@@ -64,7 +64,7 @@ public class Fee implements Serializable {
     @NotNull
     @Column(name = "usdAmount")
     private BigDecimal usdAmount;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "effectiveDate")
     @Temporal(TemporalType.DATE)
     private Date effectiveDate;

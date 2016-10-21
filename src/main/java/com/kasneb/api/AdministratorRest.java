@@ -305,12 +305,12 @@ public class AdministratorRest {
                 .build();
     }
 
-    @POST
-    @Path("qualification/other")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addOtherCourseType(OtherCourse course) {
+    @GET
+    @Path("test")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
         try {
-            anyResponse = otherCourseFacade.create(course);
+            anyResponse = otherCourseFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
@@ -322,9 +322,26 @@ public class AdministratorRest {
     }
 
     @POST
+    @Path("qualification/other")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addOtherCourseType(OtherCourse entity) {
+        try {
+            anyResponse = otherCourseFacade.create(entity);
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @POST
     @Path("institution")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addOtherCourseType(Institution institution) {
+    public Response addInstitution(Institution institution) {
         try {
             anyResponse = institutionFacade.create(institution);
             json = mapper.writeValueAsString(anyResponse);

@@ -51,7 +51,7 @@ public class Course implements Serializable {
     private String name;
     @OneToMany(mappedBy = "qualification")
     @JsonIgnore
-    private Collection<StudentCourseQualification> studentCourses;    
+    private Collection<StudentCourseQualification> studentCourses;
     @OneToMany(mappedBy = "qualification", fetch = FetchType.EAGER)
     @JsonBackReference
     private Collection<CourseExemption> courseExemptions;

@@ -78,7 +78,7 @@ public class Invoice implements Serializable {
     @Basic(optional = false)
     @Column(name = "dateGenerated", nullable = false)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date dateGenerated;
     @OneToOne
     @JoinColumn(name = "invoiceStatusId", referencedColumnName = "status", nullable = false)

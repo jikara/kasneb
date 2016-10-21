@@ -81,7 +81,7 @@ public class LoginFacade extends AbstractFacade<Login> {
             StudentCourse active = studentCourseFacade.findActiveCourse(login.getStudent());
             StudentCourseSubscription latest = studentCourseSubscriptionFacade.getLastSubscription(active);
             if (active != null && new Date().after(latest.getExpiry())) {
-                Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.ACTION, "Your registration has expired.", active.getStudent());
+                Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", active.getStudent());
                 notificationFacade.create(notification);
             }
         } catch (NoResultException e) {

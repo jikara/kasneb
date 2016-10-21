@@ -122,6 +122,7 @@ public class StudentCourseSittingRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

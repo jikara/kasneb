@@ -44,7 +44,7 @@ public class User implements Serializable {
     @Column(name = "otherNames", nullable = false)
     private String otherNames;
     @Column(name = "created", updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date created;
     @OneToOne(cascade = CascadeType.ALL, optional = false, mappedBy = "user")

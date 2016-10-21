@@ -114,9 +114,9 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
             //get part papers
-            if (studentCourse.getCourse().getCourseType().getCode() == 100) {
+            if (studentCourse.getCourse().getKasnebCourseType().getCode() == 100) {
                 studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
-            } else if (studentCourse.getCourse().getCourseType().getCode() == 200) {
+            } else if (studentCourse.getCourse().getKasnebCourseType().getCode() == 200) {
                 studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
             }
             anyResponse = studentCourse;
@@ -148,9 +148,9 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student course does not exist");
             }
             //get part papers
-            if (studentCourse.getCourse().getCourseType().getCode() == 100) {
+            if (studentCourse.getCourse().getKasnebCourseType().getCode() == 100) {
                 studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
-            } else if (studentCourse.getCourse().getCourseType().getCode() == 200) {
+            } else if (studentCourse.getCourse().getKasnebCourseType().getCode() == 200) {
                 studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
             }
             httpStatus = Response.Status.OK;
