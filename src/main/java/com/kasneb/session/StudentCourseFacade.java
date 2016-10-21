@@ -391,10 +391,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public Collection<ElligibleSection> getElligibleSections(StudentCourse studentCourse) {
         Collection<ElligibleSection> elligibleSections = new ArrayList<>();
-        for (Section section : studentCourse.getCurrentPart().getSectionCollection()) {
+        studentCourse.getCurrentPart().getSectionCollection().stream().forEach((section) -> {
             Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(studentCourse), getPassedPapers(studentCourse));
             elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
-        }
+        });
 
         return elligibleSections;
     }
@@ -504,9 +504,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             if (qualification == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification does not exist");
             }
-            for (CourseExemption c : qualification.getCourseExemptions()) {
+            qualification.getCourseExemptions().stream().forEach((CourseExemption c) -> {
                 eligibleExemptions.add(c.getPaper());
-            }
+            });
             managed.getOtherQualifications().add(entity.getOtherQualification());
         }
         if (!eligibleExemptions.containsAll(entity.getExemptedPapers())) {
@@ -520,21 +520,25 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         Set<StudentCourseExemptionPaper> studentCourseExemptions = new HashSet<>();
         if (!managed.getKasnebQualifications().isEmpty()) {
-            for (KasnebStudentCourseQualification q : managed.getKasnebQualifications()) {
+            managed.getKasnebQualifications().stream().map((KasnebStudentCourseQualification q) -> {
                 Collection<CourseExemption> courseExemptions = courseExemptionFacade.findByQualification(q.getQualification());
-                for (Paper paper : entity.getExemptedPapers()) {
+                return q;
+            }).forEach((KasnebStudentCourseQualification q) -> {
+                entity.getExemptedPapers().stream().forEach((Paper paper) -> {
                     StudentCourseExemptionPaperPK pk = new StudentCourseExemptionPaperPK(managed.getId(), paper.getCode());
                     em.merge(new StudentCourseExemptionPaper(pk, managed, paper, q, false, VerificationStatus.PENDING));
-                }
-            }
+                });
+            });
         } else if (!managed.getOtherQualifications().isEmpty()) {
-            for (OtherStudentCourseQualification q : managed.getOtherQualifications()) {
+            managed.getOtherQualifications().stream().map((OtherStudentCourseQualification q) -> {
                 Collection<CourseExemption> courseExemptions = courseExemptionFacade.findByQualification(q.getQualification());
-                for (Paper paper : entity.getExemptedPapers()) {
+                return q;
+            }).forEach((OtherStudentCourseQualification q) -> {
+                entity.getExemptedPapers().stream().forEach((paper) -> {
                     StudentCourseExemptionPaperPK pk = new StudentCourseExemptionPaperPK(managed.getId(), paper.getCode());
                     em.merge(new StudentCourseExemptionPaper(pk, managed, paper, q, false, VerificationStatus.PENDING));
-                }
-            }
+                });
+            });
         }
 
         managed.setExemptions(studentCourseExemptions);
