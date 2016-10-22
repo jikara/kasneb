@@ -55,9 +55,10 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     com.kasneb.session.CourseFacade courseFacade;
     @EJB
     com.kasneb.session.KasnebCourseFacade kasnebCourseFacade;
+    @EJB
+    com.kasneb.session.InvoiceFacade invoiceFacade;
     @Resource
     private SessionContext ctx;
-    private static final String FEE_CODE = "EXAM_ENTRY_FEE";
 
     @Override
     protected EntityManager getEntityManager() {
@@ -83,7 +84,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 entity.addStudentCourseSittingPaper(paper);
             });
             map = getBillingMethod(entity);
-            examEntryInvoice = generateInvoice(entity, map);
+            examEntryInvoice = invoiceFacade.generateExamEntryInvoice(entity, map);
             entity.addInvoice(examEntryInvoice);
         }
         super.create(entity);
@@ -95,8 +96,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
         }
         try {
-            super.copy(entity, managed);
             em.detach(managed);
+            super.copy(entity, managed);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseSittingFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -108,7 +109,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 managed.addStudentCourseSittingPaper(paper);
             });
             map = getBillingMethod(managed);
-            examEntryInvoice = generateInvoice(managed, map);
+            examEntryInvoice = invoiceFacade.generateExamEntryInvoice(managed, map);
             managed.setInvoice(examEntryInvoice);
         }
         em.merge(managed);
@@ -117,7 +118,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     public void updateCentre(StudentCourseSitting entity) throws CustomHttpException {
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
         if (managed == null) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting does not exist");
         }
         if (!"PAID".equals(managed.getInvoice().getStatus().getStatus())) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Payment must be made before booking a sitting");
@@ -138,65 +139,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         em.merge(managed);
     }
 
-    private Invoice generateInvoice(StudentCourseSitting entity, Map<String, Collection<Paper>> map) throws CustomHttpException {
-        StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
-        BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
-        //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
-        for (Map.Entry<String, Collection<Paper>> entry : map.entrySet()) {
-            String key = entry.getKey();
-            Collection<Paper> papersCollection = entry.getValue();
-            List<Paper> papers = new ArrayList<>();
-            papers.addAll(papersCollection);
-            switch (key) {
-                case "PER_PART": {
-                    Part part = papers.get(0).getPart();
-                    Fee fee = feeTypeFacade.getExamEntryFeePerPart(part);
-                    kesTotal = fee.getKesAmount();
-                    usdTotal = fee.getUsdAmount();
-                    gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + part.getName()));
-                }
-                break;
-                case "PER_SECTION": {
-                    Section section = papers.get(0).getSection();
-                    Fee fee = feeTypeFacade.getExamEntryFeePerSection(section);
-                    kesTotal = fee.getKesAmount();
-                    usdTotal = fee.getUsdAmount();
-                    gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + section.getName()));
-                }
-                break;
-                case "PER_LEVEL": {
-                    Level level = papers.get(0).getLevel();
-                    Fee fee = feeTypeFacade.getExamEntryFeePerLevel(level);
-                    kesTotal = fee.getKesAmount();
-                    usdTotal = fee.getUsdAmount();
-                    gbpTotal = fee.getGbpAmount();
-                    invoice.addInvoiceDetail(new InvoiceDetail(kesTotal, usdTotal, gbpTotal, "Examination Fee | " + level.getName()));
-                }
-                break;
-                case "PER_PAPER": {
-                    for (Paper paper : papers) {
-                        Fee fee = feeTypeFacade.getExamEntryFeePerPaper(paper);
-                        kesTotal = kesTotal.add(fee.getKesAmount());
-                        usdTotal = usdTotal.add(fee.getUsdAmount());
-                        gbpTotal = gbpTotal.add(fee.getGbpAmount());
-                        invoice.addInvoiceDetail(new InvoiceDetail(fee.getKesAmount(), fee.getUsdAmount(), fee.getGbpAmount(), "Examination Fee | " + paper.getCode()));
-                    }
-                }
-                break;
-            }
-        }
-        //Set totals
-        invoice.setKesTotal(kesTotal);
-        invoice.setUsdTotal(usdTotal);
-        invoice.setGbpTotal(gbpTotal);
-        invoice.setFeeCode(new FeeCode(FEE_CODE));
-        invoice.setStudentCourse(managed.getStudentCourse());
-        return invoice;
-    }
-
+   
     private Map<String, Collection<Paper>> getBillingMethod(StudentCourseSitting entity) throws CustomHttpException {
         Map<String, Collection<Paper>> map = new HashMap<>();
         Set<Part> parts = new HashSet<>();

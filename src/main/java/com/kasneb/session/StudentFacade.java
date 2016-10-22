@@ -125,8 +125,8 @@ public class StudentFacade extends AbstractFacade<Student> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student  does not exist");
         }
         try {
-            super.copy(entity, managed);
             em.detach(managed);
+            super.copy(entity, managed);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }

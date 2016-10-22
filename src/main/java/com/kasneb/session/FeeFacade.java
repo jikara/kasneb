@@ -356,4 +356,21 @@ public class FeeFacade extends AbstractFacade<Fee> {
         return feeType;
     }
 
+    public Fee getAdministrativeFee() throws CustomHttpException {
+        Fee feeType = null;
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
+        Root<Fee> ft = cq.from(Fee.class);
+        cq.where(cb.equal(ft.get(Fee_.feeCode), new FeeCode("ADMINISTRATIVE_FEE")));
+        TypedQuery<Fee> query = em.createQuery(cq);
+        try {
+            feeType = query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
+        } catch (javax.persistence.NonUniqueResultException e) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one administrative fee is configured");
+        }
+        return feeType;
+    }
+
 }

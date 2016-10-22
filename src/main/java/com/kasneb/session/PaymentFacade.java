@@ -147,26 +147,26 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
-                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Registration fee has been successfully processed", invoice.getStudentCourse().getStudent());
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Registration fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case REGISTRATION_RENEWAL_FEE:
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
-                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Registration renewal fee has been successfully processed", invoice.getStudentCourse().getStudent());
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Registration renewal fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case EXAM_ENTRY_FEE:
                 invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.CONFIRMED);
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
-                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Exam entry fee has been successfully processed", invoice.getStudentCourse().getStudent());
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Exam entry fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case PUBLICATION_FEE:
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);
-                notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Publication fee has been successfully processed", invoice.getStudentCourse().getStudent());
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             default:
                 break;

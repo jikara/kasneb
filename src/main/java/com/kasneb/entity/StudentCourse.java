@@ -19,6 +19,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -83,6 +85,9 @@ public class StudentCourse implements Serializable {
     private User verifiedBy;
     @Column(name = "remarks")
     private String remarks;
+    @Column(name = "verificationStatus")
+    @Enumerated(EnumType.STRING)
+    private VerificationStatus verificationStatus;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     @JsonManagedReference
@@ -234,6 +239,14 @@ public class StudentCourse implements Serializable {
 
     public void setDateVerified(Date dateVerified) {
         this.dateVerified = dateVerified;
+    }
+
+    public VerificationStatus getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 
     public String getRemarks() {
@@ -418,14 +431,12 @@ public class StudentCourse implements Serializable {
 
     public Set<Paper> getKasnebQualificationExemptions() {
         kasnebQualificationExemptions = new HashSet<>();
-        try {
+        if (getKasnebQualifications() != null) {
             for (StudentCourseQualification qualification : getKasnebQualifications()) {
                 for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
                     kasnebQualificationExemptions.add(courseExemption.getPaper());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return kasnebQualificationExemptions;
     }

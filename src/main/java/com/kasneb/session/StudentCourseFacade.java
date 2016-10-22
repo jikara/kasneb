@@ -11,12 +11,7 @@ import com.kasneb.entity.ElligibleLevel;
 import com.kasneb.entity.ElligiblePart;
 import com.kasneb.entity.ElligibleSection;
 import com.kasneb.entity.ExemptionInvoice;
-import com.kasneb.entity.ExemptionInvoiceDetail;
-import com.kasneb.entity.Fee;
-import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Invoice;
-import com.kasneb.entity.InvoiceDetail;
-import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.KasnebStudentCourseQualification;
 import com.kasneb.entity.Paper;
@@ -45,7 +40,6 @@ import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,12 +47,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.UUID;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -81,8 +73,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
-    com.kasneb.session.FeeFacade feeTypeFacade;
-    @EJB
     com.kasneb.session.PaperFacade paperFacade;
     @EJB
     com.kasneb.session.LevelFacade levelFacade;
@@ -90,12 +80,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     com.kasneb.session.SystemStatusFacade systemStatusFacade;
     @EJB
     com.kasneb.session.CourseExemptionFacade courseExemptionFacade;
-
-    private static final String REGISTRATION_FEE = "REGISTRATION_FEE";
-
-    private static final String REGISTRATION_RENEWAL_FEE = "REGISTRATION_RENEWAL_FEE";
-
-    private static final String EXEMPTION_FEE = "EXEMPTION_FEE";
+    @EJB
+    com.kasneb.session.InvoiceFacade invoiceFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -157,8 +143,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             }
         }
         try {
-            super.copy(entity, managed);
             em.detach(managed);
+            super.copy(entity, managed);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -172,16 +158,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(101));
             }
             //Create subscription 
-            Invoice invoice = generateRegistrationInvoice(managed);
-            //Mark unpaid exemption invoices as null
-            Iterator<Invoice> iter = managed.getInvoices().iterator();
-            while (iter.hasNext()) {
-                Invoice existing = iter.next();
-                if (existing.getFeeCode().getCode().equals(REGISTRATION_FEE) && existing.getStatus().getStatus().equals("PENDING")) {
-                    iter.remove();
-                    existing.setStatus(new InvoiceStatus("CANCELLED"));
-                }
-            }
+            Invoice invoice = invoiceFacade.generateRegistrationInvoice(managed);            
             StudentCourseSubscription subscription = new StudentCourseSubscription(new StudentCourseSubscriptionPK(managed.getId(), 2017), getNextRenewalDate(managed), invoice);
             managed.setCurrentSubscription(subscription);
             //Set as current 
@@ -228,90 +205,25 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.User has no rights to verify this registration");
         }
         //All checks are fine,now verify student
-        managed.setVerified(true);
-        managed.setVerifiedBy(verifiedBy);
-        managed.setDateVerified(new Date());
-        managed.setRemarks(entity.getRemarks());
-        managed.setActive(true);
+        try {
+            em.detach(managed);
+            super.copy(entity, managed);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         //Generete registration number
-        managed.setRegistrationNumber(generateRegistrationNumber(managed));
-        managed = em.merge(managed);
-        return managed;
-    }
-
-    private Invoice generateRegistrationInvoice(StudentCourse studentCourse) throws CustomHttpException {
-        KasnebCourse course = em.find(KasnebCourse.class, studentCourse.getCourse().getId());
-        Sitting firstSitting = em.find(Sitting.class, studentCourse.getFirstSitting().getId());
-        BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
-        //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
-        Fee regFee = feeTypeFacade.getCourseRegistrationFeeType(course);
-        invoice.addInvoiceDetail(new InvoiceDetail(regFee.getKesAmount(), regFee.getUsdAmount(), regFee.getGbpAmount(), "Course registration fee"));
-        invoice.setStudentCourse(studentCourse);
-        //Add to totals
-        kesTotal = kesTotal.add(regFee.getKesAmount());
-        usdTotal = usdTotal.add(regFee.getUsdAmount());
-        gbpTotal = gbpTotal.add(regFee.getGbpAmount());
-        if (new Date().after(firstSitting.getRegistrationDeadline())) { //is late
-            Fee lateFee = feeTypeFacade.getLateCourseRegistrationFeeType(course);
-            invoice.addInvoiceDetail(new InvoiceDetail(lateFee.getKesAmount(), lateFee.getUsdAmount(), lateFee.getGbpAmount(), "Late registration fee"));
-            //Add to totals
-            kesTotal = kesTotal.add(lateFee.getKesAmount());
-            usdTotal = usdTotal.add(lateFee.getUsdAmount());
-            gbpTotal = gbpTotal.add(lateFee.getGbpAmount());
+        String regNo = generateRegistrationNumber(managed);
+        managed.setRegistrationNumber(regNo);
+        managed.setVerified(Boolean.TRUE);
+        //Create verification notification 
+        Notification notification = null;
+        if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+            notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been successfully verified.Your registration number is " + regNo, managed.getStudent());
+        } else {
+            notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
         }
-        invoice.setKesTotal(kesTotal);
-        invoice.setUsdTotal(usdTotal);
-        invoice.setGbpTotal(gbpTotal);
-        invoice.setFeeCode(new FeeCode(REGISTRATION_FEE));
-        return invoice;
-    }
-
-    /**
-     *
-     * @param studentCourse
-     * @return
-     * @throws CustomHttpException
-     */
-    public Invoice generateRenewalInvoice(StudentCourse studentCourse) throws CustomHttpException {
-        BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
-        //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
-        Fee renewalFee = feeTypeFacade.getAnnualRegistrationRenewalFee(studentCourse.getCourse());
-        invoice.addInvoiceDetail(new InvoiceDetail(renewalFee.getKesAmount(), renewalFee.getUsdAmount(), renewalFee.getGbpAmount(), "Annual registration renewal fee"));
-        invoice.setStudentCourse(studentCourse);
-        //Add to totals
-        kesTotal = kesTotal.add(renewalFee.getKesAmount());
-        usdTotal = usdTotal.add(renewalFee.getUsdAmount());
-        gbpTotal = gbpTotal.add(renewalFee.getGbpAmount());
-
-        invoice.setKesTotal(kesTotal);
-        invoice.setUsdTotal(usdTotal);
-        invoice.setGbpTotal(gbpTotal);
-        invoice.setFeeCode(new FeeCode(REGISTRATION_RENEWAL_FEE));
-        return invoice;
-    }
-
-    private ExemptionInvoice generateExemptionInvoice(StudentCourse studentCourse) throws CustomHttpException {
-        BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
-        //Generate invoice
-        ExemptionInvoice invoice = new ExemptionInvoice(studentCourse.getExemptions(), UUID.randomUUID().toString(), new Date());
-        for (Paper paper : studentCourse.getExemptedPapers()) {
-            StudentCourseExemptionPaperPK pk = new StudentCourseExemptionPaperPK(studentCourse.getId(), paper.getCode());
-            StudentCourseExemptionPaper studentCourseExemptionPaper = new StudentCourseExemptionPaper(pk);
-            Fee exemptionFee = feeTypeFacade.getExemptionFee(paper);
-            invoice.addExemptionInvoiceDetail(new ExemptionInvoiceDetail(studentCourseExemptionPaper, exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), exemptionFee.getGbpAmount(), "Exemption fee | " + paper.getCode()));
-            //Add to totals
-            kesTotal = kesTotal.add(exemptionFee.getKesAmount());
-            usdTotal = usdTotal.add(exemptionFee.getUsdAmount());
-            gbpTotal = gbpTotal.add(exemptionFee.getGbpAmount());
-        }
-        invoice.setStudentCourse(studentCourse);
-        invoice.setKesTotal(kesTotal);
-        invoice.setUsdTotal(usdTotal);
-        invoice.setGbpTotal(gbpTotal);
-        invoice.setFeeCode(new FeeCode(EXEMPTION_FEE));
-        return invoice;
+        em.persist(notification);
+        return em.merge(managed);
     }
 
     private Date getNextRenewalDate(StudentCourse entity) {
@@ -474,7 +386,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public Invoice prepareNextRenewal(StudentCourse active) throws CustomHttpException {
         StudentCourse managed = super.find(active.getId());
-        Invoice invoice = generateRenewalInvoice(managed);
+        Invoice invoice = invoiceFacade.generateRenewalInvoice(managed);
         //Integer studentCourseId, Integer year, Date expiry, Invoice invoice
         //Get most recent subscription susbscription
         StudentCourseSubscription subscription = new StudentCourseSubscription(new StudentCourseSubscriptionPK(managed.getId(), 2017), getNextRenewalDate(managed), invoice);
@@ -515,8 +427,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some requested exemptions are not eligible");
         }
         try {
-            super.copy(entity, managed);
             em.detach(managed);
+            super.copy(entity, managed);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -546,16 +458,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         managed.setExemptions(studentCourseExemptions);
         if (entity.getKasnebQualification() != null) {
             //Generate invoice
-            ExemptionInvoice inv = generateExemptionInvoice(managed);
-            //Mark unpaid exemption invoices as null
-            Iterator<Invoice> iter = managed.getInvoices().iterator();
-            while (iter.hasNext()) {
-                Invoice existing = iter.next();
-                if (existing.getFeeCode().getCode().equals(EXEMPTION_FEE) && existing.getStatus().getStatus().equals("PENDING")) {
-                    iter.remove();
-                    existing.setStatus(new InvoiceStatus("CANCELLED"));
-                }
-            }
+            ExemptionInvoice inv = invoiceFacade.generateExemptionInvoice(managed);
             managed.getInvoices().add(inv);
         }
         managed.setActive(active);
