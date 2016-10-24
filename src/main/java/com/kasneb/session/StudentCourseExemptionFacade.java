@@ -5,6 +5,10 @@
  */
 package com.kasneb.session;
 
+import com.kasneb.entity.ExemptionInvoice;
+import com.kasneb.entity.Notification;
+import com.kasneb.entity.NotificationStatus;
+import com.kasneb.entity.NotificationType;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseExemptionPaper;
@@ -17,6 +21,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -32,6 +37,8 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
 
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
+    @EJB
+    com.kasneb.session.InvoiceFacade invoiceFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -71,6 +78,7 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
      * @throws CustomHttpException
      */
     public void verify(Exemption exemption) throws CustomHttpException {
+        Set<StudentCourseExemptionPaper> studentCourseExemptions = new HashSet<>();
         StudentCourse studentCourse = em.find(StudentCourse.class, exemption.getStudentCourseId());
         if (studentCourse == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student Course does not exist");
@@ -80,6 +88,7 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Administrator does not exist");
         }
         if (exemption.getPapers() != null) {
+            em.detach(studentCourse);
             List<StudentCourseExemptionPaper> pending = findPending(studentCourse);
             if (exemption.getPapers().containsAll(pending)) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some papers have not been applied for exemption");
@@ -92,14 +101,24 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
                 if (managed == null) {
                     throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some papers have not been applied for exemption");
                 }
+
                 em.detach(managed);
                 managed.setDateVerified(new Date());
                 managed.setVerifiedBy(verifier);
                 managed.setStatus(exemption.getStatus());
                 managed.setVerifyRemarks(exemption.getRemarks());
                 managed.setVerified(Boolean.TRUE);
+                studentCourseExemptions.add(managed);
                 em.merge(managed);
             }
+            studentCourse.setExemptions(studentCourseExemptions);
+            //Generate exemption invoice
+            ExemptionInvoice inv = invoiceFacade.generateExemptionInvoice(studentCourse);
+            studentCourse.getInvoices().add(inv);
+            //Create notification
+            Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", studentCourse.getStudent());
+            em.persist(notification);
+            em.merge(studentCourse);
         }
 
     }

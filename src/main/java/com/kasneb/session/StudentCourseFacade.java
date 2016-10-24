@@ -39,6 +39,7 @@ import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.model.BatchStudentCourse;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -158,7 +159,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, systemStatusFacade.getSystemMessage(101));
             }
             //Create subscription 
-            Invoice invoice = invoiceFacade.generateRegistrationInvoice(managed);            
+            Invoice invoice = invoiceFacade.generateRegistrationInvoice(managed);
             StudentCourseSubscription subscription = new StudentCourseSubscription(new StudentCourseSubscriptionPK(managed.getId(), 2017), getNextRenewalDate(managed), invoice);
             managed.setCurrentSubscription(subscription);
             //Set as current 
@@ -193,7 +194,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         if (managed.getVerified()) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration already verified");
         }
-        System.out.println(managed.getCurrentSubscription().getInvoice().getStatus().getStatus());
         if (!managed.getCurrentSubscription().getInvoice().getStatus().getStatus().equals("PAID")) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Student has not paid for this registration");
         }
@@ -216,7 +216,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         managed.setRegistrationNumber(regNo);
         managed.setVerified(Boolean.TRUE);
         //Create verification notification 
-        Notification notification = null;
+        Notification notification;
         if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
             notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been successfully verified.Your registration number is " + regNo, managed.getStudent());
         } else {
@@ -463,6 +463,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         managed.setActive(active);
         managed.setVerified(verified);
+        //Create notification
+        Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", managed.getStudent());
+        em.persist(managed);
         em.merge(managed);
     }
 
@@ -480,6 +483,46 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         cq.where(cb.equal(studentCourse.get(StudentCourse_.verifiedBy), user));
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getResultList();
+    }
+
+    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException {
+        if (entity.getVerifiedBy() == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
+        }
+        User verifiedBy = em.find(User.class, entity.getVerifiedBy());
+        if (verifiedBy == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verifying agent is not defined");
+        }
+        //check permission
+        if (!verifiedBy.getRole().hasPermission(em.find(Permission.class, 100))) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.User has no rights to verify this registration");
+        }
+        for (StudentCourse studentCourse : entity.getStudentCourses()) {
+            //Check if student is registered
+            StudentCourse managed = em.find(StudentCourse.class, studentCourse.getId());
+            if (managed == null) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student course does not exist");
+            }
+            if (managed.getVerified()) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration already verified");
+            }
+            if (!managed.getCurrentSubscription().getInvoice().getStatus().getStatus().equals("PAID")) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Student has not paid for this registration");
+            }
+            //Generete registration number
+            String regNo = generateRegistrationNumber(managed);
+            managed.setRegistrationNumber(regNo);
+            managed.setVerified(Boolean.TRUE);
+            //Create verification notification 
+            Notification notification;
+            if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been successfully verified.Your registration number is " + regNo, managed.getStudent());
+            } else {
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
+            }
+            em.persist(notification);
+            em.merge(managed);
+        }
     }
 
 }

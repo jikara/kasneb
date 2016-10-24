@@ -11,6 +11,7 @@ import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.model.BatchStudentCourse;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -296,6 +297,31 @@ public class StudentCourseRest {
     public Response verify(StudentCourse entity) {
         try {
             anyResponse = studentCourseFacade.verifyStudentCourse(entity);
+            httpStatus = Response.Status.OK;
+        } catch (CustomHttpException ex) {
+            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            httpStatus = ex.getStatusCode();
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @PUT
+    @Path("verify/batch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response verifyBatch(BatchStudentCourse batch) {
+        try {
+            studentCourseFacade.verifyBatchStudentCourse(batch);
+            anyResponse = new CustomMessage(200, "Batch verification successfully processed");
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());

@@ -58,6 +58,8 @@ public class AdministratorRest {
     com.kasneb.session.InstitutionFacade institutionFacade;
     @EJB
     com.kasneb.session.PaymentFacade paymentFacade;
+    @EJB
+    com.kasneb.session.AuditTrailFacade auditTrailFacade;
 
     /**
      * Creates a new instance of AdministratorRest
@@ -324,8 +326,9 @@ public class AdministratorRest {
     @POST
     @Path("qualification/other")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addOtherCourseType(OtherCourse entity) {
+    public Response addOtherCourseType(String json) {
         try {
+            OtherCourse entity = mapper.convertValue(json, OtherCourse.class);
             anyResponse = otherCourseFacade.create(entity);
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
@@ -352,5 +355,42 @@ public class AdministratorRest {
                 .status(Response.Status.OK)
                 .entity(json)
                 .build();
+    }
+
+    @GET
+    @Path("audittrail")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findAll() {
+        try {
+            anyResponse = auditTrailFacade.findAll();
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
+    }
+
+    @GET
+    @Path("audittrail/user/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findAll(@PathParam("id") Integer userId) {
+        try {
+            anyResponse = auditTrailFacade.findByUser(userId);
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CustomHttpException ex) {
+            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            httpStatus = ex.getStatusCode();
+            Logger.getLogger(AuditTrailRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
+
     }
 }
