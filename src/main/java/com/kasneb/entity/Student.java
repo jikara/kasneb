@@ -145,6 +145,15 @@ public class Student implements Serializable {
         this.created = created;
     }
 
+    public Student(String firstName, String middleName, String lastName, String phoneNumber, String gender, String email) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.email = email;
+    }
+
     public Integer getId() {
         return id;
     }

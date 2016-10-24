@@ -94,6 +94,7 @@ public class StudentCourse implements Serializable {
     private KasnebCourse course;
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Student student;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "studentCourse")
     @JsonManagedReference
@@ -163,6 +164,8 @@ public class StudentCourse implements Serializable {
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<Invoice> invoices;
+    @Transient
+    private Student studentObj;
 
     public StudentCourse() {
     }
@@ -265,12 +268,19 @@ public class StudentCourse implements Serializable {
     }
 
     public Student getStudent() {
-        student.setStudentCourses(null);
         return student;
     }
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public Student getStudentObj() {
+        if (getStudent() != null) {
+            studentObj = getStudent();
+            studentObj = new Student(getStudent().getFirstName(), getStudent().getMiddleName(), getStudent().getLastName(), getStudent().getPhoneNumber(), getStudent().getGender(), getStudent().getEmail());
+        }
+        return studentObj;
     }
 
     public Collection<Requirement> getStudentRequirements() {
