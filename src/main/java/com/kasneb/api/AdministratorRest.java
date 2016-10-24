@@ -71,14 +71,15 @@ public class AdministratorRest {
     @Path("students")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudents(@QueryParam("searchKey") String searchKey) {
-        anyResponse = studentFacade.findAll();
         try {
+            anyResponse = studentFacade.findAll();
+            httpStatus = Response.Status.OK;
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -87,14 +88,15 @@ public class AdministratorRest {
     @Path("student/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudent(@PathParam("id") Integer id) {
-        anyResponse = studentFacade.find(id);
         try {
+            anyResponse = studentFacade.find(id);
+            httpStatus = Response.Status.OK;
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -103,14 +105,15 @@ public class AdministratorRest {
     @Path("users")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
-        anyResponse = userFacade.findAll();
         try {
+            anyResponse = userFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -119,14 +122,15 @@ public class AdministratorRest {
     @Path("user/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("id") Integer id) {
-        anyResponse = userFacade.find(id);
         try {
+            anyResponse = userFacade.find(id);
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -135,14 +139,15 @@ public class AdministratorRest {
     @Path("roles")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoles() {
-        anyResponse = roleFacade.findAll();
         try {
+            anyResponse = roleFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -151,14 +156,15 @@ public class AdministratorRest {
     @Path("role/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRole(@PathParam("id") Integer id) {
-        anyResponse = roleFacade.find(id);
         try {
+            anyResponse = roleFacade.find(id);
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -176,11 +182,12 @@ public class AdministratorRest {
         try {
             anyResponse = studentCourseFacade.findVerified();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -192,11 +199,12 @@ public class AdministratorRest {
         try {
             anyResponse = studentCourseFacade.findPending();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -224,11 +232,12 @@ public class AdministratorRest {
         try {
             anyResponse = paymentFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -240,11 +249,12 @@ public class AdministratorRest {
         try {
             anyResponse = paymentFacade.findByCode(feeCode);
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -259,6 +269,7 @@ public class AdministratorRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "User does not exist");
             }
             anyResponse = studentCourseFacade.findVerificationByUser(user);
+            httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
@@ -270,7 +281,7 @@ public class AdministratorRest {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -298,11 +309,12 @@ public class AdministratorRest {
         try {
             anyResponse = declarationFacade.create(declaration);
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -314,11 +326,12 @@ public class AdministratorRest {
         try {
             anyResponse = otherCourseFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -348,11 +361,12 @@ public class AdministratorRest {
         try {
             anyResponse = institutionFacade.create(institution);
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -364,11 +378,12 @@ public class AdministratorRest {
         try {
             anyResponse = auditTrailFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
     }
@@ -376,19 +391,18 @@ public class AdministratorRest {
     @GET
     @Path("audittrail/user/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@PathParam("id") Integer userId) {
+    public Response findByUser(@PathParam("id") Integer userId) throws JsonProcessingException {
         try {
             anyResponse = auditTrailFacade.findByUser(userId);
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(AuditTrailRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
-                .status(Response.Status.OK)
+                .status(httpStatus)
                 .entity(json)
                 .build();
 

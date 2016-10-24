@@ -56,26 +56,26 @@ public class LoginFacade extends AbstractFacade<Login> {
             String email = login.getEmail();
             String password = login.getPassword();
             if (email == null || email.equals("")) {
-                throw new CustomHttpException(Response.Status.BAD_REQUEST, "Email is required");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Email is required");
             }
             if (password == null || password.equals("")) {
-                throw new CustomHttpException(Response.Status.BAD_REQUEST, "Password is required");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Password is required");
             }
             Query query = getEntityManager().
                     createQuery("SELECT l FROM Login l WHERE l.email=:email");
             query.setParameter("email", email);
             login = (Login) query.getSingleResult();
             if (login.getStudent() == null) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Invalid student login details");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid student login details");
             }
             if (!login.getPassword().equals(password)) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Invalid password");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid password");
             }
             if (!login.getActivated()) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Account is not activated");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Account is not activated");
             }
             if (login.getBanned()) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Account is banned");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Account is banned");
             }
             //Routine check for next renewal
             StudentCourse active = studentCourseFacade.findActiveCourse(login.getStudent());
@@ -85,9 +85,9 @@ public class LoginFacade extends AbstractFacade<Login> {
                 notificationFacade.create(notification);
             }
         } catch (NoResultException e) {
-            throw new CustomHttpException(Response.Status.FORBIDDEN, "User not found");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "User not found");
         } catch (java.lang.NullPointerException e) {
-            throw new CustomHttpException(Response.Status.BAD_REQUEST, "No login details submitted");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No login details submitted");
         }
         return login;
     }
@@ -97,31 +97,31 @@ public class LoginFacade extends AbstractFacade<Login> {
             String email = login.getEmail();
             String password = login.getPassword();
             if (email == null || email.equals("")) {
-                throw new CustomHttpException(Response.Status.BAD_REQUEST, "Email is required");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Email is required");
             }
             if (password == null || password.equals("")) {
-                throw new CustomHttpException(Response.Status.BAD_REQUEST, "Password is required");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Password is required");
             }
             Query query = getEntityManager().
                     createQuery("SELECT l FROM Login l WHERE l.email=:email");
             query.setParameter("email", email);
             login = (Login) query.getSingleResult();
             if (login.getUser() == null) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Invalid student login details");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid student login details");
             }
             if (!login.getPassword().equals(password)) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Invalid password");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid password");
             }
             if (!login.getActivated()) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Account is not activated");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Account is not activated");
             }
             if (login.getBanned()) {
-                throw new CustomHttpException(Response.Status.FORBIDDEN, "Account is banned");
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Account is banned");
             }
         } catch (NoResultException e) {
-            throw new CustomHttpException(Response.Status.FORBIDDEN, "User not found");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "User not found");
         } catch (java.lang.NullPointerException e) {
-            throw new CustomHttpException(Response.Status.BAD_REQUEST, "No login details submitted");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No login details submitted");
         }
         return login;
     }

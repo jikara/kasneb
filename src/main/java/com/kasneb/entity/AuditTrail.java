@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ public class AuditTrail implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date created;
     @Column(name = "type")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private EventType type;
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
