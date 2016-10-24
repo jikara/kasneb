@@ -184,7 +184,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -201,7 +201,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -234,7 +234,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -251,7 +251,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -273,7 +273,7 @@ public class AdministratorRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             json = mapper.writeValueAsString(anyResponse);
@@ -311,7 +311,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -328,7 +328,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -346,7 +346,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -363,7 +363,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -380,7 +380,7 @@ public class AdministratorRest {
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -398,7 +398,7 @@ public class AdministratorRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            Logger.getLogger(AuditTrailRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

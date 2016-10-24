@@ -89,6 +89,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         kesTotal = kesTotal.add(regFee.getKesAmount());
         usdTotal = usdTotal.add(regFee.getUsdAmount());
         gbpTotal = gbpTotal.add(regFee.getGbpAmount());
+
         if (new Date().after(firstSitting.getRegistrationDeadline())) { //is late
             Fee lateFee = feeTypeFacade.getLateCourseRegistrationFeeType(course);
             invoice.addInvoiceDetail(new InvoiceDetail(lateFee.getKesAmount(), lateFee.getUsdAmount(), lateFee.getGbpAmount(), "Late registration fee"));
@@ -97,6 +98,11 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             usdTotal = usdTotal.add(lateFee.getUsdAmount());
             gbpTotal = gbpTotal.add(lateFee.getGbpAmount());
         }
+        //Add administrative fee
+        kesTotal = kesTotal.add(adminFee.getKesAmount());
+        usdTotal = usdTotal.add(adminFee.getUsdAmount());
+        gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
+
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);
         invoice.setGbpTotal(gbpTotal);
@@ -123,6 +129,11 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         kesTotal = kesTotal.add(renewalFee.getKesAmount());
         usdTotal = usdTotal.add(renewalFee.getUsdAmount());
         gbpTotal = gbpTotal.add(renewalFee.getGbpAmount());
+
+        //Add administrative fee
+        kesTotal = kesTotal.add(adminFee.getKesAmount());
+        usdTotal = usdTotal.add(adminFee.getUsdAmount());
+        gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
 
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);
@@ -156,6 +167,12 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         }
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
+
+        //Add administrative fee
+        kesTotal = kesTotal.add(adminFee.getKesAmount());
+        usdTotal = usdTotal.add(adminFee.getUsdAmount());
+        gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
+
         invoice.setStudentCourse(studentCourse);
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);
@@ -216,6 +233,11 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         }
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
+
+        //Add administrative fee
+        kesTotal = kesTotal.add(adminFee.getKesAmount());
+        usdTotal = usdTotal.add(adminFee.getUsdAmount());
+        gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
         //Set totals
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);

@@ -53,13 +53,9 @@ public class StudentCourseRest {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        try {
-            anyResponse = studentCourseFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findAll() throws JsonProcessingException {
+        anyResponse = studentCourseFacade.findAll();
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -71,17 +67,14 @@ public class StudentCourseRest {
      * com.kasneb.api.StudentCourseRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPending() {
-        try {
-            anyResponse = studentCourseFacade.findPending();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findPending() throws JsonProcessingException {
+        anyResponse = studentCourseFacade.findPending();
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -107,7 +100,7 @@ public class StudentCourseRest {
     @GET
     @Path("active/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findActive(@PathParam("id") Integer id) {
+    public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
         Collection<Paper> papers = null;
         try {
             StudentCourse studentCourse = studentCourseFacade.findActive(id);
@@ -127,11 +120,7 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

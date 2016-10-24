@@ -94,7 +94,6 @@ public class StudentCourse implements Serializable {
     private KasnebCourse course;
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-    @JsonIgnore
     private Student student;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "studentCourse")
     @JsonManagedReference
@@ -266,6 +265,7 @@ public class StudentCourse implements Serializable {
     }
 
     public Student getStudent() {
+        student.setStudentCourses(null);
         return student;
     }
 
