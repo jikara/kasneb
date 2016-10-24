@@ -12,6 +12,7 @@ import com.kasneb.entity.ElligiblePart;
 import com.kasneb.entity.ElligibleSection;
 import com.kasneb.entity.ExemptionInvoice;
 import com.kasneb.entity.Invoice;
+import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.KasnebStudentCourseQualification;
 import com.kasneb.entity.Paper;
@@ -332,11 +333,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public List<StudentCourse> findPending() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(StudentCourse.class);
-        Root<StudentCourse> studentCourse = cq.from(StudentCourse.class);
-        cq.where(cb.equal(studentCourse.get(StudentCourse_.verified), false));
-        TypedQuery<StudentCourse> query = em.createQuery(cq);
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s JOIN s.invoices i WHERE i.studentCourse=s AND s.verified =:verified AND i.status = :status", StudentCourse.class);
+        query.setParameter("status", new InvoiceStatus("PAID"));
+        query.setParameter("verified", false);
         return query.getResultList();
     }
 
