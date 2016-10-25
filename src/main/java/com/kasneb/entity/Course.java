@@ -51,10 +51,10 @@ public class Course implements Serializable {
     private String name;
     @OneToMany(mappedBy = "qualification")
     @JsonIgnore
-    private Collection<StudentCourseQualification> studentCourses;
+    private Collection<StudentCourseQualification> studentCourseQualifications;
     @OneToMany(mappedBy = "qualification", fetch = FetchType.EAGER)
     @JsonBackReference
-    private Collection<CourseExemption> courseExemptions;
+    protected Collection<CourseExemption> courseExemptions;
 
     public Course() {
     }

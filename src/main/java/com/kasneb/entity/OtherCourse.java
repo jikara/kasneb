@@ -12,7 +12,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 /**
  *
@@ -31,8 +30,6 @@ public class OtherCourse extends Course {
     @JsonBackReference
     @JsonIgnore
     private OtherQualification otherQualification;
-    @Transient
-    private Collection courseExemptions;
     @ManyToOne
     @JoinColumn(name = "institutionId", referencedColumnName = "id")
     @JsonBackReference
@@ -44,7 +41,7 @@ public class OtherCourse extends Course {
 
     public OtherCourse(OtherCourseType otherCourseType, Collection courseExemptions, Institution institution) {
         this.otherCourseType = otherCourseType;
-        this.courseExemptions = courseExemptions;
+        super.courseExemptions = courseExemptions;
         this.institution = institution;
     }
 

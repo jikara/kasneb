@@ -132,7 +132,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         StudentCourse managed = super.find(entity.getId());
         if (managed == null) {
-            return createStudentCourse(entity);
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course does not exist");
         }
         StudentCourseSubscription current = managed.getCurrentSubscription();
         if (current != null && current.getInvoice() != null && current.getInvoice().getStatus().getStatus().equals("PAID")) {
@@ -307,10 +307,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public Collection<ElligibleSection> getElligibleSections(StudentCourse studentCourse) {
         Collection<ElligibleSection> elligibleSections = new ArrayList<>();
-        for (Section section : studentCourse.getCurrentPart().getSectionCollection()) {
+        studentCourse.getCurrentPart().getSectionCollection().stream().forEach((Section section) -> {
             Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(studentCourse), getPassedPapers(studentCourse));
             elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
-        }
+        });
         return elligibleSections;
     }
 

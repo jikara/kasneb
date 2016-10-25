@@ -42,7 +42,7 @@ public class StudentCourseQualification implements Serializable {
     @JsonManagedReference
     private Course qualification;
     @Transient
-    private String type;
+    protected String type;
 
     public StudentCourseQualification() {
     }

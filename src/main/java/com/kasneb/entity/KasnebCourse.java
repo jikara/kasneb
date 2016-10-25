@@ -76,7 +76,7 @@ public class KasnebCourse extends Course {
     @JsonBackReference
     private Collection<ExamCentre> examCentres;
     @Transient
-    private Collection courseExemptions;
+    private Collection kasnebCourseExemptions;
 
     public KasnebCourse() {
         super();

@@ -34,8 +34,6 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
     @OneToMany(mappedBy = "otherStudentCourseQualification", cascade = CascadeType.ALL)
     Collection<QualificationDocument> documents;
     @Transient
-    private String type = "Other";
-    @Transient
     private Integer codeType;
 
     @Override
@@ -94,6 +92,7 @@ public class OtherStudentCourseQualification extends StudentCourseQualification 
 
     @Override
     public String getType() {
+        type = "Other";
         return type;
     }
 

@@ -107,7 +107,7 @@ public class Contact implements Serializable {
     }
 
     public void setCountyId(County countyId) {
-        if (countyId.getId() == null) {
+        if (countyId.getId() == null || countyId.getId() == 0) {
             this.countyId = null;
             return;
         }
