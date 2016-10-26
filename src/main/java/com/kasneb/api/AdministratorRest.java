@@ -8,11 +8,15 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.Declaration;
+import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Institution;
 import com.kasneb.entity.OtherCourse;
 import com.kasneb.entity.User;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
+import com.kasneb.util.DateUtil;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -280,6 +284,49 @@ public class AdministratorRest {
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
+    @Path("payment/summary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPaymentSummary(@QueryParam("feeCode") String code, @QueryParam("startDate") String fromDate, @QueryParam("endDate") String toDate) throws JsonProcessingException {
+        boolean dateRange = true;
+        Date startDate = null, endDate = null;
+        try {
+            if (fromDate == null || toDate == null) {
+                dateRange = false;
+            }
+            if (dateRange) {
+                try {
+                    startDate = DateUtil.getDate(fromDate);
+                    endDate = DateUtil.getToDate(toDate);
+                } catch (ParseException ex) {
+                    Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid date format");
+                }
+            }
+            if (dateRange && code == null) {
+                anyResponse = paymentFacade.getPaymentSummary(startDate, endDate);
+            } else if (dateRange && code != null) {
+                FeeCode feeCode = new FeeCode(code);
+                anyResponse = paymentFacade.getPaymentSummary(feeCode, startDate, endDate);
+            } else if (code != null && !dateRange) {
+                FeeCode feeCode = new FeeCode(code);
+                anyResponse = paymentFacade.getPaymentSummary(feeCode);
+            } else if (code == null && !dateRange) {
+                anyResponse = paymentFacade.getPaymentSummary();
+            }
+            httpStatus = Response.Status.OK;
+        } catch (CustomHttpException ex) {
+            httpStatus = ex.getStatusCode();
+            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

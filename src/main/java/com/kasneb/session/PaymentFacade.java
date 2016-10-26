@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.kasneb.entity.Currency;
 import com.kasneb.entity.ExemptionInvoice;
+import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.Notification;
@@ -22,6 +23,7 @@ import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.CompletePaymentResponse;
 import com.kasneb.model.LoginResponse;
+import com.kasneb.model.StudentPayment;
 import com.kasneb.model.PreparePaymentResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -299,6 +301,48 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode.code =:feeCode ORDER by p.paymentTimestamp DESC", Payment.class);
         query.setParameter("feeCode", feeCode);
         return query.getResultList();
+    }
+
+    public Collection<StudentPayment> getPaymentSummary() {
+        Collection<StudentPayment> studentPayments = new ArrayList<>();
+        TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID'", Student.class);
+        query.getResultList().stream().forEach((student) -> {
+            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+        });
+        return studentPayments;
+    }
+
+    public Collection<StudentPayment> getPaymentSummary(FeeCode code) {
+        Collection<StudentPayment> studentPayments = new ArrayList<>();
+        TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND i.feeCode =:feeCode", Student.class);
+        query.setParameter("feeCode", code);
+        query.getResultList().stream().forEach((student) -> {
+            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+        });
+        return studentPayments;
+    }
+
+    public Collection<StudentPayment> getPaymentSummary(Date startDate, Date endDate) {
+        Collection<StudentPayment> studentPayments = new ArrayList<>();
+        TypedQuery< Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND p.paymentTimestamp BETWEEN :startDate AND :endDate",  Student.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.getResultList().stream().forEach((student) -> {
+            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+        });
+        return studentPayments;
+    }
+
+    public Collection<StudentPayment> getPaymentSummary(FeeCode code, Date startDate, Date endDate) {
+        Collection<StudentPayment> studentPayments = new ArrayList<>();
+        TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND i.feeCode =:feeCode AND p.paymentTimestamp BETWEEN :startDate AND :endDate",  Student.class);
+        query.setParameter("feeCode", code);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.getResultList().stream().forEach((student) -> {
+            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+        });
+        return studentPayments;
     }
 
 }

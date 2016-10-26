@@ -41,6 +41,8 @@ import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
+import com.kasneb.util.CoreUtil;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -179,7 +181,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return managed;
     }
 
-    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException {
+    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }
@@ -246,8 +248,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return nextRenewalDate;
     }
 
-    private String generateRegistrationNumber(StudentCourse entity) {
-        return "CPA/1233457/2016";
+    private String generateRegistrationNumber(StudentCourse entity) throws IOException {
+        String registrationNumber = null;
+        registrationNumber = CoreUtil.generateRegistrationNumber(entity);
+        return registrationNumber;
     }
 
     public Collection<Paper> getPassedPapers(StudentCourse studentCourse) {
@@ -484,7 +488,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return query.getResultList();
     }
 
-    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException {
+    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }

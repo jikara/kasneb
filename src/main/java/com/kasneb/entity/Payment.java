@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -53,6 +54,7 @@ public class Payment implements Serializable {
     @Transient
     @JsonIgnore
     private String pin;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "paymentTimestamp", nullable = false)
     private Date paymentTimestamp = new Date();
@@ -61,6 +63,8 @@ public class Payment implements Serializable {
     @JsonBackReference
     @JsonIgnore
     private Invoice invoice;
+    @Transient
+    private String feeCode;
 
     public Integer getId() {
         return id;
@@ -129,6 +133,17 @@ public class Payment implements Serializable {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public String getFeeCode() {
+        if (getInvoice() != null) {
+            feeCode = getInvoice().getFeeCode().getCode();
+        }
+        return feeCode;
+    }
+
+    public void setFeeCode(String feeCode) {
+        this.feeCode = feeCode;
     }
 
     @Override

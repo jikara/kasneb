@@ -166,6 +166,8 @@ public class StudentCourse implements Serializable {
     private Collection<Invoice> invoices;
     @Transient
     private Student studentObj;
+    
+    ///CORE TRANSIENT FIELDS
 
     public StudentCourse() {
     }
