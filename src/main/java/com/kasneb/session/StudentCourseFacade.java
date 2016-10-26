@@ -248,9 +248,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return nextRenewalDate;
     }
 
-    private String generateRegistrationNumber(StudentCourse entity) throws IOException {
-        String registrationNumber = null;
-        registrationNumber = CoreUtil.generateRegistrationNumber(entity);
+    private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException {
+        String registrationNumber = CoreUtil.generateRegistrationNumber(entity);
         return registrationNumber;
     }
 

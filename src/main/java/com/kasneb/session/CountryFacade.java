@@ -8,6 +8,7 @@ package com.kasneb.session;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kasneb.entity.Country;
+import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.RestUtil;
 import java.io.IOException;
 import java.util.List;
@@ -40,12 +41,12 @@ public class CountryFacade extends AbstractFacade<Country> {
     @Override
     public List<Country> findAll() {
         try {
-            List<Country> countries = gson.fromJson(RestUtil.doGet("http://localhost:29097/core/api/nation"), new TypeToken<List<Country>>() {
+            List<Country> countries = gson.fromJson(new RestUtil().doGet("http://localhost:29097/core/api/nation"), new TypeToken<List<Country>>() {
             }.getType());
-            for (Country c : countries) {
+            countries.stream().forEach((c) -> {
                 em.merge(new Country(c.getCode(), c.getName(), c.getNationality(), c.getPhoneCode()));
-            }
-        } catch (IOException ex) {
+            });
+        } catch (IOException | CustomHttpException ex) {
             Logger.getLogger(CountryFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
         return super.findAll();

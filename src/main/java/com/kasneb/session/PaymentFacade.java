@@ -289,17 +289,44 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         return completePaymentResponse;
     }
 
-    public Collection<Payment> findByStudent(Student student) {
+    public Collection<Payment> findAll(FeeCode feeCode) {
+        TypedQuery<Payment> query
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode =:feeCode ORDER by p.paymentTimestamp DESC", Payment.class);
+        query.setParameter("feeCode", feeCode);
+        return query.getResultList();
+    }
+
+    public Collection<Payment> findAll(Student student) {
         TypedQuery<Payment> query
                 = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student ORDER by p.paymentTimestamp DESC", Payment.class);
         query.setParameter("student", student);
         return query.getResultList();
     }
 
-    public Collection<Payment> findByCode(String feeCode) {
+    public Collection<Payment> findAll(Student student, FeeCode feeCode) {
         TypedQuery<Payment> query
-                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode.code =:feeCode ORDER by p.paymentTimestamp DESC", Payment.class);
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode =:feeCode AND i.studentCourse.student =:student ORDER by p.paymentTimestamp DESC", Payment.class);
         query.setParameter("feeCode", feeCode);
+        query.setParameter("student", student);
+        return query.getResultList();
+    }
+
+    public Collection<Payment> findAll(Student student, Date startDate, Date endDate) {
+        TypedQuery<Payment> query
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student AND  p.paymentTimestamp BETWEEN :startDate AND :endDate ORDER by p.paymentTimestamp DESC", Payment.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("student", student);
+        return query.getResultList();
+    }
+
+    public Collection<Payment> findAll(Student student, FeeCode feeCode, Date startDate, Date endDate) {
+        TypedQuery<Payment> query
+                = em.createQuery("SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student AND i.feeCode =:feeCode AND p.paymentTimestamp BETWEEN :startDate AND :endDate ORDER by p.paymentTimestamp DESC", Payment.class);
+        query.setParameter("feeCode", feeCode);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("student", student);
         return query.getResultList();
     }
 
@@ -307,7 +334,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         Collection<StudentPayment> studentPayments = new ArrayList<>();
         TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID'", Student.class);
         query.getResultList().stream().forEach((student) -> {
-            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+            studentPayments.add(new StudentPayment(student, findAll(student)));
         });
         return studentPayments;
     }
@@ -315,32 +342,29 @@ public class PaymentFacade extends AbstractFacade<Payment> {
     public Collection<StudentPayment> getPaymentSummary(FeeCode code) {
         Collection<StudentPayment> studentPayments = new ArrayList<>();
         TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND i.feeCode =:feeCode", Student.class);
-        query.setParameter("feeCode", code);
         query.getResultList().stream().forEach((student) -> {
-            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+            studentPayments.add(new StudentPayment(student, findAll(student, code)));
         });
         return studentPayments;
     }
 
     public Collection<StudentPayment> getPaymentSummary(Date startDate, Date endDate) {
         Collection<StudentPayment> studentPayments = new ArrayList<>();
-        TypedQuery< Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND p.paymentTimestamp BETWEEN :startDate AND :endDate",  Student.class);
-        query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
+        TypedQuery< Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID'", Student.class);
         query.getResultList().stream().forEach((student) -> {
-            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+            studentPayments.add(new StudentPayment(student, findAll(student, startDate, endDate)));
         });
         return studentPayments;
     }
 
     public Collection<StudentPayment> getPaymentSummary(FeeCode code, Date startDate, Date endDate) {
         Collection<StudentPayment> studentPayments = new ArrayList<>();
-        TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND i.feeCode =:feeCode AND p.paymentTimestamp BETWEEN :startDate AND :endDate",  Student.class);
+        TypedQuery<Student> query = em.createQuery("SELECT DISTINCT s FROM Student s JOIN s.studentCourses sc JOIN sc.invoices i JOIN i.payment p WHERE i.status.status = 'PAID' AND i.feeCode =:feeCode AND p.paymentTimestamp BETWEEN :startDate AND :endDate", Student.class);
         query.setParameter("feeCode", code);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         query.getResultList().stream().forEach((student) -> {
-            studentPayments.add(new StudentPayment(student, findByStudent(student)));
+            studentPayments.add(new StudentPayment(student, findAll(student, code, startDate, endDate)));
         });
         return studentPayments;
     }

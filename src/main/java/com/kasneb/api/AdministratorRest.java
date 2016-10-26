@@ -251,7 +251,8 @@ public class AdministratorRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPayments(@PathParam("code") String feeCode) {
         try {
-            anyResponse = paymentFacade.findByCode(feeCode);
+            FeeCode code=new FeeCode(feeCode);
+            anyResponse = paymentFacade.findAll(code);
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
@@ -297,6 +298,9 @@ public class AdministratorRest {
         boolean dateRange = true;
         Date startDate = null, endDate = null;
         try {
+            if (code != null && code.trim().equals("")) {
+                code = null;
+            }
             if (fromDate == null || toDate == null) {
                 dateRange = false;
             }

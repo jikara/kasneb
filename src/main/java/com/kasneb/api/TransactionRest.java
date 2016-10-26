@@ -57,10 +57,10 @@ public class TransactionRest {
      */
     @GET
     @Path("student/{id}")
-    @Produces(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getStudentTransactions(@PathParam("id") Integer id) {
         try {
-            anyResponse = paymentFacade.findByStudent(new Student(id));
+            anyResponse = paymentFacade.findAll(new Student(id));
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (Exception e) {
