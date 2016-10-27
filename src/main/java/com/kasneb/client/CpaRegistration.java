@@ -5,7 +5,10 @@
  */
 package com.kasneb.client;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -45,6 +48,8 @@ public class CpaRegistration implements Serializable {
     private LearnAbout learnt;
     private Nation nationality;
     private CsQualification qualification;
+    @JsonManagedReference
+    private Collection<Receipt> receipts = new ArrayList<>();
 
     public CpaRegistration() {
     }
@@ -311,6 +316,14 @@ public class CpaRegistration implements Serializable {
 
     public void setLearnt(LearnAbout learnt) {
         this.learnt = learnt;
+    }
+
+    public Collection<Receipt> getReceipts() {
+        return receipts;
+    }
+
+    public void setReceipts(Collection<Receipt> receipts) {
+        this.receipts = receipts;
     }
 
 }

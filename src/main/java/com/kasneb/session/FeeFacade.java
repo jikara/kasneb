@@ -15,6 +15,8 @@ import com.kasneb.entity.Paper;
 import com.kasneb.entity.Part;
 import com.kasneb.entity.Section;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.util.CoreUtil;
+import java.io.IOException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,9 +45,14 @@ public class FeeFacade extends AbstractFacade<Fee> {
         super(Fee.class);
     }
 
-    public Fee getCourseRegistrationFeeType(KasnebCourse course) throws CustomHttpException {
-        Fee feeType = null;
-        if (course == null) {
+    public Fee getCourseRegistrationFee(KasnebCourse course) throws CustomHttpException, IOException {
+        Fee fee = null;
+        try {
+            fee = CoreUtil.getRegistrationFee(course);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*    if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
         }
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -57,17 +64,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No registration fee configured for this course");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one registration fee configured for this course");
-        }
-        return feeType;
+        }*/
+        return fee;
     }
 
-    public Fee getLateCourseRegistrationFeeType(KasnebCourse course) throws CustomHttpException {
-        Fee feeType = null;
+    public Fee getLateCourseRegistrationFee(KasnebCourse course) throws CustomHttpException {
+        Fee fee = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
         }
@@ -79,17 +86,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("course_registration_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No registration fee configured for this course");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one registration fee configured for this course");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getAnnualRegistrationRenewalFee(KasnebCourse course) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
         }
@@ -102,17 +109,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("annual_registration_renewal_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No renewal fee configured for this course");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one renewal fee configured for this course");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getRegistrationReactivationFee(KasnebCourse course) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
         }
@@ -125,17 +132,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("registration_reactivation_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No reactivation fee configured for this course");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one reactivation fee configured for this course");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getStudentCardReplacementFee(KasnebCourse course) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
         }
@@ -148,17 +155,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("student_identity_card_replacement_fees"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No id card replacement fee configured for this course");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one id card replacement fee configured for this course");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getExamEntryFeePerPaper(Paper paper) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         if (paper == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper does not exist");
         }
@@ -171,17 +178,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getExamEntryFeePerLevel(Level level) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         level = em.find(Level.class, level.getId());
         if (level == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Level does not exist");
@@ -195,17 +202,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getExamEntryFeePerPart(Part part) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         part = em.find(Part.class, part.getId());
         if (part == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Part does not exist");
@@ -219,13 +226,13 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_part"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this part");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getExamEntryFeePerSection(Section section) throws CustomHttpException {
@@ -271,7 +278,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
     }
 
     public Fee getExemptionFee(Paper paper) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         paper = em.find(Paper.class, paper.getCode());
         if (paper == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper does not exist");
@@ -285,17 +292,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getExemptionFee(Part part) throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         part = em.find(Part.class, part.getId());
         if (part == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Part does not exist");
@@ -309,17 +316,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exemptions_per_part"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getSyllabusPulicationFee() throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
@@ -328,17 +335,17 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("sale_of_syllabus"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one sale of syllabus is configured");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getPastPaperPublicationFee() throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
@@ -347,30 +354,30 @@ public class FeeFacade extends AbstractFacade<Fee> {
                 cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("sale_of_past_papers"))));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than  sale of past papers fee is configured");
         }
-        return feeType;
+        return fee;
     }
 
     public Fee getAdministrativeFee() throws CustomHttpException {
-        Fee feeType = null;
+        Fee fee = null;
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
         Root<Fee> ft = cq.from(Fee.class);
         cq.where(cb.equal(ft.get(Fee_.feeCode), new FeeCode("ADMINISTRATIVE_FEE")));
         TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            feeType = query.getSingleResult();
+            fee = query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee  is not configured");
         } catch (javax.persistence.NonUniqueResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one administrative fee is configured");
         }
-        return feeType;
+        return fee;
     }
 
 }

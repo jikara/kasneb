@@ -5,6 +5,7 @@
  */
 package com.kasneb.session;
 
+import com.kasneb.client.CpaRegistration;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.ElligibleLevel;
@@ -97,6 +98,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
+        entity.setCourse(new KasnebCourse("01"));
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
         }
@@ -127,7 +129,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return entity;
     }
 
-    public StudentCourse updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException {
+    public StudentCourse updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException, IOException {
         //Check if student is registered and confirmed  
         if (entity.getId() == null) {
             return createStudentCourse(entity);
@@ -214,10 +216,11 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         } catch (IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //Generete registration number
+        //Generate registration number
         String regNo = generateRegistrationNumber(managed);
         managed.setRegistrationNumber(regNo);
         managed.setVerified(Boolean.TRUE);
+        managed.setActive(Boolean.TRUE);
         //Create verification notification 
         Notification notification;
         if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
@@ -249,8 +252,16 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException {
-        String registrationNumber = CoreUtil.generateRegistrationNumber(entity);
-        return registrationNumber;
+        CpaRegistration registration = new CpaRegistration();
+        switch (entity.getCourse().getId()) {
+            case "01": //CPA
+                registration = CoreUtil.registerStudent(entity);
+                break;
+            case "02": //CPS
+                registration = CoreUtil.registerStudent(entity);
+                break;
+        }
+        return registration.getRegistrationNumber();
     }
 
     public Collection<Paper> getPassedPapers(StudentCourse studentCourse) {
@@ -502,6 +513,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         for (StudentCourse studentCourse : entity.getStudentCourses()) {
             //Check if student is registered
             StudentCourse managed = em.find(StudentCourse.class, studentCourse.getId());
+            em.detach(managed);
             if (managed == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student course does not exist");
             }
@@ -515,6 +527,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             String regNo = generateRegistrationNumber(managed);
             managed.setRegistrationNumber(regNo);
             managed.setVerified(Boolean.TRUE);
+            managed.setActive(Boolean.TRUE);
             //Create verification notification 
             Notification notification;
             if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {

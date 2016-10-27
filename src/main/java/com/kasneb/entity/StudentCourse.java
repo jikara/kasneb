@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -166,9 +165,6 @@ public class StudentCourse implements Serializable {
     private Collection<Invoice> invoices;
     @Transient
     private Student studentObj;
-    
-    ///CORE TRANSIENT FIELDS
-
     public StudentCourse() {
     }
 
@@ -223,12 +219,8 @@ public class StudentCourse implements Serializable {
     }
 
     public Date getNextRenewal() {
-        try {
-            if (getCurrentSubscription() != null) {
-                nextRenewal = getCurrentSubscription().getExpiry();
-            }
-        } catch (java.lang.NullPointerException ex) {
-            Logger.getLogger(StudentCourse.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        if (getCurrentSubscription() != null) {
+            nextRenewal = getCurrentSubscription().getExpiry();
         }
         return nextRenewal;
     }
@@ -279,8 +271,8 @@ public class StudentCourse implements Serializable {
 
     public Student getStudentObj() {
         if (getStudent() != null) {
-            studentObj = getStudent();
             studentObj = new Student(getStudent().getFirstName(), getStudent().getMiddleName(), getStudent().getLastName(), getStudent().getPhoneNumber(), getStudent().getGender(), getStudent().getEmail());
+            studentObj.setId(getStudent().getId());
         }
         return studentObj;
     }

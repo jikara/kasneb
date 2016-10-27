@@ -23,6 +23,7 @@ import com.kasneb.entity.StudentCourseExemptionPaper;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.exception.CustomHttpException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +66,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         super(Invoice.class);
     }
 
-    public Invoice generateRegistrationInvoice(StudentCourse studentCourse) throws CustomHttpException {
+    public Invoice generateRegistrationInvoice(StudentCourse studentCourse) throws CustomHttpException, IOException {
         //Mark unpaid exemption invoices as null
         Iterator<Invoice> iter = studentCourse.getInvoices().iterator();
         while (iter.hasNext()) {
@@ -80,7 +81,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
         Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
-        Fee regFee = feeTypeFacade.getCourseRegistrationFeeType(course);
+        Fee regFee = feeTypeFacade.getCourseRegistrationFee(course);
         invoice.addInvoiceDetail(new InvoiceDetail(regFee.getKesAmount(), regFee.getUsdAmount(), regFee.getGbpAmount(), "Course registration fee"));
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
@@ -91,7 +92,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         gbpTotal = gbpTotal.add(regFee.getGbpAmount());
 
         if (new Date().after(firstSitting.getRegistrationDeadline())) { //is late
-            Fee lateFee = feeTypeFacade.getLateCourseRegistrationFeeType(course);
+            Fee lateFee = feeTypeFacade.getLateCourseRegistrationFee(course);
             invoice.addInvoiceDetail(new InvoiceDetail(lateFee.getKesAmount(), lateFee.getUsdAmount(), lateFee.getGbpAmount(), "Late registration fee"));
             //Add to totals
             kesTotal = kesTotal.add(lateFee.getKesAmount());

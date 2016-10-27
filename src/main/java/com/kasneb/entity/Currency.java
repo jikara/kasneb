@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * @author jikara
  */
 public enum Currency {
-    KES,
+    KSH,
     USD,
     GBP;
     private static final Logger LOG = Logger.getLogger(Currency.class.getName());

@@ -137,7 +137,9 @@ public class Payment implements Serializable {
 
     public String getFeeCode() {
         if (getInvoice() != null) {
-            feeCode = getInvoice().getFeeCode().getCode();
+            if (getInvoice().getFeeCode() != null) {
+                feeCode = getInvoice().getFeeCode().getCode();
+            }
         }
         return feeCode;
     }

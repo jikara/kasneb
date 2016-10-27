@@ -52,8 +52,7 @@ public class Fee implements Serializable {
     @Size(max = 45)
     @Column(name = "name", nullable = false)
     private String name;
-    @Basic(optional = false)
-    @NotNull
+    @Basic
     @Column(name = "gbpAmount")
     private BigDecimal gbpAmount;
     @Basic(optional = false)
@@ -101,6 +100,23 @@ public class Fee implements Serializable {
     private Paper paper;
 
     public Fee() {
+    }
+
+    public Fee(Integer id, String name, BigDecimal gbpAmount, BigDecimal kesAmount, BigDecimal usdAmount, Date effectiveDate, FeeTypeCode feeTypeCode, FeeCode feeCode, KasnebCourse course, CourseType courseType, Level level, Part part, Section section, Paper paper) {
+        this.id = id;
+        this.name = name;
+        this.gbpAmount = gbpAmount;
+        this.kesAmount = kesAmount;
+        this.usdAmount = usdAmount;
+        this.effectiveDate = effectiveDate;
+        this.feeTypeCode = feeTypeCode;
+        this.feeCode = feeCode;
+        this.course = course;
+        this.courseType = courseType;
+        this.level = level;
+        this.part = part;
+        this.section = section;
+        this.paper = paper;
     }
 
     public Integer getId() {

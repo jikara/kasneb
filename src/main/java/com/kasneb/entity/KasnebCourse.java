@@ -82,7 +82,7 @@ public class KasnebCourse extends Course {
         super();
     }
 
-    public KasnebCourse(Integer code) {
+    public KasnebCourse(String code) {
         super(code);
     }
 

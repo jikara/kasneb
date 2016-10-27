@@ -11,27 +11,29 @@ import java.io.Serializable;
  *
  * @author jikara
  */
-public class Course implements Serializable {
+public class ReceiptCategory implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private Fee fee;
-    private String id;
+    private String code;
     private String name;
 
-    public Course() {
+    public ReceiptCategory() {
     }
 
-    public Course(String id) {
-        this.id = id;
+    public ReceiptCategory(String code) {
+        this.code = code;
     }
 
-    public String getId() {
-        return id;
+    public ReceiptCategory(String code, String name) {
+        this.code = code;
+        this.name = name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {

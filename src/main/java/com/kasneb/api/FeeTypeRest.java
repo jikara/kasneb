@@ -12,6 +12,7 @@ import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Paper;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -27,7 +28,7 @@ import javax.ws.rs.core.Response;
  *
  * @author jikara
  */
-@Path("feetype")
+@Path("fee")
 public class FeeTypeRest {
 
     ObjectMapper mapper = new ObjectMapper();
@@ -36,7 +37,7 @@ public class FeeTypeRest {
     String json;
 
     @EJB
-    com.kasneb.session.FeeFacade feeTypeFacade;
+    com.kasneb.session.FeeFacade feeFacade;
 
     /**
      * Creates a new instance of FeeTypeRest
@@ -72,7 +73,7 @@ public class FeeTypeRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() {
         try {
-            anyResponse = feeTypeFacade.findAll();
+            anyResponse = feeFacade.findAll();
             httpStatus = Response.Status.OK;
         } catch (Exception e) {
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
@@ -93,11 +94,13 @@ public class FeeTypeRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRegistrationFee() {
         try {
-            anyResponse = feeTypeFacade.getCourseRegistrationFeeType(new KasnebCourse(2));
+            anyResponse = feeFacade.getCourseRegistrationFee(new KasnebCourse("01"));
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException e) {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
             httpStatus = e.getStatusCode();
+        } catch (IOException ex) {
+            Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             json = mapper.writeValueAsString(anyResponse);
@@ -115,7 +118,7 @@ public class FeeTypeRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRenewalFee() {
         try {
-            anyResponse = feeTypeFacade.getAnnualRegistrationRenewalFee(new KasnebCourse(2));
+            anyResponse = feeFacade.getAnnualRegistrationRenewalFee(new KasnebCourse("02"));
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException e) {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
@@ -137,7 +140,7 @@ public class FeeTypeRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findExamEntryFee() {
         try {
-            anyResponse = feeTypeFacade.getExamEntryFeePerPaper(new Paper("CA11"));
+            anyResponse = feeFacade.getExamEntryFeePerPaper(new Paper("CA11"));
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException e) {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());

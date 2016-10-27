@@ -251,7 +251,7 @@ public class AdministratorRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPayments(@PathParam("code") String feeCode) {
         try {
-            FeeCode code=new FeeCode(feeCode);
+            FeeCode code = new FeeCode(feeCode);
             anyResponse = paymentFacade.findAll(code);
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;

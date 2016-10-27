@@ -5,7 +5,6 @@
  */
 package com.kasneb.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kasneb.entity.Payment;
 import com.kasneb.entity.Student;
 import java.util.Collection;
@@ -16,7 +15,6 @@ import java.util.Collection;
  */
 public class StudentPayment {
 
-    @JsonIgnore
     private Student student;
     private Integer studentId;
     private Collection<Payment> payments;

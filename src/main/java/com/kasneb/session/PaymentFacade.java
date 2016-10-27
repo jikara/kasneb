@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import com.kasneb.client.Receipt;
 import com.kasneb.entity.Currency;
 import com.kasneb.entity.ExemptionInvoice;
 import com.kasneb.entity.FeeCode;
@@ -86,7 +87,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         super(Payment.class);
     }
 
-    public Payment createPayment(Payment entity) throws CustomHttpException {
+    public Payment createPayment(Payment entity) throws CustomHttpException, IOException {
         //Validat data
         if (entity.getAmount() == null) {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Amount is required");
@@ -133,6 +134,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         entity.setChannel("JAMBOPAY E_WALLET");
         em.persist(entity);
         Notification notification = null;
+        Receipt receipt = null;
         //update related entities
         switch (invoice.getFeeCode().getCode()) {
             case EXEMPTION_FEE:

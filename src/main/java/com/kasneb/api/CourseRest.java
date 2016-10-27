@@ -144,7 +144,7 @@ public class CourseRest {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") String id) {
         try {
             anyResponse = courseFacade.find(id);
             json = mapper.writeValueAsString(anyResponse);
