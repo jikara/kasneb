@@ -27,6 +27,8 @@ import com.kasneb.entity.FeeTypeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.KasnebCourse;
+import com.kasneb.entity.Sitting;
+import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
@@ -76,7 +78,7 @@ public class CoreUtil {
         Student student = studentCourse.getStudent();
         //Create core object
         Set<Receipt> receipts = new HashSet<>();
-        CpaRegistration registration = new CpaRegistration(null, Stream.AC, studentCourse.getCreated(), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDob(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
+        CpaRegistration registration = new CpaRegistration(null, Stream.AC, studentCourse.getCreated(), getFirstExemDate(studentCourse.getFirstSitting()), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDob(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
         for (Invoice invoice : studentCourse.getInvoices()) {
             if ("PAID".equals(invoice.getStatus().getStatus())) {
                 Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
@@ -94,5 +96,15 @@ public class CoreUtil {
         String jsonResponse = new RestUtil().doPost(BASE_URL + "api/cpa", jsonReq);
         CpaRegistration created = gson.fromJson(jsonResponse, CpaRegistration.class);
         return created;
+    }
+
+    public static Integer getFirstExemDate(Sitting firstSitting) {
+        Integer session;
+        if (firstSitting.getSittingPeriod().equals(SittingPeriod.MAY)) {
+            session = 1;
+        } else {
+            session = 2;
+        }
+        return Integer.parseInt(session + "" + firstSitting.getSittingYear());
     }
 }
