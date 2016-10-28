@@ -16,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -33,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "section", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"name", "partName", "courseId"})})
+    @UniqueConstraint(columnNames = {"name", "partId"})})
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Section.findAll", query = "SELECT s FROM Section s"),
@@ -53,9 +52,7 @@ public class Section implements Serializable {
     @NotNull
     @Column(name = "isOptional", nullable = false)
     private Boolean optional;
-    @JoinColumns({
-        @JoinColumn(name = "partName", referencedColumnName = "name"),
-        @JoinColumn(name = "courseId", referencedColumnName = "courseId")})
+    @JoinColumn(name = "partId", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonBackReference
     private Part part;
