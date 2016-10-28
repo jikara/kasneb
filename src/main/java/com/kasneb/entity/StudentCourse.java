@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -165,6 +166,7 @@ public class StudentCourse implements Serializable {
     private Collection<Invoice> invoices;
     @Transient
     private Student studentObj;
+
     public StudentCourse() {
     }
 
@@ -334,11 +336,29 @@ public class StudentCourse implements Serializable {
     }
 
     public ElligiblePart getEligiblePart() {
-        return eligiblePart;
+        Collection<ElligibleSection> elligibleSections = getElligibleSections();
+        return new ElligiblePart(getCurrentPart().getName(), elligibleSections);
     }
 
-    public void setEligiblePart(ElligiblePart eligiblePart) {
-        this.eligiblePart = eligiblePart;
+    public Collection<ElligibleSection> getElligibleSections() {
+        Collection<ElligibleSection> elligibleSections = new ArrayList<>();
+        for (Section section : getCurrentPart().getSectionCollection()) {
+            Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(), getPassedPapers());
+            elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
+        }
+        return elligibleSections;
+    }
+
+    private Collection<Paper> getEligiblePapers(Collection<Paper> papers, Collection<Paper> exempted, Collection<Paper> passedPapers) {
+        papers.removeAll(exempted); //remove exempted
+        papers.removeAll(passedPapers); //remove passed
+        return papers;
+    }
+
+    private Collection<Paper> getPassedPapers() {
+        Collection<Paper> passedPapers = new ArrayList<>();
+        //this.getStudentCourseSittings()
+        return passedPapers;
     }
 
     public ElligibleLevel getEligibleLevel() {
@@ -527,6 +547,10 @@ public class StudentCourse implements Serializable {
             return false;
         }
         return Objects.equals(this.student.getId(), other.student.getId());
+    }
+
+    public void setEligiblePart(ElligiblePart elligiblePart) {
+        this.eligiblePart = elligiblePart;
     }
 
 }

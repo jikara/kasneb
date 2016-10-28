@@ -152,6 +152,9 @@ public class StudentCourseSittingRest {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
             }
+            if (entity.getId() == 0) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id cannot be zero");
+            }
             studentCourseSittingFacade.updateCentre(entity);
             anyResponse = studentCourseSittingFacade.find(entity.getId());
             httpStatus = Response.Status.OK;

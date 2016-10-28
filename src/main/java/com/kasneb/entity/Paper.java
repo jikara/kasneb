@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -68,8 +69,8 @@ public class Paper implements Serializable {
     @OneToMany(mappedBy = "paper")
     @JsonBackReference
     private Collection<Fee> feeTypes;
-    @ManyToOne
-    @JoinColumn(name = "courseId", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @JsonBackReference
     @JsonIgnore
     private KasnebCourse course;
@@ -176,5 +177,4 @@ public class Paper implements Serializable {
         return Objects.equals(this.code, other.code);
     }
 
-    
 }

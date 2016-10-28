@@ -8,7 +8,6 @@
     <properties>
       <property name="eclipselink.ddl-generation.output-mode" value="database"/>
       <property name="eclipselink.logging.level" value="OFF"/>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
 </persistence>

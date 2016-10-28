@@ -109,11 +109,11 @@ public class StudentCourseRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
             //get part papers
-            if (studentCourse.getCourse().getKasnebCourseType().getCode() == 100) {
-                studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
-            } else if (studentCourse.getCourse().getKasnebCourseType().getCode() == 200) {
-                studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
-            }
+//            if (studentCourse.getCourse().getKasnebCourseType().getCode() == 100) {
+//                studentCourse.setEligiblePart(studentCourseFacade.getElligiblePart(studentCourse));
+//            } else if (studentCourse.getCourse().getKasnebCourseType().getCode() == 200) {
+//                studentCourse.setEligibleLevel(studentCourseFacade.getElligibleLevel(studentCourse));
+//            }
             anyResponse = studentCourse;
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
