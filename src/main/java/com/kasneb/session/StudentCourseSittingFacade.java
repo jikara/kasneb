@@ -6,31 +6,26 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.ExamCentre;
-import com.kasneb.entity.Fee;
-import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Invoice;
-import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Level;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Part;
 import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
+import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.StudentCourseSittingPaper;
 import com.kasneb.exception.CustomHttpException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -38,6 +33,7 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.core.Response;
 
 /**
@@ -139,7 +135,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         em.merge(managed);
     }
 
-   
     private Map<String, Collection<Paper>> getBillingMethod(StudentCourseSitting entity) throws CustomHttpException {
         Map<String, Collection<Paper>> map = new HashMap<>();
         Set<Part> parts = new HashSet<>();
@@ -228,6 +223,90 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Sitting does not exist");
         }
         super.create(entity);
+    }
+
+    public List<StudentCourseSitting> findAll(Integer courseTypeCode, String courseId, Integer year, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode AND c.id =:courseId AND ss.sittingYear =:year AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("courseTypeCode", courseTypeCode);
+        query.setParameter("courseId", courseId);
+        query.setParameter("year", year);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(Integer courseTypeCode) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode", StudentCourseSitting.class);
+        query.setParameter("courseTypeCode", courseTypeCode);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(String courseId) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE  c.id =:courseId ", StudentCourseSitting.class);
+        query.setParameter("courseId", courseId);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAllByYear(Integer year) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ss.sittingYear =:year", StudentCourseSitting.class);
+        query.setParameter("year", year);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(Integer courseTypeCode, Integer year) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode AND ss.sittingYear =:year", StudentCourseSitting.class);
+        query.setParameter("courseTypeCode", courseTypeCode);
+        query.setParameter("year", year);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(Integer courseTypeCode, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("courseTypeCode", courseTypeCode);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(String courseId, Integer year) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE c.id =:courseId AND ss.sittingYear =:year", StudentCourseSitting.class);
+        query.setParameter("courseId", courseId);
+        query.setParameter("year", year);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(String courseId, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE c.id =:courseId AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("courseId", courseId);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(String courseId, Integer year, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE c.id =:courseId AND ss.sittingYear =:year AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("courseId", courseId);
+        query.setParameter("year", year);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findAll(Integer courseTypeCode, Integer year, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode AND ss.sittingYear =:year AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("courseTypeCode", courseTypeCode);
+        query.setParameter("year", year);
+        query.setParameter("month", month);
+        return query.getResultList();
+    }
+
+    public Object findAllByYear(Integer year, SittingPeriod month) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ss.sittingYear =:year AND ss.sittingPeriod =:month", StudentCourseSitting.class);
+        query.setParameter("year", year);
+        query.setParameter("month", month);
+        return query.getResultList();
     }
 
 }

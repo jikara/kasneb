@@ -11,10 +11,12 @@ import com.kasneb.entity.Declaration;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Institution;
 import com.kasneb.entity.OtherCourse;
+import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.User;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.util.DateUtil;
+import com.kasneb.util.PredicateUtil;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -54,6 +56,8 @@ public class AdministratorRest {
     com.kasneb.session.StudentFacade studentFacade;
     @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
+    @EJB
+    com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
     @EJB
     com.kasneb.session.DeclarationFacade declarationFacade;
     @EJB
@@ -338,11 +342,65 @@ public class AdministratorRest {
     }
 
     @GET
+    @Path("studentcoursesitting")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentCourseSittings(@QueryParam("courseTypeCode") String scourseTypeCode, @QueryParam("courseId") String courseId, @QueryParam("year") String syear, @QueryParam("month") String smonth) {
+        if (PredicateUtil.isSet(scourseTypeCode) && PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //All set
+            anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode), courseId, Integer.parseInt(syear), SittingPeriod.valueOf(smonth));
+        } else if (PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && !PredicateUtil.isSet(smonth)) { //only courseType code set
+            anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && !PredicateUtil.isSet(smonth)) { ////only course set
+            anyResponse = studentCourseSittingFacade.findAll(courseId);
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && !PredicateUtil.isSet(smonth)) { //Only year set
+            anyResponse = studentCourseSittingFacade.findAllByYear(Integer.parseInt(syear));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //Only month set
+            anyResponse = studentCourseSittingFacade.findAll(SittingPeriod.valueOf(smonth));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && !PredicateUtil.isSet(smonth)) { //Course type and year set
+            anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode), Integer.parseInt(syear));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //Course type and month set
+            anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode), SittingPeriod.valueOf(smonth));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //Course and year and month set
+            anyResponse = studentCourseSittingFacade.findAll(courseId, Integer.parseInt(syear), SittingPeriod.valueOf(smonth));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //Course  and month set
+            anyResponse = studentCourseSittingFacade.findAll(courseId, SittingPeriod.valueOf(smonth));
+        } else if (!PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //Year and month set
+            anyResponse = studentCourseSittingFacade.findAllByYear(Integer.parseInt(syear), SittingPeriod.valueOf(smonth));
+        } else if (PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //CourseType and Year and month set
+            anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode), Integer.parseInt(syear), SittingPeriod.valueOf(smonth));
+        } else {
+            anyResponse = studentCourseSittingFacade.findAll();
+        }
+        httpStatus = Response.Status.OK;
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
     @Path("studentcourse")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourses() {
-        //TODO return proper representation object
-        throw new UnsupportedOperationException();
+    public Response getStudentCourses(@QueryParam("courseTypeCode") Integer courseTypeCode, @QueryParam("courseId") String courseId, @QueryParam("from") String from, @QueryParam("to") String to) {
+        if (courseTypeCode != null && courseId != null && from != null && to != null) {
+            anyResponse = studentCourseFacade.findAll();
+        } else {
+            anyResponse = studentCourseFacade.findAll();
+        }
+        httpStatus = Response.Status.OK;
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
     }
 
     @GET
