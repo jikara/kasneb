@@ -47,7 +47,7 @@ import java.util.Set;
  */
 public class CoreUtil {
 
-    public static String BASE_URL = "http://localhost:29097/core/";
+    public static String BASE_URL = "http://localhost:8080/core/";
 
     public static List<Country> getCountries() throws IOException, CustomHttpException {
         Gson gson = new Gson();

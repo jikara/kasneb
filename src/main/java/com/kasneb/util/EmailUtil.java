@@ -22,7 +22,7 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailUtil {
 
-    static final String BASE_URL = "http://192.168.11.90:81/studentsportal/site/";
+    static final String BASE_URL = "http://192.168.11.211:81/studentsportal/site/";
     //static final String BASE_URL = "http://kasneb/site/";
     static Properties mailServerProperties;
     static Session getMailSession;
