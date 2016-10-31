@@ -210,6 +210,7 @@ public class StudentCourseExemptionPaper implements Serializable {
     public Student getStudent() {
         if (getStudentCourse() != null) {
             student = getStudentCourse().getStudent();
+            student.setStudentCourses(null);
         }
         return student;
     }

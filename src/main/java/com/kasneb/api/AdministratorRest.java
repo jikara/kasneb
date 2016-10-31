@@ -67,7 +67,7 @@ public class AdministratorRest {
     @EJB
     com.kasneb.session.PaymentFacade paymentFacade;
     @EJB
-    com.kasneb.session.AuditTrailFacade auditTrailFacade;
+    com.kasneb.session.AuditTrailFacade auditTrailFacade; 
     @EJB
     com.kasneb.session.StudentCourseExemptionFacade studentCourseExemptionFacade;
 
@@ -438,12 +438,15 @@ public class AdministratorRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExemptions(@QueryParam("status") String status, @QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
         Date startDate, endDate;
-        Boolean verifiedStatus=status.equals("1");
+        Boolean verifiedStatus=false;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
             dateRange = true;
         }
-        if (dateRange) {
+        if (PredicateUtil.isSet(status)) {
+            verifiedStatus=status.equals("1");
+        }
+        if (dateRange && verifiedStatus) {
             startDate = DateUtil.getDate(from);
             endDate = DateUtil.getToDate(to);
             anyResponse = studentCourseExemptionFacade.findSummary(verifiedStatus,startDate, endDate);

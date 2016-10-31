@@ -65,6 +65,8 @@ public class Payment implements Serializable {
     private Invoice invoice;
     @Transient
     private String feeCode;
+    @Transient
+    private Student student;
 
     public Integer getId() {
         return id;
@@ -146,6 +148,19 @@ public class Payment implements Serializable {
 
     public void setFeeCode(String feeCode) {
         this.feeCode = feeCode;
+    }
+
+    public Student getStudent() {
+        if (getInvoice() != null) {
+            if (getInvoice().getFeeCode() != null) {
+                feeCode = getInvoice().getFeeCode().getCode();
+            }
+        }
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     @Override
