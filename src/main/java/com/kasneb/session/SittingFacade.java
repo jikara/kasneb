@@ -50,7 +50,12 @@ public class SittingFacade extends AbstractFacade<Sitting> {
         TypedQuery<Sitting> query = em.createQuery("SELECT s FROM Sitting s WHERE s.sittingPeriod =:period AND s.sittingYear =:year", Sitting.class);
         query.setParameter("period", period);
         query.setParameter("year", year);
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (javax.persistence.NoResultException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }
