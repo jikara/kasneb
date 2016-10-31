@@ -11,6 +11,7 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.SecurityUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -132,6 +133,13 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         em.merge(managed);
         return managed;
+    }
+
+    public List<Student> findAll(Date startDate, Date endDate) {
+        TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.created BETWEEN :startDate AND :endDate", Student.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
     }
 
 }

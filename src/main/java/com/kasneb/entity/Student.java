@@ -83,7 +83,7 @@ public class Student implements Serializable {
     @Column(name = "email", nullable = false)
     private String email;
     @Basic(optional = false)
-    @Column(name = "created", nullable = false)
+    @Column(name = "created", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date created = new Date();
@@ -99,7 +99,7 @@ public class Student implements Serializable {
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JsonManagedReference
-    private Contact contact;    
+    private Contact contact;
     @JoinColumn(name = "nationality", referencedColumnName = "code")
     @ManyToOne(optional = true)
     @JsonManagedReference

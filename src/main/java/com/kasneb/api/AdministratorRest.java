@@ -404,6 +404,34 @@ public class AdministratorRest {
     }
 
     @GET
+    @Path("student")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudents(@QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
+        Date startDate = null, endDate = null;
+        boolean dateRange = false;
+        if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
+            dateRange = true;
+        }
+        if (dateRange) {
+            startDate = DateUtil.getDate(from);
+            endDate = DateUtil.getToDate(to);
+            anyResponse = studentFacade.findAll(startDate, endDate);
+        } else {
+            anyResponse = studentFacade.findAll();
+        }
+        httpStatus = Response.Status.OK;
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
     @Path("exemption/other")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOtherCourseExemptions() {
