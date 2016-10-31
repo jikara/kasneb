@@ -222,7 +222,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         managed.setActive(Boolean.TRUE);
         //Create verification notification 
         Notification notification;
-        if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+        if (managed.getVerificationStatus() != VerificationStatus.REJECTED) {
             notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been successfully verified.Your registration number is " + regNo, managed.getStudent());
         } else {
             notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
@@ -230,7 +230,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         em.persist(notification);
         String body;
         //Send Email  
-        if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+        if (managed.getVerificationStatus() != VerificationStatus.REJECTED) {
             body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
                     + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
         } else {
@@ -539,7 +539,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             managed.setActive(Boolean.TRUE);
             //Create verification notification 
             Notification notification;
-            if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+            if (managed.getVerificationStatus() != VerificationStatus.REJECTED) {
                 notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been successfully verified.Your registration number is " + regNo, managed.getStudent());
             } else {
                 notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
@@ -547,7 +547,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             em.persist(notification);
             String body;
             //Send Email  
-            if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+            if (managed.getVerificationStatus() != VerificationStatus.REJECTED) {
                 body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
                         + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
             } else {

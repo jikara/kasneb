@@ -253,7 +253,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         Integer minimum = 1000;
         Random rn = new Random();
         int n = maximum - minimum + 1;
-        int i = rn.nextInt() % n;
+        int i = Math.abs(rn.nextInt() % n);
         return String.valueOf(minimum + i);
     }
 
