@@ -159,7 +159,6 @@ public class StudentCourseSittingRest {
             anyResponse = studentCourseSittingFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
-            ex.printStackTrace();
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         }
