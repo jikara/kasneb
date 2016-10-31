@@ -25,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -62,6 +63,8 @@ public class StudentCourseSitting implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StudentCourseSittingStatus status = StudentCourseSittingStatus.PENDING;
+    @Transient
+    private Student student;
 
     public StudentCourseSitting() {
     }
@@ -135,6 +138,17 @@ public class StudentCourseSitting implements Serializable {
             papers.add(paper);
             paper.setStudentCourseSitting(this);
         }
+    }
+
+    public Student getStudent() {
+        if (getStudentCourse() != null) {
+            student = getStudentCourse().getStudentObj();
+        }
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     @Override

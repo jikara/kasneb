@@ -56,7 +56,7 @@ public class Payment implements Serializable {
     private String pin;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Column(name = "paymentTimestamp", nullable = false)
+    @Column(name = "paymentTimestamp", nullable = false, updatable = false)
     private Date paymentTimestamp = new Date();
     @OneToOne
     @JoinColumn(name = "invoiceId", referencedColumnName = "id", nullable = false)
@@ -152,8 +152,8 @@ public class Payment implements Serializable {
 
     public Student getStudent() {
         if (getInvoice() != null) {
-            if (getInvoice().getFeeCode() != null) {
-                feeCode = getInvoice().getFeeCode().getCode();
+            if (getInvoice().getStudentCourse() != null) {
+                student = getInvoice().getStudentCourse().getStudentObj();
             }
         }
         return student;
