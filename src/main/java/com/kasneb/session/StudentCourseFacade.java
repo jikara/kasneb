@@ -42,7 +42,9 @@ import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
+import com.kasneb.model.Email;
 import com.kasneb.util.CoreUtil;
+import com.kasneb.util.EmailUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
@@ -59,6 +61,7 @@ import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -183,7 +186,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return managed;
     }
 
-    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException {
+    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }
@@ -229,6 +232,16 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
         }
         em.persist(notification);
+        String body;
+        //Send Email  
+        if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+            body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+                    + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
+        } else {
+            body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+                    + "Your registration for " + managed.getCourse().getName() + " was unsuccessful due to the reasons outlined.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
+        }
+        EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
         return em.merge(managed);
     }
 
@@ -498,7 +511,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return query.getResultList();
     }
 
-    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException {
+    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException, MessagingException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }
@@ -536,6 +549,16 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Your course registration has been rejected.Kindly contact Kasneb for further clarification.", managed.getStudent());
             }
             em.persist(notification);
+            String body;
+            //Send Email  
+            if (managed.getVerificationStatus() == VerificationStatus.APPROVED) {
+                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+                        + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
+            } else {
+                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+                        + "Your registration for " + managed.getCourse().getName() + " was unsuccessful due to the reasons outlined.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
+            }
+            EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
             em.merge(managed);
         }
     }

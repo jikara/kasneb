@@ -18,6 +18,8 @@ import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.StudentCourseSittingPaper;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.model.Email;
+import com.kasneb.util.EmailUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -111,7 +114,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         em.merge(managed);
     }
 
-    public void updateCentre(StudentCourseSitting entity) throws CustomHttpException {
+    public void updateCentre(StudentCourseSitting entity) throws CustomHttpException, MessagingException {
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting does not exist");
@@ -132,6 +135,9 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This exam is not offerred in selected centre");
         }
         managed.setSittingCentre(entity.getSittingCentre());
+        //Send email
+        String body = "Your examination booking  for " + managed.getStudentCourse().getCourse().getName() + " was successful. Please click on the link below to access your timetable.<br><a>Link</a><br>Kindly note that you will be required to present your timetable and national Id at the examination room.<br>Wishing you success in your examination.";
+        EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
         em.merge(managed);
     }
 

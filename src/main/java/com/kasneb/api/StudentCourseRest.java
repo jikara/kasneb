@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -285,6 +286,7 @@ public class StudentCourseRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public Response verify(StudentCourse entity) {
+        String body;
         try {
             anyResponse = studentCourseFacade.verifyStudentCourse(entity);
             httpStatus = Response.Status.OK;
@@ -293,6 +295,8 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MessagingException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {

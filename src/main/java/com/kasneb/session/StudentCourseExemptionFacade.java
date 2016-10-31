@@ -101,7 +101,6 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
                 if (managed == null) {
                     throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some papers have not been applied for exemption");
                 }
-
                 em.detach(managed);
                 managed.setDateVerified(new Date());
                 managed.setVerifiedBy(verifier);
@@ -118,7 +117,17 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
             //Create notification
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", studentCourse.getStudent());
             em.persist(notification);
-            em.merge(studentCourse);
+            String body;
+//            //Send Email  
+//            if (studentCourse.getVerificationStatus() == VerificationStatus.APPROVED) {
+//                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+//                        + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
+//            } else {
+//                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
+//                        + "Your registration for " + managed.getCourse().getName() + " was unsuccessful due to the reasons outlined.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
+//            }
+//            EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
+           em.merge(studentCourse);
         }
 
     }
