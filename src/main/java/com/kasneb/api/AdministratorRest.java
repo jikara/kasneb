@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -495,8 +496,27 @@ public class AdministratorRest {
     @Path("declaration")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateDeclarations(Declaration declaration) {
-        try {            
+        try {
             anyResponse = declarationFacade.edit(declaration);
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @DELETE
+    @Path("declaration/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateDeclarations(@PathParam("id") Integer id) {
+        try {
+            Declaration declaration = declarationFacade.find(id);
+            declarationFacade.remove(declaration);
+            anyResponse = new CustomMessage(200, "Record removed successfully");
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
