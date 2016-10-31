@@ -146,9 +146,10 @@ public class StudentCourseSittingRest {
 
     @PUT
     @Path("centre")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON) 
     public Response setCentre(StudentCourseSitting entity) throws JsonProcessingException, MessagingException {
+        entity.setId(1);
         try {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");

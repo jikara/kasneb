@@ -145,7 +145,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         if (current != null && current.getInvoice() != null && current.getInvoice().getStatus().getStatus().equals("PAID")) {
             //Current Suscription has already been verified and course cannot be changed so get by course id
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This course registration has already been paid for and cannot be updated.");
-            
+
         }
         try {
             em.detach(managed);
