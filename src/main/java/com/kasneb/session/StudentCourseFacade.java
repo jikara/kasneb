@@ -232,7 +232,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         //Send Email  
         if (managed.getVerificationStatus() != VerificationStatus.REJECTED) {
             body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
-                    + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
+                    + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the booking deadline for the " + managed.getFirstSitting().getSittingPeriod().toString() + " " + managed.getFirstSitting().getSittingYear() + " examination is " + managed.getFirstSitting().getRegistrationDeadline();
         } else {
             body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
                     + "Your registration for " + managed.getCourse().getName() + " was unsuccessful due to the reasons outlined.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
@@ -486,16 +486,28 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         managed.setActive(active);
         managed.setVerified(verified);
         //Create notification
-        Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", managed.getStudent());
-        em.persist(managed);
+        Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.VERIFICATION, "Your examination exemption application has been received. Kindly await the exemption verification.", managed.getStudent());
+        em.persist(notification);
         em.merge(managed);
     }
 
-    public Set<Paper> getEligibleExemptions(Integer studentCourseId, Integer qualificationId, Integer codeType) throws CustomHttpException {
-        if (super.find(studentCourseId) == null) {
+    public Set<Paper> getEligibleExemptions(Integer studentCourseId, String qualificationId, Integer codeType) throws CustomHttpException {
+        Set<Paper> papers = new HashSet<>();
+        StudentCourse studentCourse = super.find(studentCourseId);
+        Course course = em.find(Course.class, qualificationId);
+        if (studentCourse == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course does not exist");
         }
-        return new HashSet<>();
+        if (course == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification course does not exist");
+        }
+        TypedQuery<CourseExemption> query = em.createQuery("SELECT c FROM CourseExemption c WHERE c.qualification =:qualification AND c.course =:course", CourseExemption.class);
+        query.setParameter("qualification", course);
+        query.setParameter("course", studentCourse.getCourse());
+        for (CourseExemption c : query.getResultList()) {
+            papers.add(c.getPaper());
+        }
+        return papers;
     }
 
     public List<StudentCourse> findVerificationByUser(User user) {

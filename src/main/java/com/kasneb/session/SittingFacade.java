@@ -53,9 +53,8 @@ public class SittingFacade extends AbstractFacade<Sitting> {
         try {
             return query.getSingleResult();
         } catch (javax.persistence.NoResultException ex) {
-            ex.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 }

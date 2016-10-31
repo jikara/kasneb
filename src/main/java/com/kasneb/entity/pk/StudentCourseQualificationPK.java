@@ -20,7 +20,7 @@ public class StudentCourseQualificationPK implements Serializable {
     @Column(name = "studentCourseId")
     private Integer studentCourseId;
     @Column(name = "qualificationId")
-    private Integer qualificationId;
+    private String qualificationId;
 
     public Integer getStudentCourseId() {
         return studentCourseId;
@@ -30,11 +30,11 @@ public class StudentCourseQualificationPK implements Serializable {
         this.studentCourseId = studentCourseId;
     }
 
-    public Integer getQualificationId() {
+    public String getQualificationId() {
         return qualificationId;
     }
 
-    public void setQualificationId(Integer qualificationId) {
+    public void setQualificationId(String qualificationId) {
         this.qualificationId = qualificationId;
     }
 

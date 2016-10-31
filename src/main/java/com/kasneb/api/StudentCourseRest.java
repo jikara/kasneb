@@ -169,7 +169,7 @@ public class StudentCourseRest {
     @GET
     @Path("eligible_exemptions/{studentCourseId}/{qualification_id}/{code_type}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") Integer qualificationId, @PathParam("code_type") Integer codeType) {
+    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") String qualificationId, @PathParam("code_type") Integer codeType) {
         try {
             anyResponse = studentCourseFacade.getEligibleExemptions(studentCourseId, qualificationId, codeType);
             httpStatus = Response.Status.OK;
