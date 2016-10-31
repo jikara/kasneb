@@ -407,7 +407,7 @@ public class AdministratorRest {
     @Path("student")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudents(@QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
-        Date startDate = null, endDate = null;
+        Date startDate, endDate;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
             dateRange = true;
