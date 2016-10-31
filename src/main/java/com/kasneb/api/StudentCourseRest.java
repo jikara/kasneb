@@ -325,6 +325,8 @@ public class StudentCourseRest {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MessagingException ex) {
+            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             json = mapper.writeValueAsString(anyResponse);

@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -80,7 +80,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         Sitting firstSitting = em.find(Sitting.class, studentCourse.getFirstSitting().getId());
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
+        Invoice invoice = new Invoice(generateInvoiceNumber(), new Date());
         Fee regFee = feeTypeFacade.getCourseRegistrationFee(course);
         invoice.addInvoiceDetail(new InvoiceDetail(regFee.getKesAmount(), regFee.getUsdAmount(), regFee.getGbpAmount(), "Course registration fee"));
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
@@ -120,7 +120,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
     public Invoice generateRenewalInvoice(StudentCourse studentCourse) throws CustomHttpException {
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
+        Invoice invoice = new Invoice(generateInvoiceNumber(), new Date());
         Fee renewalFee = feeTypeFacade.getAnnualRegistrationRenewalFee(studentCourse.getCourse());
         invoice.addInvoiceDetail(new InvoiceDetail(renewalFee.getKesAmount(), renewalFee.getUsdAmount(), renewalFee.getGbpAmount(), "Annual registration renewal fee"));
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
@@ -155,7 +155,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         }
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
-        ExemptionInvoice invoice = new ExemptionInvoice(studentCourse.getExemptions(), UUID.randomUUID().toString(), new Date());
+        ExemptionInvoice invoice = new ExemptionInvoice(studentCourse.getExemptions(), generateInvoiceNumber(), new Date());
         for (Paper paper : studentCourse.getExemptedPapers()) {
             StudentCourseExemptionPaperPK pk = new StudentCourseExemptionPaperPK(studentCourse.getId(), paper.getCode());
             StudentCourseExemptionPaper studentCourseExemptionPaper = new StudentCourseExemptionPaper(pk);
@@ -186,7 +186,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
-        Invoice invoice = new Invoice(UUID.randomUUID().toString(), new Date());
+        Invoice invoice = new Invoice(generateInvoiceNumber(), new Date());
         for (Map.Entry<String, Collection<Paper>> entry : map.entrySet()) {
             String key = entry.getKey();
             Collection<Paper> papersCollection = entry.getValue();
@@ -246,6 +246,15 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         invoice.setFeeCode(new FeeCode(FEE_CODE));
         invoice.setStudentCourse(managed.getStudentCourse());
         return invoice;
+    }
+
+    public String generateInvoiceNumber() {
+        Integer maximum = 10000;
+        Integer minimum = 1000;
+        Random rn = new Random();
+        int n = maximum - minimum + 1;
+        int i = rn.nextInt() % n;
+        return String.valueOf(minimum + i);
     }
 
 }

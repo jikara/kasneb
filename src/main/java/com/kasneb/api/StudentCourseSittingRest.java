@@ -13,6 +13,7 @@ import com.kasneb.exception.CustomMessage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -147,7 +148,7 @@ public class StudentCourseSittingRest {
     @Path("centre")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setCentre(StudentCourseSitting entity) throws JsonProcessingException {
+    public Response setCentre(StudentCourseSitting entity) throws JsonProcessingException, MessagingException {
         try {
             if (entity.getId() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id is not defined");
