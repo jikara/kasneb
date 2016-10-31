@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -78,7 +79,7 @@ public class CoreUtil {
         Student student = studentCourse.getStudent();
         //Create core object
         Set<Receipt> receipts = new HashSet<>();
-        CpaRegistration registration = new CpaRegistration(null, Stream.AC, studentCourse.getCreated(), getFirstExemDate(studentCourse.getFirstSitting()), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDob(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
+        CpaRegistration registration = new CpaRegistration(null, Stream.AC, getFirstExemDate(studentCourse.getFirstSitting()), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDob(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
         for (Invoice invoice : studentCourse.getInvoices()) {
             if ("PAID".equals(invoice.getStatus().getStatus())) {
                 Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
@@ -87,7 +88,7 @@ public class CoreUtil {
                     ReceiptDetail rcpDetail = new ReceiptDetail(receiptDetailPK, null, new Course(studentCourse.getCourse().getId()), new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", new com.kasneb.client.Currency(Currency.KSH.toString()));
                     receiptDetails.add(rcpDetail);
                 }
-                Receipt receipt = new Receipt("C12345", new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, new Date(), "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), receiptDetails);
+                Receipt receipt = new Receipt(generateReceipt(), new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, new Date(), "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), receiptDetails);
                 receipts.add(receipt);
             }
         }
@@ -106,5 +107,14 @@ public class CoreUtil {
             session = 2;
         }
         return Integer.parseInt(session + "" + firstSitting.getSittingYear());
+    }
+
+    public static String generateReceipt() {
+        Integer maximum = 10000;
+        Integer minimum = 1000;
+        Random rn = new Random();
+        int n = maximum - minimum + 1;
+        int i = rn.nextInt() % n;
+        return "C" + minimum + i;
     }
 }

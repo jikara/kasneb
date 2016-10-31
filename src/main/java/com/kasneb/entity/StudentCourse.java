@@ -337,14 +337,19 @@ public class StudentCourse implements Serializable {
 
     public ElligiblePart getEligiblePart() {
         Collection<ElligibleSection> elligibleSections = getElligibleSections();
-        return new ElligiblePart(getCurrentPart().getName(), elligibleSections);
+        if (getCurrentPart() != null) {
+            return new ElligiblePart(getCurrentPart().getName(), elligibleSections);
+        }
+        return null;
     }
 
     public Collection<ElligibleSection> getElligibleSections() {
         Collection<ElligibleSection> elligibleSections = new ArrayList<>();
-        for (Section section : getCurrentPart().getSectionCollection()) {
-            Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(), getPassedPapers());
-            elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
+        if (getCurrentPart() != null) {
+            for (Section section : getCurrentPart().getSectionCollection()) {
+                Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(), getPassedPapers());
+                elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
+            }
         }
         return elligibleSections;
     }

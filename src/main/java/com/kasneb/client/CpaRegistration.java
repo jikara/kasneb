@@ -21,7 +21,6 @@ public class CpaRegistration implements Serializable {
     private Integer regNo;
     private String registrationNumber;
     private Stream stream;
-    private Date registered;
     private Integer firstExamDate;
     private String lastName;
     private String firstName;
@@ -55,10 +54,9 @@ public class CpaRegistration implements Serializable {
     public CpaRegistration() {
     }
 
-    public CpaRegistration(Integer regNo, Stream stream, Date registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, CsSex sex, Date dateOfBirth, Nation nation, String idNumber, CsQualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, CsQualification qualification) {
+    public CpaRegistration(Integer regNo, Stream stream, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, CsSex sex, Date dateOfBirth, Nation nation, String idNumber, CsQualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, CsQualification qualification) {
         this.regNo = regNo;
         this.stream = stream;
-        this.registered = registered;
         this.firstExamDate = firstExamDate;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -110,14 +108,6 @@ public class CpaRegistration implements Serializable {
 
     public void setStream(Stream stream) {
         this.stream = stream;
-    }
-
-    public Date getRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(Date registered) {
-        this.registered = registered;
     }
 
     public Integer getFirstExamDate() {
