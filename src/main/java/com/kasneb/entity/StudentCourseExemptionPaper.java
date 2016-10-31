@@ -44,6 +44,8 @@ public class StudentCourseExemptionPaper implements Serializable {
     private StudentCourse studentCourse;
     @Transient
     private Integer studentId;
+    @Transient
+    private Student student;
     @ManyToOne
     @JoinColumn(name = "paperCode", referencedColumnName = "code", insertable = false, updatable = false)
     @JsonManagedReference
@@ -203,6 +205,17 @@ public class StudentCourseExemptionPaper implements Serializable {
 
     public void setStudentId(Integer studentId) {
         this.studentId = studentId;
+    }
+
+    public Student getStudent() {
+        if (getStudentCourse() != null) {
+            student = getStudentCourse().getStudent();
+        }
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public Date getCreated() {

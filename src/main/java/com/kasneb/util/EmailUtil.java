@@ -5,7 +5,6 @@
  */
 package com.kasneb.util;
 
-import com.kasneb.entity.Login;
 import com.kasneb.model.Email;
 import java.util.Properties;
 import javax.mail.Message;
@@ -42,7 +41,7 @@ public class EmailUtil {
         generateMailMessage = new MimeMessage(getMailSession);
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email.getAddress()));
         generateMailMessage.setSubject(email.getSubject());
-        generateMailMessage.setContent(getEmailBody(email), "text/html");
+        generateMailMessage.setContent(email.getBody(), "text/html");
         System.out.println("Mail Session has been created successfully..");
         // Step3
         System.out.println("\n\n 3rd ===> Get Session and Send mail");
@@ -52,13 +51,6 @@ public class EmailUtil {
         transport.connect("smtp.gmail.com", "ikarajustus", "webtribe");
         transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
-    }
-
-    public static String getEmailBody(Email email) {
-        Login login = (Login) email.getEmailBody().get("login");
-        String token = login.getVerificationToken();
-        String html = "<a href='" + BASE_URL + "activate-account?token=" + token + "'>Click here to verify your account<a>";
-        return html;
     }
 
 }

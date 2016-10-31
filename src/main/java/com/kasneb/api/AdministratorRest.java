@@ -68,6 +68,8 @@ public class AdministratorRest {
     com.kasneb.session.PaymentFacade paymentFacade;
     @EJB
     com.kasneb.session.AuditTrailFacade auditTrailFacade;
+    @EJB
+    com.kasneb.session.StudentCourseExemptionFacade studentCourseExemptionFacade;
 
     /**
      * Creates a new instance of AdministratorRest
@@ -432,6 +434,35 @@ public class AdministratorRest {
     }
 
     @GET
+    @Path("exemption")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExemptions(@QueryParam("status") String status, @QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
+        Date startDate, endDate;
+        Boolean verifiedStatus=status.equals("1");
+        boolean dateRange = false;
+        if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
+            dateRange = true;
+        }
+        if (dateRange) {
+            startDate = DateUtil.getDate(from);
+            endDate = DateUtil.getToDate(to);
+            anyResponse = studentCourseExemptionFacade.findSummary(verifiedStatus,startDate, endDate);
+        } else {
+            anyResponse = studentCourseExemptionFacade.findSummary();
+        }
+        httpStatus = Response.Status.OK;
+        try {
+            json = mapper.writeValueAsString(anyResponse);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
     @Path("exemption/other")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOtherCourseExemptions() {
@@ -442,7 +473,7 @@ public class AdministratorRest {
     @POST
     @Path("declaration")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getOtherCourseExemptions(Declaration declaration) {
+    public Response addDeclarations(Declaration declaration) {
         try {
             anyResponse = declarationFacade.create(declaration);
             json = mapper.writeValueAsString(anyResponse);

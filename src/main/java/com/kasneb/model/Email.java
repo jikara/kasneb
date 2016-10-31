@@ -5,8 +5,6 @@
  */
 package com.kasneb.model;
 
-import java.util.Map;
-
 /**
  *
  * @author jikara
@@ -15,15 +13,15 @@ public class Email {
 
     private String address;
     private String subject;
-    private Map emailBody;
+    private String body;
 
     public Email() {
     }
 
-    public Email(String address, String subject, Map emailBody) {
+    public Email(String address, String subject, String body) {
         this.address = address;
         this.subject = subject;
-        this.emailBody = emailBody;
+        this.body = body;
     }
 
     public String getAddress() {
@@ -42,11 +40,11 @@ public class Email {
         this.subject = subject;
     }
 
-    public Map getEmailBody() {
-        return emailBody;
+    public String getBody() {
+        return body;
     }
 
-    public void setEmailBody(Map emailBody) {
-        this.emailBody = emailBody;
+    public void setBody(String body) {
+        this.body = body;
     }
 }

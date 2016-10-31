@@ -123,4 +123,17 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
 
     }
 
+    public List<StudentCourseExemptionPaper> findSummary(Boolean verifiedStatus, Date startDate, Date endDate) {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s WHERE s.verified =:verified AND s.created BETWEEN :startDate AND :endDate", StudentCourseExemptionPaper.class);
+        query.setParameter("verifiedStatus", verifiedStatus);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseExemptionPaper> findSummary() {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s", StudentCourseExemptionPaper.class);
+        return query.getResultList();
+    }
+
 }
