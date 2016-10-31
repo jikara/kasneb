@@ -10,5 +10,5 @@ package com.kasneb.entity;
  * @author jikara
  */
 public enum StudentCourseSittingStatus {
-    PENDING, CONFIRMED, CANCELLED
+    PENDING, PAID, CONFIRMED, CANCELLED
 }

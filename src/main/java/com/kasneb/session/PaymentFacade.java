@@ -160,7 +160,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Registration renewal fee payment has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case EXAM_ENTRY_FEE:
-                invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.CONFIRMED);
+                invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.PAID);
                 //update invoice as paid
                 invoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(invoice);

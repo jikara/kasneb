@@ -6,6 +6,7 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.Sitting;
+import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.Sitting_;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,13 @@ public class SittingFacade extends AbstractFacade<Sitting> {
         cq.where(cb.greaterThanOrEqualTo(sitting.get(Sitting_.lateRegistrationDeadline), new Date()));
         TypedQuery<Sitting> query = em.createQuery(cq);
         return query.getResultList();
+    }
+
+    public Sitting find(SittingPeriod period, Integer year) {
+        TypedQuery<Sitting> query = em.createQuery("SELECT s FROM Sitting s WHERE s.sittingPeriod =:period AND s.sittingYear =:year", Sitting.class);
+        query.setParameter("period", period);
+        query.setParameter("year", year);
+        return query.getSingleResult();
     }
 
 }

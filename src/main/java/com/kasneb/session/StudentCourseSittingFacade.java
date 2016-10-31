@@ -17,6 +17,7 @@ import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.StudentCourseSittingPaper;
+import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.Email;
 import com.kasneb.util.EmailUtil;
@@ -56,6 +57,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     com.kasneb.session.KasnebCourseFacade kasnebCourseFacade;
     @EJB
     com.kasneb.session.InvoiceFacade invoiceFacade;
+    @EJB
+    com.kasneb.session.SittingFacade sittingFacade;
     @Resource
     private SessionContext ctx;
 
@@ -93,6 +96,10 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
+        }
+        //Check if same sitting is booked
+        if (managed.getStatus() == StudentCourseSittingStatus.PAID || managed.getStatus() == StudentCourseSittingStatus.CONFIRMED) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Sitting has already been paid for and cannot be updated.");
         }
         try {
             em.detach(managed);
@@ -135,9 +142,10 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This exam is not offerred in selected centre");
         }
         managed.setSittingCentre(entity.getSittingCentre());
+        managed.setStatus(StudentCourseSittingStatus.CONFIRMED);
         //Send email
         String body = "Your examination booking  for " + managed.getStudentCourse().getCourse().getName() + " was successful. Please click on the link below to access your timetable.<br><a>Link</a><br>Kindly note that you will be required to present your timetable and national Id at the examination room.<br>Wishing you success in your examination.";
-        EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
+        EmailUtil.sendEmail(new Email(managed.getStudentCourse().getStudent().getLoginId().getEmail(), "Course registration verification", body));
         em.merge(managed);
     }
 
@@ -228,6 +236,14 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (sitting == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Sitting does not exist");
         }
+        //Check if same sitting is booked
+        Sitting s = sittingFacade.find(entity.getSitting().getSittingPeriod(), entity.getSitting().getSittingYear());
+        if (s != null) {
+            StudentCourseSitting paidOrConfirmed = this.getPaidOrCOnfirmed(s);
+            if (paidOrConfirmed != null) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Sitting has already been paid for and cannot be updated.");
+            }
+        }
         super.create(entity);
     }
 
@@ -313,6 +329,12 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("year", year);
         query.setParameter("month", month);
         return query.getResultList();
+    }
+
+    public StudentCourseSitting getPaidOrCOnfirmed(Sitting sitting) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s WHERE s.sitting =:sitting", StudentCourseSitting.class);
+        query.setParameter("sitting", sitting);
+        return query.getSingleResult();
     }
 
 }
