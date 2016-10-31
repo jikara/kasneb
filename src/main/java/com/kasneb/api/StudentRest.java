@@ -174,7 +174,7 @@ public class StudentRest {
                 SmsUtil.sendSMS(new Sms(entity.getPhoneNumber(), smsToken));
             } else {
                 //Send Email                
-                String body = "Dear Studentname,<br>\n"
+                String body = "Dear " + entity.getFirstName() + " " + entity.getMiddleName() + ",<br>\n"
                         + "Thank you for signing up to the KASNEB student portal. Please click below link to verify your account:<br><a href='http://192.168.11.211:81/studentsportal/site/activate-account?token=" + key + "'>Link<a><br>Your Kasneb wallet pin is 1234, to change the pin. Go to https://www.jambopay.com/. Sign in to the portal and navigate to change Password menu and change your pin.";
                 EmailUtil.sendEmail(new Email(entity.getLoginId().getEmail(), "Account Verification", body));
             }
@@ -239,7 +239,6 @@ public class StudentRest {
 //                .entity(json)
 //                .build();
 //    }
-
     @GET
     @Path("invoices/{id}")
     @Produces(MediaType.APPLICATION_JSON)

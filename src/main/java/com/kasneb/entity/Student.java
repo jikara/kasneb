@@ -115,7 +115,7 @@ public class Student implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "student")
     @JsonBackReference
     private Login loginId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Collection<StudentCourse> studentCourses;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
@@ -298,23 +298,8 @@ public class Student implements Serializable {
         this.contact = contact;
     }
 
-    public StudentCourse getCurrentCourse() {
-        if (getStudentCourses() != null) {
-            for (StudentCourse course : getStudentCourses()) {
-                if (course.getActive()) {
-                    currentCourse = course;
-                }
-            }
-        }
-        return currentCourse;
-    }
-
-    public void setCurrentCourse(StudentCourse currentCourse) {
-        this.currentCourse = currentCourse;
-    }
-
     public Collection<StudentCourse> getStudentCourses() {
-        return studentCourses;
+        return studentCourses; 
     }
 
     public void setStudentCourses(Collection<StudentCourse> studentCourses) {
@@ -348,6 +333,22 @@ public class Student implements Serializable {
 
     public void setJpPin(String jpPin) {
         this.jpPin = jpPin;
+    }
+
+    public StudentCourse getCurrentCourse() {
+        Collection<StudentCourse> s = getStudentCourses();
+        if (s != null) {
+            for (StudentCourse course : getStudentCourses()) {
+                if (course.getActive()) {
+                    currentCourse = course;
+                }
+            }
+        }
+        return currentCourse;
+    }
+
+    public void setCurrentCourse(StudentCourse currentCourse) {
+        this.currentCourse = currentCourse;
     }
 
     @Override
