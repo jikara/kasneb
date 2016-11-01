@@ -336,6 +336,13 @@ public class Student implements Serializable {
     }
 
     public StudentCourse getCurrentCourse() {
+        if (getStudentCourses() != null) {
+            for (StudentCourse course : getStudentCourses()) {
+                if (course.getActive()) {
+                    return course;
+                }
+            }
+        }
         return currentCourse;
     }
 
