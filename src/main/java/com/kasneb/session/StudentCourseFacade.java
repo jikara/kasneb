@@ -101,7 +101,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
-        entity.setCourse(new KasnebCourse("01"));
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
         }
@@ -128,6 +127,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         } else if (course.getCourseTypeCode() == 200) {
             entity.setCurrentLevel(new Level(1));
         }
+        entity.setActive(Boolean.FALSE);
         em.persist(entity);
         return entity;
     }

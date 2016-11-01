@@ -299,7 +299,7 @@ public class Student implements Serializable {
     }
 
     public Collection<StudentCourse> getStudentCourses() {
-        return studentCourses; 
+        return studentCourses;
     }
 
     public void setStudentCourses(Collection<StudentCourse> studentCourses) {
@@ -336,14 +336,6 @@ public class Student implements Serializable {
     }
 
     public StudentCourse getCurrentCourse() {
-        Collection<StudentCourse> s = getStudentCourses();
-        if (s != null) {
-            for (StudentCourse course : getStudentCourses()) {
-                if (course.getActive()) {
-                    currentCourse = course;
-                }
-            }
-        }
         return currentCourse;
     }
 

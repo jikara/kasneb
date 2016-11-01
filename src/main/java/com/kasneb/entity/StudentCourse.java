@@ -71,7 +71,7 @@ public class StudentCourse implements Serializable {
     private String document;
     @Basic(optional = false)
     @Column(name = "active", nullable = false)
-    private Boolean active = false;
+    private Boolean active;
     @Basic(optional = false)
     @Column(name = "verified", nullable = false)
     private Boolean verified = false;
@@ -153,8 +153,6 @@ public class StudentCourse implements Serializable {
     private Set<StudentCourseExemptionPaper> exemptions;
     @Transient
     private Set<Paper> eligibleExemptions;
-    @Transient
-    private Set<Paper> kasnebQualificationExemptions;
     @Transient
     private Set<Paper> exemptedPapers = new HashSet<>();
     @Transient
@@ -440,38 +438,38 @@ public class StudentCourse implements Serializable {
         return qualifications;
     }
 
+//    public Set<Paper> getEligibleExemptions() {
+//        eligibleExemptions = new HashSet<>();
+//        try {
+//            for (StudentCourseQualification qualification : getQualifications()) {
+//                for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
+//                    eligibleExemptions.add(courseExemption.getPaper());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return eligibleExemptions;
+//    }
+//
+//    public void setEligibleExemptions(Set<Paper> eligibleExemptions) {
+//        this.eligibleExemptions = eligibleExemptions;
+//    }
+
     public Set<Paper> getEligibleExemptions() {
         eligibleExemptions = new HashSet<>();
-        try {
-            for (StudentCourseQualification qualification : getQualifications()) {
+        if (getKasnebQualifications() != null) {
+            for (StudentCourseQualification qualification : getKasnebQualifications()) {
                 for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
                     eligibleExemptions.add(courseExemption.getPaper());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return eligibleExemptions;
     }
 
     public void setEligibleExemptions(Set<Paper> eligibleExemptions) {
         this.eligibleExemptions = eligibleExemptions;
-    }
-
-    public Set<Paper> getKasnebQualificationExemptions() {
-        kasnebQualificationExemptions = new HashSet<>();
-        if (getKasnebQualifications() != null) {
-            for (StudentCourseQualification qualification : getKasnebQualifications()) {
-                for (CourseExemption courseExemption : qualification.getQualification().getCourseExemptions()) {
-                    kasnebQualificationExemptions.add(courseExemption.getPaper());
-                }
-            }
-        }
-        return kasnebQualificationExemptions;
-    }
-
-    public void setKasnebQualificationExemptions(Set<Paper> kasnebQualificationExemptions) {
-        this.kasnebQualificationExemptions = kasnebQualificationExemptions;
     }
 
     public Set<Paper> getExemptedPapers() {

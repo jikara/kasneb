@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.Login;
+import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.Email;
@@ -44,7 +45,7 @@ import org.glassfish.jersey.server.mvc.Viewable;
  */
 @Path("student")
 public class StudentRest {
-
+    
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
@@ -53,7 +54,7 @@ public class StudentRest {
     com.kasneb.session.StudentFacade studentFacade;
     @EJB
     com.kasneb.session.LoginFacade loginFacade;
-
+    
     private static final String DEVICE_HEADER_NAME = "Client-Id";
 
     /**
@@ -81,7 +82,7 @@ public class StudentRest {
                 .entity(json)
                 .build();
     }
-
+    
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,7 +109,14 @@ public class StudentRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) {
         try {
-            anyResponse = studentFacade.find(id);
+            Student student = studentFacade.find(id);
+            for (StudentCourse course : student.getStudentCourses()) {
+                if (course.getActive()) {
+                    course.setStudent(new Student(course.getStudent().getId()));
+                    student.setCurrentCourse(course);
+                }
+            }
+            anyResponse = student;
             json = mapper.writeValueAsString(anyResponse);
             httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
@@ -254,7 +262,7 @@ public class StudentRest {
                 .entity(json)
                 .build();
     }
-
+    
     @PUT
     @Path("verify")
     @Produces(MediaType.APPLICATION_JSON)
@@ -284,7 +292,7 @@ public class StudentRest {
                 .entity(json)
                 .build();
     }
-
+    
     @GET
     @Path("email")
     @Template
@@ -292,7 +300,7 @@ public class StudentRest {
     public Viewable get() {
         return new Viewable("index.foo", "FOO");
     }
-
+    
     @POST
     @Path("balance")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -317,5 +325,5 @@ public class StudentRest {
                 .entity(json)
                 .build();
     }
-
+    
 }
