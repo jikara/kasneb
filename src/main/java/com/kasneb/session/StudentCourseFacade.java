@@ -101,6 +101,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
+        entity.setCourse(new KasnebCourse("01"));
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
         }
@@ -116,8 +117,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist.");
         }
         if (course == null) {
-            entity.setCourse(new KasnebCourse("01"));
-            //throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist.");
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist.");
         }
         if (findByStudentCourse(entity) != null) {
             return findByStudentCourse(entity);
