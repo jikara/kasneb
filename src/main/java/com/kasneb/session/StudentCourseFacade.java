@@ -116,7 +116,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist.");
         }
         if (course == null) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist.");
+            entity.setCourse(new KasnebCourse("01"));
+            //throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist.");
         }
         if (findByStudentCourse(entity) != null) {
             return findByStudentCourse(entity);
