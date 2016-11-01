@@ -21,7 +21,6 @@ import com.kasneb.entity.Sitting;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseExemptionPaper;
 import com.kasneb.entity.StudentCourseSitting;
-import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.exception.CustomHttpException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -156,24 +155,23 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
         ExemptionInvoice invoice = new ExemptionInvoice(studentCourse.getExemptions(), generateInvoiceNumber(), new Date());
-        for (Paper paper : studentCourse.getExemptedPapers()) {
-            StudentCourseExemptionPaperPK pk = new StudentCourseExemptionPaperPK(studentCourse.getId(), paper.getCode());
-            StudentCourseExemptionPaper studentCourseExemptionPaper = new StudentCourseExemptionPaper(pk);
-            Fee exemptionFee = feeTypeFacade.getExemptionFee(paper);
-            invoice.addExemptionInvoiceDetail(new ExemptionInvoiceDetail(studentCourseExemptionPaper, exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), exemptionFee.getGbpAmount(), "Exemption fee | " + paper.getCode()));
-            //Add to totals
-            kesTotal = kesTotal.add(exemptionFee.getKesAmount());
-            usdTotal = usdTotal.add(exemptionFee.getUsdAmount());
-            gbpTotal = gbpTotal.add(exemptionFee.getGbpAmount());
+        for (StudentCourseExemptionPaper studentCourseExemptionPaper : studentCourse.getExemptions()) {
+            StudentCourseExemptionPaper managed = em.find(StudentCourseExemptionPaper.class, studentCourseExemptionPaper.getStudentCourseQualificationExemptionPK());
+            if (managed.getVerified()) {
+                Fee exemptionFee = feeTypeFacade.getExemptionFee(managed.getPaper());
+                invoice.addExemptionInvoiceDetail(new ExemptionInvoiceDetail(studentCourseExemptionPaper, exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), exemptionFee.getGbpAmount(), "Exemption fee | " + managed.getPaper().getCode()));
+                //Add to totals
+                kesTotal = kesTotal.add(exemptionFee.getKesAmount());
+                usdTotal = usdTotal.add(exemptionFee.getUsdAmount());
+                gbpTotal = gbpTotal.add(exemptionFee.getGbpAmount());
+            }
         }
         Fee adminFee = feeTypeFacade.getAdministrativeFee();
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
-
         //Add administrative fee
         kesTotal = kesTotal.add(adminFee.getKesAmount());
         usdTotal = usdTotal.add(adminFee.getUsdAmount());
         gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
-
         invoice.setStudentCourse(studentCourse);
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);

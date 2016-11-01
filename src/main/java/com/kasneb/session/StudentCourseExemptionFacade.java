@@ -16,13 +16,16 @@ import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.model.Email;
 import com.kasneb.model.Exemption;
+import com.kasneb.util.EmailUtil;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -76,8 +79,9 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
      *
      * @param exemption
      * @throws CustomHttpException
+     * @throws javax.mail.MessagingException
      */
-    public void verify(Exemption exemption) throws CustomHttpException {
+    public void verify(Exemption exemption) throws CustomHttpException, MessagingException {
         Set<StudentCourseExemptionPaper> studentCourseExemptions = new HashSet<>();
         StudentCourse studentCourse = em.find(StudentCourse.class, exemption.getStudentCourseId());
         if (studentCourse == null) {
@@ -114,22 +118,18 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
             //Generate exemption invoice
             ExemptionInvoice inv = invoiceFacade.generateExemptionInvoice(studentCourse);
             studentCourse.getInvoices().add(inv);
-            //Create notification
-            Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", studentCourse.getStudent());
-            em.persist(notification);
             String body;
 //            //Send Email  
-//            if (studentCourse.getVerificationStatus() == VerificationStatus.APPROVED) {
-//                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
-//                        + "Your registration for " + managed.getCourse().getName() + " was successful. Your student registration number is " + managed.getRegistrationNumber() + ". You can now proceed to book for your examination. Please note the deadline for the month and year examination booking is deadline date.";
-//            } else {
-//                body = "Dear " + managed.getStudentObj().getFirstName() + " " + managed.getStudentObj().getMiddleName() + ",<br>\n"
-//                        + "Your registration for " + managed.getCourse().getName() + " was unsuccessful due to the reasons outlined.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
-//            }
-//            EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
-           em.merge(studentCourse);
+            if (studentCourse.getVerificationStatus() != VerificationStatus.REJECTED) {
+                body = "Dear " + studentCourse.getStudentObj().getFirstName() + " " + studentCourse.getStudentObj().getMiddleName() + ",<br>\n"
+                        + "Your application for exemption was successful. Kindly find the exemption letter attached.Wishing you the best in your studies.";
+            } else {
+                body = "Dear " + studentCourse.getStudentObj().getFirstName() + " " + studentCourse.getStudentObj().getMiddleName() + ",<br>\n"
+                        + "Your application for exemption was unsuccessful. Kindly find the exemption letter attached.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";
+            }
+            EmailUtil.sendEmail(new Email(studentCourse.getStudent().getLoginId().getEmail(), "Course registration verification", body));
+            em.merge(studentCourse);
         }
-
     }
 
     public List<StudentCourseExemptionPaper> findSummary(Boolean verifiedStatus, Date startDate, Date endDate) {

@@ -146,6 +146,8 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 });
                 exemptionInvoice.setStatus(new InvoiceStatus("PAID"));
                 em.merge(exemptionInvoice);
+                //Create notification
+                notification = new Notification(NotificationStatus.UNREAD, NotificationType.PAYMENT, "Publication fee has been successfully processed", invoice.getStudentCourse().getStudent());
                 break;
             case REGISTRATION_FEE:
                 //update invoice as paid

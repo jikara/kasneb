@@ -27,6 +27,7 @@ import com.kasneb.entity.FeeTypeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.KasnebCourse;
+import com.kasneb.entity.Paper;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.Student;
@@ -71,6 +72,15 @@ public class CoreUtil {
         com.kasneb.client.RegistrationFee kesRegistrationFee = gson.fromJson(kesResponse, com.kasneb.client.RegistrationFee.class);
         com.kasneb.client.RegistrationFee usdRegistrationFee = gson.fromJson(usdResponse, com.kasneb.client.RegistrationFee.class);
         return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), kesRegistrationFee.getLastEdited(), new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
+    }
+
+    public static Fee getExemptionFee(Paper entity) throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        ObjectMapper mapper = new ObjectMapper();
+        //Create core object 
+        String response = new RestUtil().doGet(BASE_URL + "api/cpa/paper/" + entity.getCode());
+        com.kasneb.client.Paper paper = gson.fromJson(response, com.kasneb.client.Paper.class);
+        return new Fee(null, "Exemption Fee", new BigDecimal(0), paper.getExemptionFee(), new BigDecimal(0), new Date(), new FeeTypeCode("exemption_fee_per_paper"), new FeeCode("EXEMPTION_FEE"), new KasnebCourse("01"), null, null, null, null, null);
     }
 
     public static CpaRegistration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException {

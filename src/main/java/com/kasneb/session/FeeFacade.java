@@ -49,7 +49,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         Fee fee = null;
         try {
             fee = CoreUtil.getRegistrationFee(course);
-        } catch (Exception e) {
+        } catch (IOException | CustomHttpException e) {
             e.printStackTrace();
         }
         /*    if (course == null) {
@@ -279,25 +279,31 @@ public class FeeFacade extends AbstractFacade<Fee> {
 
     public Fee getExemptionFee(Paper paper) throws CustomHttpException {
         Fee fee = null;
-        paper = em.find(Paper.class, paper.getCode());
-        if (paper == null) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper does not exist");
-        }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
-        Root<Fee> ft = cq.from(Fee.class);
-
-        cq.where(cb.equal(ft.get(Fee_.paper), paper),
-                cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("EXAM_ENTRY_FEE"))),
-                cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
-        TypedQuery<Fee> query = em.createQuery(cq);
         try {
-            fee = query.getSingleResult();
-        } catch (javax.persistence.NoResultException e) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
-        } catch (javax.persistence.NonUniqueResultException e) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
+            fee = CoreUtil.getExemptionFee(paper);
+        } catch (IOException | CustomHttpException e) {
+            e.printStackTrace();
         }
+//        Fee fee = null;
+//        paper = em.find(Paper.class, paper.getCode());
+//        if (paper == null) {
+//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper does not exist");
+//        }
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
+//        Root<Fee> ft = cq.from(Fee.class);
+//
+//        cq.where(cb.equal(ft.get(Fee_.paper), paper),
+//                cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("EXAM_ENTRY_FEE"))),
+//                cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
+//        TypedQuery<Fee> query = em.createQuery(cq);
+//        try {
+//            fee = query.getSingleResult();
+//        } catch (javax.persistence.NoResultException e) {
+//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
+//        } catch (javax.persistence.NonUniqueResultException e) {
+//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
+//        }
         return fee;
     }
 
