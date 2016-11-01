@@ -48,6 +48,8 @@ public class Requirement implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "description", updatable = false, nullable = false)
     private String description;
+    @Column(name = "documentName")
+    private String documentName;
     @ManyToOne
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code", updatable = false, nullable = false)
     @JsonIgnore
@@ -82,6 +84,14 @@ public class Requirement implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
     }
 
     public CourseType getCourseType() {
