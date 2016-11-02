@@ -119,7 +119,7 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
 //            //Send Email  
             if (studentCourse.getVerificationStatus() != VerificationStatus.REJECTED) {
                 body = "Dear " + studentCourse.getStudentObj().getFirstName() + " " + studentCourse.getStudentObj().getMiddleName() + ",<br>\n"
-                        + "Your application for exemption was successful. Kindly find the exemption letter attached.Wishing you the best in your studies.";
+                        + "Your application for exemption was successful. Kindly find the exemption letter attached.Wishing you the best in your studies.Your invoice number is " + inv.getReference() + " due Ksh " + inv.getKesTotal() + " generated on " + inv.getDateGenerated();
             } else {
                 body = "Dear " + studentCourse.getStudentObj().getFirstName() + " " + studentCourse.getStudentObj().getMiddleName() + ",<br>\n"
                         + "Your application for exemption was unsuccessful. Kindly find the exemption letter attached.For further clarification, kindly contact KASNEB on Mobile: 0722201214, 0734600624, Tel: 020 2712640, 020 2712828,Email: info@kasneb.or.ke";

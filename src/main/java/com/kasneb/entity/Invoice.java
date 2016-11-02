@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.TreeSet;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -216,9 +217,10 @@ public class Invoice implements Serializable {
 
     //Helper
     public void addInvoiceDetail(InvoiceDetail invoiceDetail) {
+        invoiceDetails = null;
         if (invoiceDetail != null) {
             if (invoiceDetails == null) {
-                invoiceDetails = new ArrayList<>();
+                invoiceDetails = new TreeSet<>();
             }
             invoiceDetails.add(invoiceDetail);
             invoiceDetail.setInvoice(this);
