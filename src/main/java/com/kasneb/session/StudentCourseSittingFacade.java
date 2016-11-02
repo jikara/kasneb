@@ -138,9 +138,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Exam centre does not exist");
         }
         Collection<KasnebCourse> examsOffered = examCentre.getExamsOffered();
-        if (!examsOffered.contains(managed.getStudentCourse().getCourse())) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This exam is not offerred in selected centre");
-        }
         managed.setSittingCentre(entity.getSittingCentre());
         managed.setStatus(StudentCourseSittingStatus.CONFIRMED);
         //Send email
