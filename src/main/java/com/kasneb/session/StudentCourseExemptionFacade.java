@@ -6,9 +6,6 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.ExemptionInvoice;
-import com.kasneb.entity.Notification;
-import com.kasneb.entity.NotificationStatus;
-import com.kasneb.entity.NotificationType;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseExemptionPaper;
