@@ -446,9 +446,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             });
             managed.getOtherQualifications().add(entity.getOtherQualification());
         }
-        if (!eligibleExemptions.containsAll(entity.getExemptedPapers())) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some requested exemptions are not eligible");
-        }
+//        if (!eligibleExemptions.containsAll(entity.getExemptedPapers())) {
+//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some requested exemptions are not eligible");
+//        }
         try {
             em.detach(managed);
             super.copy(entity, managed);

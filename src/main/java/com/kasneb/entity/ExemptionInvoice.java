@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -58,10 +58,9 @@ public class ExemptionInvoice extends Invoice {
 
     //Helper
     public void addExemptionInvoiceDetail(ExemptionInvoiceDetail invoiceDetail) {
-        exemptionInvoiceDetails = null;
         if (invoiceDetail != null) {
             if (exemptionInvoiceDetails == null) {
-                exemptionInvoiceDetails = new TreeSet<>();
+                exemptionInvoiceDetails = new LinkedList<>();
             }
             exemptionInvoiceDetails.add(invoiceDetail);
             invoiceDetail.setInvoice(this);

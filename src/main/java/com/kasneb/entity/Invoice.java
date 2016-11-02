@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.TreeSet;
 import javax.persistence.Basic;
@@ -217,10 +218,9 @@ public class Invoice implements Serializable {
 
     //Helper
     public void addInvoiceDetail(InvoiceDetail invoiceDetail) {
-        invoiceDetails = null;
         if (invoiceDetail != null) {
             if (invoiceDetails == null) {
-                invoiceDetails = new TreeSet<>();
+                invoiceDetails = new LinkedList<>();
             }
             invoiceDetails.add(invoiceDetail);
             invoiceDetail.setInvoice(this);

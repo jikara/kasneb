@@ -216,7 +216,6 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
-        System.out.println(result.toString());
         if (response.getStatusLine().getStatusCode() != 200) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "An error occured.Your payment could not be completed.");
         }

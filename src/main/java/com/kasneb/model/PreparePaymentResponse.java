@@ -24,6 +24,9 @@ public class PreparePaymentResponse {
     private String TransactionID;
     private String MerchantID;
     private String PhoneNumber;
+    private String ErrorType;
+    private String ErrorCode;
+    private String Message;
 
     public PreparePaymentResponse() {
     }
@@ -130,5 +133,29 @@ public class PreparePaymentResponse {
 
     public void setPhoneNumber(String PhoneNumber) {
         this.PhoneNumber = PhoneNumber;
+    }
+
+    public String getErrorType() {
+        return ErrorType;
+    }
+
+    public void setErrorType(String ErrorType) {
+        this.ErrorType = ErrorType;
+    }
+
+    public String getErrorCode() {
+        return ErrorCode;
+    }
+
+    public void setErrorCode(String ErrorCode) {
+        this.ErrorCode = ErrorCode;
+    }
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String Message) {
+        this.Message = Message;
     }
 }
