@@ -28,6 +28,7 @@ import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Paper;
+import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.SittingPeriod;
 import com.kasneb.entity.Student;
@@ -83,6 +84,23 @@ public class CoreUtil {
         return new Fee(null, "Exemption Fee", new BigDecimal(0), paper.getExemptionFee(), new BigDecimal(0), new Date(), new FeeTypeCode("exemption_fee_per_paper"), new FeeCode("EXEMPTION_FEE"), new KasnebCourse("01"), null, null, null, null, null);
     }
 
+    public static Fee getExaminationFee(Section section, String rate) throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        ObjectMapper mapper = new ObjectMapper();
+        //Create core object 
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/cpa/fee/" + section.getId() + "/" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/cpa/fee/" + section.getId() + "/" + Currency.USD.toString());
+        com.kasneb.client.CpaExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.CpaExaminationFee.class);
+        com.kasneb.client.CpaExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.CpaExaminationFee.class);
+        switch (rate) {
+            case "paper":
+                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+            case "section":
+                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+        }
+        return null;
+    }
+
     public static CpaRegistration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
@@ -126,5 +144,9 @@ public class CoreUtil {
         int n = maximum - minimum + 1;
         int i = rn.nextInt() % n;
         return "C" + minimum + i;
+    }
+
+    public static Integer generateRegistrationNumber() {
+        return 1;
     }
 }
