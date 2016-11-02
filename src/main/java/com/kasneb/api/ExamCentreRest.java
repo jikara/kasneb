@@ -56,11 +56,7 @@ public class ExamCentreRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll(@QueryParam("course_id") Integer courseId) {
         try {
-            if (courseId == null) {
-                anyResponse = examCentreFacade.findAll();
-            } else {
-                anyResponse = examCentreFacade.findByCourse(courseId);
-            }
+            anyResponse = examCentreFacade.findCentres();
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());

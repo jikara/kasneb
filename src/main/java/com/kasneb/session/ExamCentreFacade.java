@@ -10,6 +10,8 @@ import com.kasneb.entity.Course;
 import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.NonKenyanCentre;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.util.CoreUtil;
+import java.io.IOException;
 import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -121,6 +123,14 @@ public class ExamCentreFacade extends AbstractFacade<ExamCentre> {
                 = em.createQuery("SELECT e FROM ExamCentre e JOIN e.examsOffered c WHERE c=:course", ExamCentre.class);
         query.setParameter("course", course);
         return query.getResultList();
+    }
+
+    public Collection<ExamCentre> findCentres() throws CustomHttpException, IOException {
+        Collection<ExamCentre> centres = CoreUtil.getCentres();
+        for (ExamCentre centre : centres) {
+            em.merge(centre);
+        }
+        return centres;
     }
 
 }
