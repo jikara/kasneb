@@ -87,6 +87,7 @@ public class LoginFacade extends AbstractFacade<Login> {
         } catch (NoResultException e) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "User not found");
         } catch (java.lang.NullPointerException e) {
+            e.printStackTrace();
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No login details submitted");
         }
         return login;
