@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5921f0ad-028f-4587-9081-acb7381a2326">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="555" height="36" forecolor="#9999FF" uuid="07feedfb-d47b-4632-a1dd-569b77228e78"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KASNEB OFFICIAL RECEIPT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="1" width="100" height="36" forecolor="#FF0033" uuid="3861ee4a-6355-4bf2-864b-98f5a4a8f432"/>
+				<textElement>
+					<font fontName="Sitka Display" size="22"/>
+				</textElement>
+				<text><![CDATA[901464]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="12" width="555" height="15" forecolor="#9999FF" uuid="62990f16-4e6d-4d83-9329-b8d4dde1dcbb"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ Fax:+254(020) 2712915,Cellphone: 0734600624/0722 201214  E-mail: info@kasneb.or.ke,Website :www.kasneb.or.ke]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="-1" width="555" height="17" forecolor="#9999FF" uuid="8b4fcb1e-4572-4da4-87c9-08dbb36568e6"/>
+				<textElement>
+					<font fontName="SansSerif" size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Kasneb Towers, Hospital Road,Upper hill P.O. BOX 41362- 00100,Nairobi -Kenya Tel:(020) 2712640 / 2712818  ]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="146" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="0" y="17" width="292" height="105" uuid="a93b7141-a220-43cc-880f-6f5b92cbc260"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="101" y="29" width="181" height="20" uuid="581bffe2-f528-43de-83e9-5b85e23f2381"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHEPKIRUI PATRICIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="49" width="181" height="20" uuid="16a4aa33-bdc0-49fe-88bc-67320505405a"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P.O BOX 60883 -00200]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="69" width="181" height="20" uuid="6df9f1d4-889f-4957-b65f-c6df02e9277d"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAIROBI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="89" width="181" height="20" uuid="a72c0354-1fc1-45c8-a4f0-856a932aaacd"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KENYA]]></text>
+			</staticText>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="334" y="17" width="221" height="105" isPrintWhenDetailOverflows="true" uuid="46a1c6f3-e023-46d8-b660-c27966a36213"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="5" y="29" width="90" height="20" uuid="246db22f-9105-45ea-90d4-aa77c11d0b54"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Received From :]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="125" width="555" height="20" uuid="1ab06319-ab04-4fe7-89ed-31748d638d61"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="125" width="68" height="20" uuid="88a6047d-3d0c-48c4-ba74-630bef2e9ee7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    Item No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="125" width="100" height="20" uuid="93b66a19-dedc-49f5-8e4c-8cd415c1315f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="125" width="100" height="20" uuid="085f938e-ba44-4d14-bbe9-84580e248914"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount  KSH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="27" width="80" height="20" uuid="fe342865-3414-4a03-aa25-c42a389d5c05"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receipt No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="49" width="80" height="20" uuid="727583c0-b8b6-440d-a0b0-33d78d971fa9"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="69" width="80" height="20" uuid="4742bec2-f6bd-47b9-b1ab-c7cd47fee0c0"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registration No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="95" width="80" height="20" uuid="68e9d538-6d06-4679-acb0-cd4e4f822a68"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Examination]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="27" width="100" height="19" uuid="1d7fc8b9-44e5-4ea3-ad4f-312daf4fd84d"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C1116785]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="49" width="100" height="19" uuid="1655b779-8f75-4173-84a1-7c0b0428fb1c"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[15/08/2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="69" width="100" height="19" uuid="c450bdde-45f4-4516-8d99-d7713e6bfadb"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAC/2805345]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="95" width="100" height="19" uuid="2e01b6be-2938-4350-acca-e1ea8dfb77a3"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

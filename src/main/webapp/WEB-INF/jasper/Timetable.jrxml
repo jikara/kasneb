@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e2114ea-f8e1-4c2d-a216-9f1bc07858c5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="450"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="171" splitType="Stretch">
+			<image>
+				<reportElement x="212" y="0" width="146" height="164" uuid="23ab7b00-a738-47d7-95f1-3e11f246baa2"/>
+				<imageExpression><![CDATA["C:\\Users\\jikara\\Pictures\\Kasneb-Logo.PNG"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="114" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="36" uuid="dae9aceb-2251-4ae3-a543-dfdf0dc53f09"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KASNEB]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="36" width="555" height="20" forecolor="#990000" uuid="8de5f61d-3bb0-461c-8b87-f1f98a4c8fc4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Providing globally competitive professionals
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="555" height="40" uuid="e84bbfdf-b44c-4cbd-8685-771563f48b29"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[KASNEB Towers, Hospital Road , Upper Hill, P.O. Box 41362 - 00100 Nairobi, Kenya
+Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
+ Fax: 254(020) 2712915 Email: info@kasneb.or.ke Website: www.kasneb.or.ke]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="187" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="555" height="20" uuid="6795965d-67f4-4d31-90cf-56b8cc0e16cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTHORITY TO SIT EXAMINATION/TIMETABLE
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="39" width="100" height="20" uuid="93c1d743-95d0-475c-a8ec-94fe48af501d"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registration No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="358" y="39" width="138" height="20" uuid="9dce59cc-88da-4a29-93ee-9dbcb0b7f94e"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name and I.D. Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="59" width="100" height="20" forecolor="#990000" uuid="89c27dcf-18cd-4766-9c69-9cb1f3138c36"/>
+				<text><![CDATA[DCM/1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="306" y="59" width="249" height="20" forecolor="#990000" uuid="069e3e00-827e-4a5f-ba0e-b236d3949101"/>
+				<text><![CDATA[KINYANJUI SAMUEL MWAURA 30089764]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="94" width="100" height="20" uuid="7cc6e01a-76fe-42e1-8097-b34442e20ad2"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="94" width="142" height="20" uuid="8e95f30e-d95c-4d67-980d-3ec4c530e071"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Examination SItting]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="403" y="94" width="152" height="20" uuid="2badd79c-8cd2-4d04-8917-3c3c3026cb0b"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Examination Centre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="115" width="100" height="20" forecolor="#990000" uuid="dba3f158-33f8-4e12-9360-b438a5141b57"/>
+				<text><![CDATA[ 03/05/2016 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="115" width="142" height="20" forecolor="#990000" uuid="a6e84465-1e85-4271-a50f-8ecb3d45477a"/>
+				<text><![CDATA[MAY 2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="403" y="115" width="152" height="20" forecolor="#990000" uuid="db0b74c8-6d56-4e6c-a665-5ba054ef33e4"/>
+				<text><![CDATA[ KEMU
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="148" width="555" height="20" uuid="59883074-4744-4c21-af27-3dfe9fcaabdb"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[EXAMINATION DETAILS
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="165" width="555" height="20" forecolor="#990000" uuid="02a2e099-b1b9-47f5-8213-df3f71fe8a24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[DCM LEVEL I
+]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="59" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="116" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="58" uuid="ef381e37-7380-465f-afd3-2ce44c964d67"/>
+				<text><![CDATA[You have been entered for the above examination at the designated examination centre and for the paper(s) indicated.
+Your attention is drawn to " INSTRUCTIONS TO CANDIDATES " relating to the conduct of the candidates during the
+examinations as outlined in the next page of this document.
+This authority letter must be presented to the invigilators at each session of the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="74" width="100" height="41" uuid="f1fb2c77-9a2a-464f-a13c-eb743e967103"/>
+				<text><![CDATA[SAMUEL MWAURA KINYANJUI
+P.O. BOX 2263 00900
+KIAMBU
+KENYA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="74" width="100" height="41" uuid="9b3dce7d-6ebd-4e37-8890-ffffa017d353"/>
+				<text><![CDATA[ISSUED BY:
+J.N. KARIGA
+FOR: SECRETARY
+]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="20" uuid="27d1fd5b-d65a-45ef-a48b-012822dfddb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Copyright @ KASNEB website download. For any enquiry contact KASNEB]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="29" splitType="Stretch"/>
+	</summary>
+</jasperReport>

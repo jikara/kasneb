@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43357f61-94a2-47b5-83ca-1ed8ba1c5426">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="67" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="1" width="555" height="32" uuid="b96cac85-e217-44f5-91c7-20ec0182cccf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[KASNEB]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="0e8677a2-6be0-4ffc-a91c-91e81494d243"/>
+			</line>
+			<line>
+				<reportElement x="0" y="34" width="555" height="1" uuid="1012d16a-4549-474d-b0f5-fcd9dbed375c"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="37" width="555" height="17" uuid="541adca3-188a-4a4b-b62b-819b20d194be"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kasneb Towers,Hospital Road,Upper hill P.O. BOX 41362-00100,Nairobi -Kenya Tel:(020) 2712640 / 2712818  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="555" height="15" uuid="e237da5f-da2f-49b9-8ca3-76f9f4d3639b"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cellphone: +254 722 201214 / 734600624 Fax:(020) 2712915 E-mail: info@kasneb.or.ke,Website :www.kasneb.or.ke]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="129" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="200" height="20" uuid="02733eee-f744-44dc-9c78-94dc05da2697"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REF:2016/CPA/36528]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="9" width="100" height="20" uuid="768a5452-d9b6-4924-949f-70395700b897"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date : 04/11/2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="43" width="200" height="15" uuid="a87fa685-f7c3-473c-9e33-3ee624a3aad3"/>
+				<text><![CDATA[Sadam Ali Jarso -NAC/282719]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="57" width="200" height="15" uuid="74b55302-c890-466a-8e38-cba0aa09f4c6"/>
+				<text><![CDATA[P.O. BOX 43683 00100]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="72" width="200" height="15" uuid="40242977-87da-43b4-a2cc-cee3d12bb307"/>
+				<text><![CDATA[NAIROBI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="87" width="200" height="15" uuid="461d8119-de55-48f2-b8bb-236e5935a0ce"/>
+				<text><![CDATA[KENYA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="100" height="20" uuid="49f240ed-a151-4cb0-8695-3e0852540a2d"/>
+				<text><![CDATA[Dear Sadam Ali Jarso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="555" height="20" uuid="b8e777f8-fae4-446d-9745-f601fae78574"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[EXEMPTION IN THE CPA EXAMINATION -NAC/2789898]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="5" width="555" height="120" uuid="a15f8e6e-86cb-4a47-9d38-3d56ece59384"/>
+				<text><![CDATA[We are pleased to inform you that you have been granted exemption in the following paper(s):]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="15" uuid="fd50bb62-8630-49f2-a17b-0e615f5daafc"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Christabel L. Osago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="13" width="555" height="15" uuid="ee4b8599-035e-42d2-94c4-3c27a62beae8"/>
+				<textElement>
+					<font size="11" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[For: SECRETARY AND CHIEF EXECUTIVE]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
