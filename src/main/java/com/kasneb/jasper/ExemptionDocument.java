@@ -15,20 +15,24 @@ public class ExemptionDocument {
 
     private String reference;
     private String date;
-    private String student;
+    private String studentAndReg;
+    private String studentName;
+    private String regNo;
     private String address;
     private String city;
     private String country;
     private String issuedBy;
     private List<Exemption> exemptions;
+    private String letterTitle;
 
     public ExemptionDocument() {
     }
 
-    public ExemptionDocument(String reference, String date, String student, String address, String city, String country, String issuedBy, List<Exemption> exemptions) {
+    public ExemptionDocument(String reference, String date, String regNo, String studentName, String address, String city, String country, String issuedBy, List<Exemption> exemptions) {
         this.reference = reference;
         this.date = date;
-        this.student = student;
+        this.regNo = regNo;
+        this.studentName = studentName;
         this.address = address;
         this.city = city;
         this.country = country;
@@ -52,12 +56,29 @@ public class ExemptionDocument {
         this.date = date;
     }
 
-    public String getStudent() {
-        return student;
+    public String getStudentAndReg() {
+        studentAndReg = getStudentName() + " - " + getRegNo();
+        return studentAndReg;
     }
 
-    public void setStudent(String student) {
-        this.student = student;
+    public void setStudentAndReg(String studentAndReg) {
+        this.studentAndReg = studentAndReg;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getRegNo() {
+        return regNo;
+    }
+
+    public void setRegNo(String regNo) {
+        this.regNo = regNo;
     }
 
     public String getAddress() {
@@ -98,5 +119,14 @@ public class ExemptionDocument {
 
     public void setExemptions(List<Exemption> exemptions) {
         this.exemptions = exemptions;
+    }
+
+    public String getLetterTitle() {
+        letterTitle = "EXEMPTION IN THE CPA EXAMINATION - " + getRegNo();
+        return letterTitle;
+    }
+
+    public void setLetterTitle(String letterTitle) {
+        this.letterTitle = letterTitle;
     }
 }

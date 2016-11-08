@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e2114ea-f8e1-4c2d-a216-9f1bc07858c5">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="390"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -32,9 +32,6 @@
 		<field name="date" class="java.lang.String"/>
 		<field name="time" class="java.lang.String"/>
 	</subDataset>
-	<parameter name="PAPERS" class="java.util.List">
-		<defaultValueExpression><![CDATA[new java.util.ArrayList<com.kasneb.jasper.Paper>()]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -59,11 +56,6 @@
 	<field name="sitting" class="java.lang.String">
 		<fieldDescription><![CDATA[sitting]]></fieldDescription>
 	</field>
-	<background>
-		<band height="802" splitType="Stretch">
-			<printWhenExpression><![CDATA[$F{date}]]></printWhenExpression>
-		</band>
-	</background>
 	<title>
 		<band height="105" splitType="Stretch">
 			<image>
@@ -202,7 +194,7 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
 							<textField>
 								<reportElement x="2" y="0" width="68" height="20" uuid="7ec689f7-dfe2-4e8e-8351-31a437c76a84"/>
-								<textFieldExpression><![CDATA[  $F{code}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -217,7 +209,7 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
 							<textField>
 								<reportElement x="2" y="0" width="203" height="20" uuid="7bebacf8-07ab-4541-91ba-e43e4036477c"/>
-								<textFieldExpression><![CDATA[  $F{name}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -232,7 +224,7 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
 							<textField>
 								<reportElement x="2" y="0" width="138" height="20" uuid="39c2ebee-e1f3-417c-af21-707f231517dc"/>
-								<textFieldExpression><![CDATA[  $F{date}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -247,7 +239,7 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
 							<textField>
 								<reportElement x="2" y="0" width="138" height="20" uuid="d912be0e-f025-4b4f-9143-eeb9cd377fbd"/>
-								<textFieldExpression><![CDATA[  $F{time}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{time}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

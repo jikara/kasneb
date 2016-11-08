@@ -46,22 +46,28 @@ public class ExportFacade {
         List<Exemption> exemptions = new ArrayList<>();
         List<ExemptionPart> parts = new ArrayList<>();
         List<ExemptionSection> sections = new ArrayList<>();
+        List<ExemptionSection> sections2 = new ArrayList<>();
         List<ExemptionPaper> papersSec1 = new ArrayList<>();
         List<ExemptionPaper> papersSec2 = new ArrayList<>();
+        List<ExemptionPaper> papersSec3 = new ArrayList<>();
 
         Exemption exemption = new Exemption();
         ExemptionPart part1 = exemption.new ExemptionPart("Part I", null);
         ExemptionPart part2 = exemption.new ExemptionPart("Part II", null);
         ExemptionSection section1part1 = part1.new ExemptionSection("Section 1", null);
         ExemptionSection section2part1 = part1.new ExemptionSection("Section 2", null);
-        ExemptionSection section3part1 = part1.new ExemptionSection("Section 3", null);
-        ExemptionPaper paper1 = exemption.new ExemptionPaper("CA11", "Financial Accounting");
-        ExemptionPaper paper2 = exemption.new ExemptionPaper("CA11", "Introduction to law");
-        ExemptionPaper paper3 = exemption.new ExemptionPaper("CA11", "Enterepereneurship and accounting");
+        ExemptionSection section3part2 = part2.new ExemptionSection("Section 3", null);
 
-        ExemptionPaper paper4 = exemption.new ExemptionPaper("CA11", "Economics");
-        ExemptionPaper paper5 = exemption.new ExemptionPaper("CA11", "Auditing and Assurance");
-        ExemptionPaper paper6 = exemption.new ExemptionPaper("CA11", "Financial Management");
+        ExemptionPaper paper1 = exemption.new ExemptionPaper("CA11", "Financial Accounting");
+        ExemptionPaper paper2 = exemption.new ExemptionPaper("CA12", "Introduction to law");
+        ExemptionPaper paper3 = exemption.new ExemptionPaper("CA13", "Enterepereneurship and accounting");
+
+        ExemptionPaper paper4 = exemption.new ExemptionPaper("CA21", "Economics");
+        ExemptionPaper paper5 = exemption.new ExemptionPaper("CA22", "Auditing and Assurance");
+        ExemptionPaper paper6 = exemption.new ExemptionPaper("CA23", "Financial Management");
+
+        ExemptionPaper paper7 = exemption.new ExemptionPaper("CA31", "Agronomics");
+        ExemptionPaper paper8 = exemption.new ExemptionPaper("CA32", "Test Subject");
 
         papersSec1.add(paper1);
         papersSec1.add(paper2);
@@ -71,16 +77,22 @@ public class ExportFacade {
         papersSec2.add(paper5);
         papersSec2.add(paper6);
 
+        papersSec3.add(paper7);
+        papersSec3.add(paper8);
+
         section1part1.setPapers(papersSec1);
         section2part1.setPapers(papersSec2);
+        section3part2.setPapers(papersSec3);
+
         sections.add(section1part1);
         sections.add(section2part1);
-        sections.add(section3part1);
+        sections2.add(section3part2);
         part1.setSections(sections);
+        part2.setSections(sections2);
         parts.add(part1);
         parts.add(part2);
         exemptions.add(new com.kasneb.jasper.Exemption("CPA", parts, null));
-        return new ExemptionDocument("REF152452", "12/08/2016", "Justus Ikara", "54395 - 00200", "Nairobi", "Kenya", "Test", exemptions);
+        return new ExemptionDocument("152452", "12/08/2016", "NAC/282954", "Justus Ikara", "54395 - 00200", "Nairobi", "Kenya", "Test", exemptions);
     }
 
     public InvoiceDocument generateInvoice(int i) {
