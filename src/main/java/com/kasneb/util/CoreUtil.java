@@ -84,9 +84,9 @@ public class CoreUtil {
         com.kasneb.client.Paper paper = gson.fromJson(response, com.kasneb.client.Paper.class);
         return new Fee(null, "Exemption Fee", new BigDecimal(0), paper.getExemptionFee(), new BigDecimal(0), new Date(), new FeeTypeCode("exemption_fee_per_paper"), new FeeCode("EXEMPTION_FEE"), new KasnebCourse("01"), null, null, null, null, null);
     }
-    
+
     public static List<ExamCentre> getCentres() throws IOException, CustomHttpException {
-         Gson gson = new Gson();
+        Gson gson = new Gson();
         return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/centre"), new TypeToken<List<ExamCentre>>() {
         }.getType());
     }
@@ -127,6 +127,11 @@ public class CoreUtil {
                 return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
         }
         return null;
+    }
+
+    public static CpaRegistration getStudentCourse(Integer regNo) throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/cpa/" + regNo), CpaRegistration.class);
     }
 
     public static CpaRegistration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException {

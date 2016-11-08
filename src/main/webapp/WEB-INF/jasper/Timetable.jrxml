@@ -1,15 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e2114ea-f8e1-4c2d-a216-9f1bc07858c5">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e2114ea-f8e1-4c2d-a216-9f1bc07858c5">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="450"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="PaperDataset" uuid="6231bb3b-c3c2-4a0d-8d8b-2e2bc8aa9691">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="code" class="java.lang.String"/>
+		<field name="name" class="java.lang.String"/>
+		<field name="date" class="java.lang.String"/>
+		<field name="time" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="PAPERS" class="java.util.List">
+		<defaultValueExpression><![CDATA[new java.util.ArrayList<com.kasneb.jasper.Paper>()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="centreName" class="java.lang.String">
+		<fieldDescription><![CDATA[centreName]]></fieldDescription>
+	</field>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="examinationDetails" class="java.lang.String">
+		<fieldDescription><![CDATA[examinationDetails]]></fieldDescription>
+	</field>
+	<field name="nameAndId" class="java.lang.String">
+		<fieldDescription><![CDATA[nameAndId]]></fieldDescription>
+	</field>
+	<field name="papers" class="java.util.List">
+		<fieldDescription><![CDATA[papers]]></fieldDescription>
+	</field>
+	<field name="registrationNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[registrationNumber]]></fieldDescription>
+	</field>
+	<field name="sitting" class="java.lang.String">
+		<fieldDescription><![CDATA[sitting]]></fieldDescription>
+	</field>
 	<background>
-		<band splitType="Stretch"/>
+		<band height="802" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{date}]]></printWhenExpression>
+		</band>
 	</background>
 	<title>
-		<band height="171" splitType="Stretch">
+		<band height="105" splitType="Stretch">
 			<image>
-				<reportElement x="212" y="0" width="146" height="164" uuid="23ab7b00-a738-47d7-95f1-3e11f246baa2"/>
+				<reportElement positionType="Float" x="232" y="0" width="95" height="103" uuid="23ab7b00-a738-47d7-95f1-3e11f246baa2"/>
 				<imageExpression><![CDATA["C:\\Users\\jikara\\Pictures\\Kasneb-Logo.PNG"]]></imageExpression>
 			</image>
 		</band>
@@ -41,7 +99,7 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="187" splitType="Stretch">
+		<band height="191" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="9" width="555" height="20" uuid="6795965d-67f4-4d31-90cf-56b8cc0e16cc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -51,60 +109,39 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="45" y="39" width="100" height="20" uuid="93c1d743-95d0-475c-a8ec-94fe48af501d"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement x="45" y="40" width="100" height="20" uuid="93c1d743-95d0-475c-a8ec-94fe48af501d"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Registration No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="358" y="39" width="138" height="20" uuid="9dce59cc-88da-4a29-93ee-9dbcb0b7f94e"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement x="327" y="40" width="138" height="20" uuid="9dce59cc-88da-4a29-93ee-9dbcb0b7f94e"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Name and I.D. Number]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="45" y="59" width="100" height="20" forecolor="#990000" uuid="89c27dcf-18cd-4766-9c69-9cb1f3138c36"/>
-				<text><![CDATA[DCM/1]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="306" y="59" width="249" height="20" forecolor="#990000" uuid="069e3e00-827e-4a5f-ba0e-b236d3949101"/>
-				<text><![CDATA[KINYANJUI SAMUEL MWAURA 30089764]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="48" y="94" width="100" height="20" uuid="7cc6e01a-76fe-42e1-8097-b34442e20ad2"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement x="63" y="94" width="100" height="20" uuid="7cc6e01a-76fe-42e1-8097-b34442e20ad2"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="224" y="94" width="142" height="20" uuid="8e95f30e-d95c-4d67-980d-3ec4c530e071"/>
-				<textElement verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Examination SItting]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="403" y="94" width="152" height="20" uuid="2badd79c-8cd2-4d04-8917-3c3c3026cb0b"/>
-				<textElement verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Examination Centre]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="45" y="115" width="100" height="20" forecolor="#990000" uuid="dba3f158-33f8-4e12-9360-b438a5141b57"/>
-				<text><![CDATA[ 03/05/2016 ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="224" y="115" width="142" height="20" forecolor="#990000" uuid="a6e84465-1e85-4271-a50f-8ecb3d45477a"/>
-				<text><![CDATA[MAY 2016]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="403" y="115" width="152" height="20" forecolor="#990000" uuid="db0b74c8-6d56-4e6c-a665-5ba054ef33e4"/>
-				<text><![CDATA[ KEMU
-]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="148" width="555" height="20" uuid="59883074-4744-4c21-af27-3dfe9fcaabdb"/>
@@ -114,44 +151,146 @@ Telephone: 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
 				<text><![CDATA[EXAMINATION DETAILS
 ]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="165" width="555" height="20" forecolor="#990000" uuid="02a2e099-b1b9-47f5-8213-df3f71fe8a24"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[DCM LEVEL I
-]]></text>
-			</staticText>
+			<textField>
+				<reportElement x="327" y="62" width="138" height="20" forecolor="#990000" uuid="ecbc8235-6f0b-4f1d-903a-b5ee750e2247"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nameAndId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="62" width="100" height="20" forecolor="#990000" uuid="199c4c0d-a1b7-42c5-b737-b42b0797dba2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="63" y="116" width="100" height="20" forecolor="#990000" uuid="8d951ee5-55c7-435f-aa2c-fd6637db7b77"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="224" y="116" width="142" height="20" forecolor="#990000" uuid="fe50190a-4c04-492d-96ca-b85f5c690ebf"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{sitting}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="403" y="116" width="149" height="20" forecolor="#990000" uuid="5c4def5b-ea28-44c6-8710-75489109c6bd"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{examinationDetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="170" width="555" height="20" forecolor="#990000" uuid="d12e4907-244e-4086-b148-d65bbb4e6041"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{examinationDetails}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="59" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" style="table" x="0" y="0" width="555" height="20" uuid="d47e0ec8-0f74-40f0-81ac-c17984f11ccb"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="PaperDataset" uuid="efc33e40-71b4-495d-9b73-a37d0eb4b7e7">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{papers})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="70" uuid="b6e62672-1ca2-4607-9e68-9db2bf5ceb69">
+						<jr:columnHeader style="table_TD" height="22" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="2" y="0" width="68" height="20" forecolor="#990000" uuid="2f121614-7910-4b53-9c25-ea81d1474fd3"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[CODE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="68" height="20" uuid="7ec689f7-dfe2-4e8e-8351-31a437c76a84"/>
+								<textFieldExpression><![CDATA[  $F{code}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="205" uuid="76bdf7d7-e50d-4319-952d-0273b0da14f2">
+						<jr:columnHeader style="table_TD" height="22" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="2" y="0" width="203" height="20" forecolor="#990000" uuid="da3e6576-6c95-4534-9c43-478f5031f9f8"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  PAPER]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="203" height="20" uuid="7bebacf8-07ab-4541-91ba-e43e4036477c"/>
+								<textFieldExpression><![CDATA[  $F{name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="fbe6458e-4557-42d8-9980-1b8ab20739b9">
+						<jr:columnHeader style="table_TD" height="22" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="2" y="0" width="138" height="20" forecolor="#990000" uuid="8f7a1d46-7b00-4706-af41-f38b4dcdb471"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  DATE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="138" height="20" uuid="39c2ebee-e1f3-417c-af21-707f231517dc"/>
+								<textFieldExpression><![CDATA[  $F{date}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="9b54f713-256d-4cf4-9961-3434111797e4">
+						<jr:columnHeader style="table_TD" height="22" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="2" y="0" width="138" height="20" forecolor="#990000" uuid="d765ab66-c819-4e7a-93b5-b93128cdfd46"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  TIME]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="138" height="20" uuid="d912be0e-f025-4b4f-9143-eeb9cd377fbd"/>
+								<textFieldExpression><![CDATA[  $F{time}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
 	</detail>
 	<columnFooter>
-		<band height="116" splitType="Stretch">
+		<band height="127" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="58" uuid="ef381e37-7380-465f-afd3-2ce44c964d67"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
 				<text><![CDATA[You have been entered for the above examination at the designated examination centre and for the paper(s) indicated.
 Your attention is drawn to " INSTRUCTIONS TO CANDIDATES " relating to the conduct of the candidates during the
 examinations as outlined in the next page of this document.
 This authority letter must be presented to the invigilators at each session of the examination.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="74" width="100" height="41" uuid="f1fb2c77-9a2a-464f-a13c-eb743e967103"/>
+				<reportElement x="0" y="60" width="206" height="67" uuid="f1fb2c77-9a2a-464f-a13c-eb743e967103"/>
 				<text><![CDATA[SAMUEL MWAURA KINYANJUI
 P.O. BOX 2263 00900
 KIAMBU
 KENYA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="455" y="74" width="100" height="41" uuid="9b3dce7d-6ebd-4e37-8890-ffffa017d353"/>
-				<text><![CDATA[ISSUED BY:
-J.N. KARIGA
+				<reportElement x="452" y="88" width="100" height="30" uuid="9b3dce7d-6ebd-4e37-8890-ffffa017d353"/>
+				<text><![CDATA[J.N. KARIGA
 FOR: SECRETARY
 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="452" y="60" width="100" height="20" uuid="7c1c6a44-a95d-4685-b432-de69087e850b"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ISSUE BY:]]></text>
 			</staticText>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="27" splitType="Stretch">
+		<band height="22" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="20" uuid="27d1fd5b-d65a-45ef-a48b-012822dfddb1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -160,6 +299,6 @@ FOR: SECRETARY
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="29" splitType="Stretch"/>
+		<band height="10" splitType="Stretch"/>
 	</summary>
 </jasperReport>

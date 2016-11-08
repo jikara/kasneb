@@ -58,7 +58,7 @@ public class Level implements Serializable {
     @JsonBackReference
     private KasnebCourse course;
     @OneToMany(mappedBy = "level")
-    @JsonBackReference
+    //@JsonBackReference
     private Collection<Paper> paperCollection;
     @OneToMany(mappedBy = "level")
     @JsonBackReference

@@ -2,7 +2,37 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43357f61-94a2-47b5-83ca-1ed8ba1c5426">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="173"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\jikara\\Documents\\NetBeansProjects\\kasneb_new\\src\\main\\webapp\\WEB-INF\\jasper\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="reference" class="java.lang.String">
+		<fieldDescription><![CDATA[reference]]></fieldDescription>
+	</field>
+	<field name="city" class="java.lang.String">
+		<fieldDescription><![CDATA[city]]></fieldDescription>
+	</field>
+	<field name="address" class="java.lang.String">
+		<fieldDescription><![CDATA[address]]></fieldDescription>
+	</field>
+	<field name="country" class="java.lang.String">
+		<fieldDescription><![CDATA[country]]></fieldDescription>
+	</field>
+	<field name="student" class="java.lang.String">
+		<fieldDescription><![CDATA[student]]></fieldDescription>
+	</field>
+	<field name="exemptions" class="java.util.List">
+		<fieldDescription><![CDATA[exemptions]]></fieldDescription>
+	</field>
+	<field name="issuedBy" class="java.lang.String">
+		<fieldDescription><![CDATA[issuedBy]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -40,42 +70,50 @@
 	<pageHeader>
 		<band height="129" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="9" width="200" height="20" uuid="02733eee-f744-44dc-9c78-94dc05da2697"/>
+				<reportElement x="0" y="9" width="26" height="20" uuid="02733eee-f744-44dc-9c78-94dc05da2697"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[REF:2016/CPA/36528]]></text>
+				<text><![CDATA[REF:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="422" y="9" width="100" height="20" uuid="768a5452-d9b6-4924-949f-70395700b897"/>
+				<reportElement x="422" y="9" width="33" height="20" uuid="768a5452-d9b6-4924-949f-70395700b897"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Date : 04/11/2016]]></text>
+				<text><![CDATA[Date : ]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="43" width="200" height="15" uuid="a87fa685-f7c3-473c-9e33-3ee624a3aad3"/>
-				<text><![CDATA[Sadam Ali Jarso -NAC/282719]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="57" width="200" height="15" uuid="74b55302-c890-466a-8e38-cba0aa09f4c6"/>
-				<text><![CDATA[P.O. BOX 43683 00100]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="72" width="200" height="15" uuid="40242977-87da-43b4-a2cc-cee3d12bb307"/>
-				<text><![CDATA[NAIROBI]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="87" width="200" height="15" uuid="461d8119-de55-48f2-b8bb-236e5935a0ce"/>
-				<text><![CDATA[KENYA]]></text>
-			</staticText>
+			<textField>
+				<reportElement x="0" y="29" width="200" height="20" uuid="3abdec7f-f6f2-4cf5-af4d-abf8b0ff3384"/>
+				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="52" width="200" height="20" uuid="f0a2e187-4a81-4664-a030-b16a1801e371"/>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="72" width="200" height="20" uuid="b7bc3547-f763-4387-ab01-fb026d968517"/>
+				<textFieldExpression><![CDATA[$F{city}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="92" width="200" height="20" uuid="e1a0648e-1e2f-4046-99a8-92383518e055"/>
+				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="9" width="100" height="20" uuid="d2115cff-3e0f-483a-887e-c24fd461f0a1"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="26" y="9" width="174" height="20" uuid="42af85d7-8579-48d1-8424-1686e129a609"/>
+				<textFieldExpression><![CDATA[$F{reference}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="41" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="2" width="100" height="20" uuid="49f240ed-a151-4cb0-8695-3e0852540a2d"/>
-				<text><![CDATA[Dear Sadam Ali Jarso]]></text>
+				<reportElement x="0" y="2" width="26" height="20" uuid="49f240ed-a151-4cb0-8695-3e0852540a2d"/>
+				<text><![CDATA[Dear ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="20" width="555" height="20" uuid="b8e777f8-fae4-446d-9745-f601fae78574"/>
@@ -84,31 +122,44 @@
 				</textElement>
 				<text><![CDATA[EXEMPTION IN THE CPA EXAMINATION -NAC/2789898]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="26" y="2" width="100" height="20" uuid="a678ad20-9dfd-4150-a637-0866bb8c944c"/>
+				<textFieldExpression><![CDATA[$F{student}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="5" width="555" height="120" uuid="a15f8e6e-86cb-4a47-9d38-3d56ece59384"/>
+				<reportElement x="0" y="0" width="555" height="17" uuid="a15f8e6e-86cb-4a47-9d38-3d56ece59384"/>
 				<text><![CDATA[We are pleased to inform you that you have been granted exemption in the following paper(s):]]></text>
 			</staticText>
+			<subreport>
+				<reportElement x="0" y="17" width="555" height="88" uuid="ff1346ef-2555-417a-b0bc-108d89fe6367"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{exemptions})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ExemptionLetter_subreport.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch">
+		<band height="62" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="555" height="15" uuid="fd50bb62-8630-49f2-a17b-0e615f5daafc"/>
+				<reportElement x="0" y="34" width="555" height="15" uuid="fd50bb62-8630-49f2-a17b-0e615f5daafc"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Christabel L. Osago]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="13" width="555" height="15" uuid="ee4b8599-035e-42d2-94c4-3c27a62beae8"/>
+				<reportElement x="0" y="47" width="555" height="15" uuid="ee4b8599-035e-42d2-94c4-3c27a62beae8"/>
 				<textElement>
 					<font size="11" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[For: SECRETARY AND CHIEF EXECUTIVE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="13" uuid="522577a6-a088-45c9-add3-ba5e2a597cdd"/>
+				<text><![CDATA[You are advised to retain this letter as no other document will be issued in respect of these exemptions.]]></text>
 			</staticText>
 		</band>
 	</columnFooter>

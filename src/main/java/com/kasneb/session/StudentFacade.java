@@ -8,7 +8,9 @@ package com.kasneb.session;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
+import com.kasneb.util.CoreUtil;
 import com.kasneb.util.SecurityUtil;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -86,7 +88,6 @@ public class StudentFacade extends AbstractFacade<Student> {
         } catch (NoResultException e) {
             throw new CustomHttpException(Status.FORBIDDEN, "Token does not exist");
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new CustomHttpException(Status.FORBIDDEN, ex.getMessage());
         }
     }
@@ -140,6 +141,16 @@ public class StudentFacade extends AbstractFacade<Student> {
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         return query.getResultList();
+    }
+
+    public void verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
+        switch (entity.getPreviousCourseCode()) {
+            case "01":
+                CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+                break;
+        }
+        throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
 }

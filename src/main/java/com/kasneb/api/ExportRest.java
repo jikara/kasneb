@@ -6,12 +6,15 @@
 package com.kasneb.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kasneb.util.ExportUtil;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -23,6 +26,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * REST Web Service
@@ -34,6 +41,8 @@ public class ExportRest {
 
     @Context
     private UriInfo context;
+    @Context
+    ServletContext servletContext;
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
@@ -57,17 +66,115 @@ public class ExportRest {
     @Path("receipt/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getReceipt(@PathParam("id") String receiptNumber) {
-        InputStream is = null;
         try {
             com.kasneb.jasper.ReceiptDocument receipt = exportFacade.generateReceipt(receiptNumber);
-            is = new ExportUtil().generateReceipt(receipt);
+            List<com.kasneb.jasper.ReceiptDocument> receipts = new ArrayList();
+            receipts.add(receipt);
+            Map<String, Object> parameters = new HashMap<>();
+            // parameters.put("RECEIPT_DETAILS", receipt.getItems());
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(receipts);
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Receipt.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\receipt.pdf");
             httpStatus = Response.Status.OK;
-        } catch (IOException | JRException ex) {
+        } catch (JRException ex) {
             Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
-                .entity(is)
+                .entity(null)
+                .type("application/pdf")
+                .build();
+    }
+
+    @GET
+    @Path("timetable/{id}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getTimetable(@PathParam("id") String id) {
+        try {
+            com.kasneb.jasper.TimetableDocument timetable = exportFacade.generateTimetable(1);
+            List<com.kasneb.jasper.TimetableDocument> timetables = new ArrayList();
+            timetables.add(timetable);
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(timetables);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("PAPERS", timetable.getPapers());
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Timetable.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\timetable1.pdf");
+            httpStatus = Response.Status.OK;
+        } catch (JRException ex) {
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(null)
+                .type("application/pdf")
+                .build();
+    }
+
+    @GET
+    @Path("timetable/subreport")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getTimetableSubreport() {
+        try {
+            com.kasneb.jasper.TimetableDocument timetable = exportFacade.generateTimetable(1);
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(timetable.getPapers());
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("PAPERS", timetable.getPapers());
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Timetable_subreport1.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\timetablesub.pdf");
+            httpStatus = Response.Status.OK;
+        } catch (JRException ex) {
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(null)
+                .type("application/pdf")
+                .build();
+    }
+
+    @GET
+    @Path("exemptionletter")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getExemptionLetter() {
+        try {
+            List<com.kasneb.jasper.ExemptionDocument> documentArray = new ArrayList();
+            com.kasneb.jasper.ExemptionDocument exemptionLetter = exportFacade.generateExemptionLetter(1);
+            documentArray.add(exemptionLetter);
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(documentArray);
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/ExemptionLetter.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, new HashMap<>(), beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\exemption_letter.pdf");
+            httpStatus = Response.Status.OK;
+        } catch (JRException ex) {
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(null)
+                .type("application/pdf")
+                .build();
+    }
+
+    @GET
+    @Path("invoice")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getInvoice() {
+        try {
+            com.kasneb.jasper.InvoiceDocument invoice = exportFacade.generateInvoice(1);
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(invoice.getItems());
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/ExemptionLetter.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, new HashMap<>(), beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\exemption_letter.pdf");
+            httpStatus = Response.Status.OK;
+        } catch (JRException ex) {
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(null)
                 .type("application/pdf")
                 .build();
     }

@@ -128,6 +128,10 @@ public class Student implements Serializable {
     @Transient
     @JsonIgnore
     private String jpPin;
+    @Transient
+    private String previousCourseCode;
+    @Transient
+    private Integer previousRegistrationNo;
 
     public Student() {
     }
@@ -348,6 +352,22 @@ public class Student implements Serializable {
 
     public void setCurrentCourse(StudentCourse currentCourse) {
         this.currentCourse = currentCourse;
+    }
+
+    public String getPreviousCourseCode() {
+        return previousCourseCode;
+    }
+
+    public void setPreviousCourseCode(String previousCourseCode) {
+        this.previousCourseCode = previousCourseCode;
+    }
+
+    public Integer getPreviousRegistrationNo() {
+        return previousRegistrationNo;
+    }
+
+    public void setPreviousRegistrationNo(Integer previousRegistrationNo) {
+        this.previousRegistrationNo = previousRegistrationNo;
     }
 
     @Override

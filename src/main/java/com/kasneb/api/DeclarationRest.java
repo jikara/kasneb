@@ -85,6 +85,23 @@ public class DeclarationRest {
                 .build();
     }
 
+    @GET
+    @Path("{id}/{response}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response find(@PathParam("id") Integer id, @PathParam("response") Boolean response) {
+        try {
+            anyResponse = declarationFacade.findByResponse(id,response);
+            json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(DeclarationRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
 //    @POST
 //    @Path("register")
 //    @Consumes({MediaType.APPLICATION_JSON})
@@ -114,7 +131,7 @@ public class DeclarationRest {
     @Path("register")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(StudentDeclaration studentDeclaration)  {
+    public Response update(StudentDeclaration studentDeclaration) {
         try {
             declarationFacade.update(studentDeclaration);
             anyResponse = "Declaration  updated successfully";

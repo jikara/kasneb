@@ -172,6 +172,9 @@ public class StudentRest {
     public Response create(@Context HttpHeaders headers, Student entity) {
         Map emailProps = new HashMap<>();
         try {
+            if (entity.getPreviousRegistrationNo() != null) {
+                studentFacade.verifyPreviousStudentCourse(entity);
+            }
             entity = studentFacade.createStudent(entity);
             String key = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Verification Key", 1000 * 60 * 60 * 24);
             String smsToken = SecurityUtil.createSmsToken(entity.getId());

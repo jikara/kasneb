@@ -121,7 +121,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="22" isBold="true"/>
 				</textElement>
-				<text><![CDATA[KASNEB OFFICIAL RECEIPT]]></text>
+				<text><![CDATA[KASNEB INVOICE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="455" y="1" width="100" height="36" forecolor="#FF0033" uuid="3861ee4a-6355-4bf2-864b-98f5a4a8f432"/>
@@ -166,28 +166,28 @@
 				<text><![CDATA[Received From :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="346" y="27" width="80" height="20" uuid="fe342865-3414-4a03-aa25-c42a389d5c05"/>
+				<reportElement x="346" y="27" width="90" height="20" uuid="fe342865-3414-4a03-aa25-c42a389d5c05"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Receipt No]]></text>
+				<text><![CDATA[Invoice Number]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="346" y="49" width="80" height="20" uuid="727583c0-b8b6-440d-a0b0-33d78d971fa9"/>
+				<reportElement x="346" y="49" width="90" height="20" uuid="727583c0-b8b6-440d-a0b0-33d78d971fa9"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="346" y="69" width="80" height="20" uuid="4742bec2-f6bd-47b9-b1ab-c7cd47fee0c0"/>
+				<reportElement x="346" y="69" width="90" height="20" uuid="4742bec2-f6bd-47b9-b1ab-c7cd47fee0c0"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Registration No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="346" y="95" width="80" height="20" uuid="68e9d538-6d06-4679-acb0-cd4e4f822a68"/>
+				<reportElement x="346" y="95" width="90" height="20" uuid="68e9d538-6d06-4679-acb0-cd4e4f822a68"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
