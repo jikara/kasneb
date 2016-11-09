@@ -173,7 +173,9 @@ public class StudentRest {
         Map emailProps = new HashMap<>();
         try {
             if (entity.getStudentStatus() != null && entity.getStudentStatus() == 2) {
-                studentFacade.verifyPreviousStudentCourse(entity);
+                Student existing = studentFacade.verifyPreviousStudentCourse(entity);
+                //Copy non null prperties
+                studentFacade.copy(existing, entity);
             }
             entity = studentFacade.createStudent(entity);
             String key = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Verification Key", 1000 * 60 * 60 * 24);

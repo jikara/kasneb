@@ -144,7 +144,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         return query.getResultList();
     }
 
-    public void verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
+    public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
         switch (entity.getPreviousCourseCode()) {
             case "01":
                 CpaRegistration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
@@ -157,6 +157,8 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (!reg.getDateOfBirth().equals(entity.getDateOfBirth())) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
         }
+        //String firstName, String middleName, String lastName, String phoneNumber, String gender, String email
+        return new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
     }
 
 }
