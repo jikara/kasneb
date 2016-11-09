@@ -172,7 +172,7 @@ public class StudentRest {
     public Response create(@Context HttpHeaders headers, Student entity) {
         Map emailProps = new HashMap<>();
         try {
-            if (entity.getPreviousRegistrationNo() != null) {
+            if (entity.getStudentStatus() != null && entity.getStudentStatus() == 2) {
                 studentFacade.verifyPreviousStudentCourse(entity);
             }
             entity = studentFacade.createStudent(entity);

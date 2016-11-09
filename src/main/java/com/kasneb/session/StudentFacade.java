@@ -5,6 +5,7 @@
  */
 package com.kasneb.session;
 
+import com.kasneb.client.CpaRegistration;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
@@ -146,11 +147,16 @@ public class StudentFacade extends AbstractFacade<Student> {
     public void verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
         switch (entity.getPreviousCourseCode()) {
             case "01":
-                CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+                CpaRegistration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
                 break;
         }
-        throw new UnsupportedOperationException("Not supported yet.");
-        //To change body of generated methods, choose Tools | Templates.
+        CpaRegistration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+        if (reg == null) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
+        }
+        if (!reg.getDateOfBirth().equals(entity.getDateOfBirth())) {
+            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
+        }
     }
 
 }

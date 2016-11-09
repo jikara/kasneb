@@ -51,7 +51,7 @@ import java.util.Set;
  */
 public class CoreUtil {
 
-    public static String BASE_URL = "http://localhost:29097/core/";
+    public static String BASE_URL = "http://192.168.11.211:8080/core/";
 
     public static List<Country> getCountries() throws IOException, CustomHttpException {
         Gson gson = new Gson();
@@ -140,7 +140,7 @@ public class CoreUtil {
         Student student = studentCourse.getStudent();
         //Create core object
         Set<Receipt> receipts = new HashSet<>();
-        CpaRegistration registration = new CpaRegistration(null, Stream.AC, getFirstExemDate(studentCourse.getFirstSitting()), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDob(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
+        CpaRegistration registration = new CpaRegistration(null, Stream.AC, getFirstExemDate(studentCourse.getFirstSitting()), student.getLastName(), studentCourse.getStudent().getFirstName(), student.getMiddleName(), "", new CsSex("M"), student.getDateOfBirth(), new Nation(student.getCountryId().getCode()), student.getDocumentNo(), new CsQualification(1), null, "C1135308", "", "", student.getContact().getPostalAddress(), "", student.getContact().getPostalAddress(), student.getContact().getTown(), student.getContact().getCountryId().getName(), student.getEmail(), student.getPhoneNumber(), "", new Course("00"), "Media", new LearnAbout(4), new Nation("1"), new CsQualification(5));
         for (Invoice invoice : studentCourse.getInvoices()) {
             if ("PAID".equals(invoice.getStatus().getStatus())) {
                 Collection<ReceiptDetail> receiptDetails = new ArrayList<>();

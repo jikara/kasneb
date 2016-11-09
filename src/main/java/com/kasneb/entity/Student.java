@@ -10,9 +10,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,7 +51,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Student.findByMiddlename", query = "SELECT s FROM Student s WHERE s.middleName = :middleName"),
     @NamedQuery(name = "Student.findByLastname", query = "SELECT s FROM Student s WHERE s.lastName = :lastName"),
     @NamedQuery(name = "Student.findByGender", query = "SELECT s FROM Student s WHERE s.gender = :gender"),
-    @NamedQuery(name = "Student.findByDob", query = "SELECT s FROM Student s WHERE s.dob = :dob"),
+    @NamedQuery(name = "Student.findByDob", query = "SELECT s FROM Student s WHERE s.dateOfBirth = :dateOfBirth"),
     @NamedQuery(name = "Student.findByEmail", query = "SELECT s FROM Student s WHERE s.email = :email"),
     @NamedQuery(name = "Student.findByCreated", query = "SELECT s FROM Student s WHERE s.created = :created"),
     @NamedQuery(name = "Student.findByPassportPhoto", query = "SELECT s FROM Student s WHERE s.passportPhoto = :passportPhoto"),
@@ -77,7 +81,10 @@ public class Student implements Serializable {
     @Column(name = "dateOfBirth")
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date dob = new Date();
+    private Date dateOfBirth;
+    @Transient
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private String dob;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @Column(name = "email", nullable = false)
@@ -126,12 +133,16 @@ public class Student implements Serializable {
     @Transient
     private Collection<Invoice> invoices = new ArrayList<>();
     @Transient
+    private Collection<Invoice> pendingInvoices = new ArrayList<>();
+    @Transient
     @JsonIgnore
     private String jpPin;
     @Transient
     private String previousCourseCode;
     @Transient
     private Integer previousRegistrationNo;
+    @Transient
+    private Integer studentStatus;
 
     public Student() {
     }
@@ -140,11 +151,11 @@ public class Student implements Serializable {
         this.id = id;
     }
 
-    public Student(Integer id, String firstName, String gender, Date dob, String email, Date created) {
+    public Student(Integer id, String firstName, String gender, Date dateOfBirth, String email, Date created) {
         this.id = id;
         this.firstName = firstName;
         this.gender = gender;
-        this.dob = dob;
+        this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.created = created;
     }
@@ -206,11 +217,27 @@ public class Student implements Serializable {
         this.gender = gender;
     }
 
-    public Date getDob() {
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
+        if (dob != null && !dob.trim().equals("")) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+                dateOfBirth = formatter.parse(dob);
+            } catch (ParseException ex) {
+                Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         this.dob = dob;
     }
 
@@ -327,8 +354,19 @@ public class Student implements Serializable {
         return invoices;
     }
 
-    public void setInvoices(Collection<Invoice> invoices) {
-        this.invoices = invoices;
+    public Collection<Invoice> getPendingInvoices() {
+        if (getStudentCourses() != null) {
+            for (StudentCourse studentCourse : getStudentCourses()) {
+                if (studentCourse.getInvoices() != null) {
+                    for (Invoice invoice : studentCourse.getInvoices()) {
+                        if (invoice.getStatus().getStatus().equals("PENDING")) {
+                            pendingInvoices.add(invoice);
+                        }
+                    }
+                }
+            }
+        }
+        return pendingInvoices;
     }
 
     public String getJpPin() {
@@ -368,6 +406,14 @@ public class Student implements Serializable {
 
     public void setPreviousRegistrationNo(Integer previousRegistrationNo) {
         this.previousRegistrationNo = previousRegistrationNo;
+    }
+
+    public Integer getStudentStatus() {
+        return studentStatus;
+    }
+
+    public void setStudentStatus(Integer studentStatus) {
+        this.studentStatus = studentStatus;
     }
 
     @Override
