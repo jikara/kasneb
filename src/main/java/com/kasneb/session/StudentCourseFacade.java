@@ -572,4 +572,12 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
     }
 
+    public List<StudentCourse> findVerifications(Integer userId) {
+        return super.findAll();
+    }
+
+    public List<StudentCourse> findVerifications(Integer userId, Date startDate, Date endDate) {
+        return super.findAll();
+    }
+
 }

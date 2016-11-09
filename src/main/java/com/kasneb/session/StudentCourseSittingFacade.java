@@ -219,7 +219,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         return map;
     }
 
-    public void createStudentCourse(StudentCourseSitting entity) throws CustomHttpException {
+    public void createStudentCourseSitting(StudentCourseSitting entity) throws CustomHttpException {
         if (entity.getStudentCourse() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course id is not defined");
         }

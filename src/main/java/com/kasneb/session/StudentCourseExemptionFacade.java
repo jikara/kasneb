@@ -142,4 +142,12 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
         return query.getResultList();
     }
 
+    public List<StudentCourseExemptionPaper> findExemptionVerifications(Integer userId) {
+        return super.findAll();
+    }
+
+    public List<StudentCourseExemptionPaper> findExemptionVerifications(Integer userId, Date startDate, Date endDate) {
+        return super.findAll();
+    }
+
 }

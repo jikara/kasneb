@@ -226,6 +226,9 @@ public class Student implements Serializable {
     }
 
     public String getDob() {
+        if (getDateOfBirth() != null) {
+            dob = getDateOfBirth().toString();
+        }
         return dob;
     }
 

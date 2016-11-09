@@ -346,7 +346,10 @@ public class StudentCourse implements Serializable {
         if (getCurrentPart() != null) {
             for (Section section : getCurrentPart().getSectionCollection()) {
                 Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(), getPassedPapers());
-                elligibleSections.add(new ElligibleSection(section.getName(), elligiblePapers, section.isOptional()));
+                ElligibleSection mySection = new ElligibleSection(section.getName(), elligiblePapers, section.isOptional());
+                if (!mySection.getPapers().isEmpty()) {
+                    elligibleSections.add(mySection);
+                }
             }
         }
         return elligibleSections;
@@ -360,7 +363,11 @@ public class StudentCourse implements Serializable {
 
     private Collection<Paper> getPassedPapers() {
         Collection<Paper> passedPapers = new ArrayList<>();
-        //this.getStudentCourseSittings()
+        for (StudentCourseSitting sitting : getStudentCourseSittings()) {
+            for (StudentCourseSittingPaper sp : sitting.getPapers()) {
+                passedPapers.add(sp.getPaper());
+            }
+        }
         return passedPapers;
     }
 
@@ -455,7 +462,6 @@ public class StudentCourse implements Serializable {
 //    public void setEligibleExemptions(Set<Paper> eligibleExemptions) {
 //        this.eligibleExemptions = eligibleExemptions;
 //    }
-
     public Set<Paper> getEligibleExemptions() {
         eligibleExemptions = new HashSet<>();
         if (getKasnebQualifications() != null) {

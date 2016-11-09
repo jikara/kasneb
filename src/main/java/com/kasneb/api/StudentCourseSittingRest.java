@@ -103,7 +103,7 @@ public class StudentCourseSittingRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(StudentCourseSitting entity) throws JsonProcessingException {
         try {
-            studentCourseSittingFacade.createStudentCourse(entity);
+            studentCourseSittingFacade.createStudentCourseSitting(entity);
             anyResponse = studentCourseSittingFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
