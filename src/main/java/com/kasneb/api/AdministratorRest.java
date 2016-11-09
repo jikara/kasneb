@@ -275,33 +275,6 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse/verification")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourseVerifications1(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) {
-        try {
-            User user = userFacade.find(userId);
-            if (user == null) {
-                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "User does not exist");
-            }
-            anyResponse = studentCourseFacade.findVerificationByUser(user);
-            httpStatus = Response.Status.OK;
-        } catch (CustomHttpException ex) {
-            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            httpStatus = ex.getStatusCode();
-            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return Response
-                .status(httpStatus)
-                .entity(json)
-                .build();
-    }
-
-    @GET
-    @Path("studentcourse/verification")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getStudentCourseVerifications(@QueryParam("from") String fromDate, @QueryParam("to") String toDate, @QueryParam("userId") Integer userId) {
         boolean dateRange = true;
         Date startDate = null, endDate = null;
