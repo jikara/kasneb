@@ -5,51 +5,41 @@
  */
 package com.kasneb.client;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
  * @author jikara
  */
-public class ReceiptDetail implements Serializable {
+public class ReceiptDetail {
 
-    private ReceiptDetailPK receiptDetailPK;
-    @JsonBackReference
     private Receipt receipt;
     private Course course;
+    private String lastUser;
+    private Date created;
+    private String studentName;
     private ReceiptCategory category;
     private String description;
     private BigDecimal amount;
-    @JsonIgnore
-    private CpaRegistration registration;
+    private Registration registration;
     private String postingCode;
     private String fullRegNo;
     private Currency currency;
 
-    public ReceiptDetail() {
-    }
-
-    public ReceiptDetail(ReceiptDetailPK receiptDetailPK, Receipt receipt, Course course, ReceiptCategory category, String description, BigDecimal amount, CpaRegistration registration, String postingCode,Currency currency) {
-        this.receiptDetailPK = receiptDetailPK;
+    public ReceiptDetail(Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency) {
         this.receipt = receipt;
         this.course = course;
+        this.lastUser = lastUser;
+        this.created = created;
+        this.studentName = studentName;
         this.category = category;
         this.description = description;
         this.amount = amount;
         this.registration = registration;
         this.postingCode = postingCode;
+        this.fullRegNo = fullRegNo;
         this.currency = currency;
-    }
-
-    public ReceiptDetailPK getReceiptDetailPK() {
-        return receiptDetailPK;
-    }
-
-    public void setReceiptDetailPK(ReceiptDetailPK receiptDetailPK) {
-        this.receiptDetailPK = receiptDetailPK;
     }
 
     public Receipt getReceipt() {
@@ -66,6 +56,30 @@ public class ReceiptDetail implements Serializable {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public String getLastUser() {
+        return lastUser;
+    }
+
+    public void setLastUser(String lastUser) {
+        this.lastUser = lastUser;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public ReceiptCategory getCategory() {
@@ -92,11 +106,11 @@ public class ReceiptDetail implements Serializable {
         this.amount = amount;
     }
 
-    public CpaRegistration getRegistration() {
+    public Registration getRegistration() {
         return registration;
     }
 
-    public void setRegistration(CpaRegistration registration) {
+    public void setRegistration(Registration registration) {
         this.registration = registration;
     }
 

@@ -5,20 +5,15 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class Nation implements Serializable {
+public class Nation {
 
     private String code;
     private String name;
     private String nationality;
-
-    public Nation() {
-    }
 
     public Nation(String code) {
         this.code = code;
@@ -47,5 +42,4 @@ public class Nation implements Serializable {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
-
 }

@@ -9,6 +9,6 @@ package com.kasneb.client;
  *
  * @author jikara
  */
-public class StudentCoursePaper {
+public class ExamEntry {
     
 }

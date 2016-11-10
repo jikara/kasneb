@@ -5,13 +5,11 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class Currency implements Serializable {
+public class Currency {
 
     private String code;
     private String name;
@@ -53,5 +51,4 @@ public class Currency implements Serializable {
     public void setDefaultCurrency(Boolean defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
     }
-
 }

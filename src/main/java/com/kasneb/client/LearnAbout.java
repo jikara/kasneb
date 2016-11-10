@@ -5,19 +5,14 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class LearnAbout implements Serializable {
+public class LearnAbout {
 
     private Integer code;
     private String description;
-
-    public LearnAbout() {
-    }
 
     public LearnAbout(Integer code) {
         this.code = code;
@@ -38,5 +33,4 @@ public class LearnAbout implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

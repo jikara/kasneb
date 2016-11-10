@@ -5,7 +5,6 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,7 +12,7 @@ import java.util.Date;
  *
  * @author jikara
  */
-public class RegistrationFee implements Serializable {
+public class RegistrationFee {
 
     private Integer id;
     private Course course;

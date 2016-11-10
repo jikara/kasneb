@@ -5,20 +5,16 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class CsSex implements Serializable {
+public class Sex {
+
     private String code;
     private String description;
 
-    public CsSex() {
-    }
-
-    public CsSex(String code) {
+    public Sex(String code) {
         this.code = code;
     }
 
@@ -37,5 +33,5 @@ public class CsSex implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
 }

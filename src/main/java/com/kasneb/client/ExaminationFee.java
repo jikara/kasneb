@@ -5,10 +5,13 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class CpaExaminationFee implements Serializable {
+/**
+ *
+ * @author jikara
+ */
+public class ExaminationFee {
 
     private Integer id;
     private Integer section;

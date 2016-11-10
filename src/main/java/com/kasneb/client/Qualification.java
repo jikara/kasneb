@@ -5,20 +5,16 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class CsQualification implements Serializable {
+public class Qualification {
+
     private Integer id;
     private String qualification;
 
-    public CsQualification() {
-    }
-
-    public CsQualification(Integer id) {
+    public Qualification(Integer id) {
         this.id = id;
     }
 
@@ -37,5 +33,4 @@ public class CsQualification implements Serializable {
     public void setQualification(String qualification) {
         this.qualification = qualification;
     }
-
 }

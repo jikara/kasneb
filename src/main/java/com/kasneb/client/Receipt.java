@@ -5,9 +5,6 @@
  */
 package com.kasneb.client;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -16,13 +13,12 @@ import java.util.Date;
  *
  * @author jikara
  */
-public class Receipt implements Serializable {
+public class Receipt {
 
     private String receiptNo;
     private Course course;
     private String receivedFrom;
-    @JsonBackReference 
-    private CpaRegistration registration;
+    private Registration registration;
     private String fullRegistrationNumber;
     private String lastUser;
     private Date mdate;
@@ -31,22 +27,21 @@ public class Receipt implements Serializable {
     private String referenceNumber;
     private Currency currency;
     private BigDecimal amount2;
-    @JsonManagedReference
     private Collection<ReceiptDetail> receiptDetails;
 
-    public Receipt() {
-    }
-
-    public Receipt(String receiptNo, Course course, String receivedFrom, CpaRegistration registration, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, Collection<ReceiptDetail> receiptDetails) {
+    public Receipt(String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, Collection<ReceiptDetail> receiptDetails) {
         this.receiptNo = receiptNo;
         this.course = course;
         this.receivedFrom = receivedFrom;
         this.registration = registration;
+        this.fullRegistrationNumber = fullRegistrationNumber;
+        this.lastUser = lastUser;
         this.mdate = mdate;
         this.paymentType = paymentType;
         this.amount = amount;
         this.referenceNumber = referenceNumber;
         this.currency = currency;
+        this.amount2 = amount2;
         this.receiptDetails = receiptDetails;
     }
 
@@ -74,11 +69,11 @@ public class Receipt implements Serializable {
         this.receivedFrom = receivedFrom;
     }
 
-    public CpaRegistration getRegistration() {
+    public Registration getRegistration() {
         return registration;
     }
 
-    public void setRegistration(CpaRegistration registration) {
+    public void setRegistration(Registration registration) {
         this.registration = registration;
     }
 
@@ -153,5 +148,4 @@ public class Receipt implements Serializable {
     public void setReceiptDetails(Collection<ReceiptDetail> receiptDetails) {
         this.receiptDetails = receiptDetails;
     }
-
 }

@@ -5,9 +5,6 @@
  */
 package com.kasneb.client;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -15,22 +12,24 @@ import java.util.Date;
  *
  * @author jikara
  */
-public class CpaRegistration implements Serializable {
+public class Registration {
 
     private static final long serialVersionUID = 1L;
-    private Integer regNo;
+    private String regNo;
     private String registrationNumber;
     private Stream stream;
+    private String stringStream;
+    private Date registered;
     private Integer firstExamDate;
     private String lastName;
     private String firstName;
     private String otherName;
     private String otherName2;
-    private CsSex sex;
+    private Sex sex;
     private Date dateOfBirth;
     private Nation nation;
     private String idNumber;
-    private CsQualification quali;
+    private Qualification quali;
     private Date rrDate;
     private String rrNumber;
     private String pReg;
@@ -47,16 +46,22 @@ public class CpaRegistration implements Serializable {
     private String learnAbout;
     private LearnAbout learnt;
     private Nation nationality;
-    private CsQualification qualification;
-    @JsonManagedReference
-    private Collection<Receipt> receipts = new ArrayList<>();
+    private Qualification qualification;
+    private Collection<Receipt> receipts;
+    private Collection<StudentCoursePaper> eligiblePapers;
+    private Collection<Exemption> exemptions;
+    private Collection<ExamBooking> examBookings;
+    private ExamEntry cpaExamEntry;
 
-    public CpaRegistration() {
+    public Registration() {
     }
 
-    public CpaRegistration(Integer regNo, Stream stream, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, CsSex sex, Date dateOfBirth, Nation nation, String idNumber, CsQualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, CsQualification qualification) {
+    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, Date dateOfBirth, String idNumber, Qualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
         this.regNo = regNo;
+        this.registrationNumber = registrationNumber;
         this.stream = stream;
+        this.stringStream = stringStream;
+        this.registered = registered;
         this.firstExamDate = firstExamDate;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -64,7 +69,6 @@ public class CpaRegistration implements Serializable {
         this.otherName2 = otherName2;
         this.sex = sex;
         this.dateOfBirth = dateOfBirth;
-        this.nation = nation;
         this.idNumber = idNumber;
         this.quali = quali;
         this.rrDate = rrDate;
@@ -84,13 +88,18 @@ public class CpaRegistration implements Serializable {
         this.learnt = learnt;
         this.nationality = nationality;
         this.qualification = qualification;
+        this.receipts = receipts;
+        this.eligiblePapers = eligiblePapers;
+        this.exemptions = exemptions;
+        this.examBookings = examBookings;
+        this.cpaExamEntry = cpaExamEntry;
     }
 
-    public Integer getRegNo() {
+    public String getRegNo() {
         return regNo;
     }
 
-    public void setRegNo(Integer regNo) {
+    public void setRegNo(String regNo) {
         this.regNo = regNo;
     }
 
@@ -108,6 +117,22 @@ public class CpaRegistration implements Serializable {
 
     public void setStream(Stream stream) {
         this.stream = stream;
+    }
+
+    public String getStringStream() {
+        return stringStream;
+    }
+
+    public void setStringStream(String stringStream) {
+        this.stringStream = stringStream;
+    }
+
+    public Date getRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(Date registered) {
+        this.registered = registered;
     }
 
     public Integer getFirstExamDate() {
@@ -150,11 +175,11 @@ public class CpaRegistration implements Serializable {
         this.otherName2 = otherName2;
     }
 
-    public CsSex getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(CsSex sex) {
+    public void setSex(Sex sex) {
         this.sex = sex;
     }
 
@@ -174,14 +199,6 @@ public class CpaRegistration implements Serializable {
         this.nation = nation;
     }
 
-    public Nation getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(Nation nationality) {
-        this.nationality = nationality;
-    }
-
     public String getIdNumber() {
         return idNumber;
     }
@@ -190,12 +207,12 @@ public class CpaRegistration implements Serializable {
         this.idNumber = idNumber;
     }
 
-    public CsQualification getQualification() {
-        return qualification;
+    public Qualification getQuali() {
+        return quali;
     }
 
-    public void setQualification(CsQualification qualification) {
-        this.qualification = qualification;
+    public void setQuali(Qualification quali) {
+        this.quali = quali;
     }
 
     public Date getRrDate() {
@@ -318,6 +335,22 @@ public class CpaRegistration implements Serializable {
         this.learnt = learnt;
     }
 
+    public Nation getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(Nation nationality) {
+        this.nationality = nationality;
+    }
+
+    public Qualification getQualification() {
+        return qualification;
+    }
+
+    public void setQualification(Qualification qualification) {
+        this.qualification = qualification;
+    }
+
     public Collection<Receipt> getReceipts() {
         return receipts;
     }
@@ -326,4 +359,35 @@ public class CpaRegistration implements Serializable {
         this.receipts = receipts;
     }
 
+    public Collection<StudentCoursePaper> getEligiblePapers() {
+        return eligiblePapers;
+    }
+
+    public void setEligiblePapers(Collection<StudentCoursePaper> eligiblePapers) {
+        this.eligiblePapers = eligiblePapers;
+    }
+
+    public Collection<Exemption> getExemptions() {
+        return exemptions;
+    }
+
+    public void setExemptions(Collection<Exemption> exemptions) {
+        this.exemptions = exemptions;
+    }
+
+    public Collection<ExamBooking> getExamBookings() {
+        return examBookings;
+    }
+
+    public void setExamBookings(Collection<ExamBooking> examBookings) {
+        this.examBookings = examBookings;
+    }
+
+    public ExamEntry getCpaExamEntry() {
+        return cpaExamEntry;
+    }
+
+    public void setCpaExamEntry(ExamEntry cpaExamEntry) {
+        this.cpaExamEntry = cpaExamEntry;
+    }
 }

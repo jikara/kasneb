@@ -5,27 +5,17 @@
  */
 package com.kasneb.client;
 
-import java.io.Serializable;
-
 /**
  *
  * @author jikara
  */
-public class ReceiptCategory implements Serializable {
+public class ReceiptCategory {
 
     private String code;
     private String name;
 
-    public ReceiptCategory() {
-    }
-
     public ReceiptCategory(String code) {
         this.code = code;
-    }
-
-    public ReceiptCategory(String code, String name) {
-        this.code = code;
-        this.name = name;
     }
 
     public String getCode() {
@@ -43,5 +33,4 @@ public class ReceiptCategory implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
 }

@@ -5,7 +5,7 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.client.CpaRegistration;
+import com.kasneb.client.Registration;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.ElligibleLevel;
@@ -262,7 +262,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException {
-        CpaRegistration registration = new CpaRegistration();
+        Registration registration = new Registration();
         switch (entity.getCourse().getId()) {
             case "01": //CPA
                 registration = CoreUtil.registerStudent(entity);

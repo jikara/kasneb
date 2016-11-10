@@ -5,7 +5,7 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.client.CpaRegistration;
+import com.kasneb.client.Registration;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.exception.CustomHttpException;
@@ -147,10 +147,10 @@ public class StudentFacade extends AbstractFacade<Student> {
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
         switch (entity.getPreviousCourseCode()) {
             case "01":
-                CpaRegistration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+                Registration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
                 break;
         }
-        CpaRegistration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+        Registration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
         if (reg == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
         }
