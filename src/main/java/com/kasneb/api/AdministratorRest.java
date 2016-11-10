@@ -12,7 +12,6 @@ import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Institution;
 import com.kasneb.entity.OtherCourse;
 import com.kasneb.entity.SittingPeriod;
-import com.kasneb.entity.User;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.util.DateUtil;
@@ -438,18 +437,29 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourses(@QueryParam("courseTypeCode") Integer courseTypeCode, @QueryParam("courseId") String courseId, @QueryParam("from") String from, @QueryParam("to") String to) {
-        if (courseTypeCode != null && courseId != null && from != null && to != null) {
-            anyResponse = studentCourseFacade.findAll();
+    public Response getStudentCourses(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws JsonProcessingException {
+        Date startDate = null, endDate = null;
+        boolean dateRange = false;
+        if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
+            try {
+                dateRange = true;
+                startDate = DateUtil.getDate(from);
+                endDate = DateUtil.getToDate(to);
+            } catch (ParseException ex) {
+                Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (dateRange && userId != null) {
+            anyResponse = studentCourseFacade.findAll(startDate, endDate, userId);
+        } else if (dateRange && userId == null) {
+            anyResponse = studentCourseFacade.findAll(startDate, endDate);
+        } else if (!dateRange && userId != null) {
+            anyResponse = studentCourseFacade.findAll(userId);
         } else {
             anyResponse = studentCourseFacade.findAll();
         }
         httpStatus = Response.Status.OK;
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -487,20 +497,22 @@ public class AdministratorRest {
     @GET
     @Path("exemption")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExemptions(@QueryParam("status") String status, @QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
+    public Response getExemptions(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws ParseException {
         Date startDate, endDate;
-        Boolean verifiedStatus = false;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
             dateRange = true;
         }
-        if (PredicateUtil.isSet(status)) {
-            verifiedStatus = status.equals("1");
-        }
-        if (dateRange && verifiedStatus) {
+        if (dateRange && userId != null) {
             startDate = DateUtil.getDate(from);
             endDate = DateUtil.getToDate(to);
-            anyResponse = studentCourseExemptionFacade.findSummary(verifiedStatus, startDate, endDate);
+            anyResponse = studentCourseExemptionFacade.findSummary(startDate, endDate, userId);
+        } else if (dateRange && userId == null) {
+            startDate = DateUtil.getDate(from);
+            endDate = DateUtil.getToDate(to);
+            anyResponse = studentCourseExemptionFacade.findSummary(startDate, endDate);
+        } else if (!dateRange && userId != null) {
+            anyResponse = studentCourseExemptionFacade.findSummary(userId);
         } else {
             anyResponse = studentCourseExemptionFacade.findSummary();
         }

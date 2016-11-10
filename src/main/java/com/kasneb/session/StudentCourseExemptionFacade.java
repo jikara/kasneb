@@ -150,4 +150,34 @@ public class StudentCourseExemptionFacade extends AbstractFacade<StudentCourseEx
         return super.findAll();
     }
 
+    public List<StudentCourseExemptionPaper> findSummary(Boolean verifiedStatus, Date startDate, Date endDate, Integer userId) {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s WHERE s.verified =:verified AND s.verifiedBy =:user AND s.created BETWEEN :startDate AND :endDate", StudentCourseExemptionPaper.class);
+        query.setParameter("verifiedStatus", verifiedStatus);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("user", new User(userId));
+        return query.getResultList();
+    }
+
+    public List<StudentCourseExemptionPaper> findSummary(Integer userId) {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s WHERE s.verifiedBy =:user", StudentCourseExemptionPaper.class);
+        query.setParameter("user", new User(userId));
+        return query.getResultList();
+    }
+
+    public List<StudentCourseExemptionPaper> findSummary(Date startDate, Date endDate) {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s WHERE s.created BETWEEN :startDate AND :endDate", StudentCourseExemptionPaper.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseExemptionPaper> findSummary(Date startDate, Date endDate, Integer userId) {
+        TypedQuery<StudentCourseExemptionPaper> query = em.createQuery("SELECT s FROM StudentCourseExemptionPaper s WHERE s.verifiedBy =:user AND s.created BETWEEN :startDate AND :endDate", StudentCourseExemptionPaper.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("user", new User(userId));
+        return query.getResultList();
+    }
+
 }

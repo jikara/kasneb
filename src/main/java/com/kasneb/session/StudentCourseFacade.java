@@ -580,4 +580,25 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return super.findAll();
     }
 
+    public List<StudentCourse> findAll(Integer userId) {
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user", StudentCourse.class);
+        query.setParameter("user", new User(userId));
+        return query.getResultList();
+    }
+
+    public List<StudentCourse> findAll(Date startDate, Date endDate) {
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.created BETWEEN :startDate AND :endDate", StudentCourse.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
+    }
+
+    public List<StudentCourse> findAll(Date startDate, Date endDate, Integer userId) {
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user AND s.created BETWEEN :startDate AND :endDate", StudentCourse.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("user", new User(userId));
+        return query.getResultList();
+    }
+
 }
