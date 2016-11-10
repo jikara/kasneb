@@ -73,6 +73,20 @@ public class UserRest {
                 .entity(json)
                 .build();
     }
+    
+    
+
+    @GET
+    @Path("verify")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findVerifyUsers() throws JsonProcessingException {
+        anyResponse = userFacade.findVerifyUsers();
+        json = mapper.writeValueAsString(anyResponse);
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
 
     /**
      * PUT method for updating or creating an instance of UserRest

@@ -6,9 +6,11 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.User;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,6 +29,11 @@ public class UserFacade extends AbstractFacade<User> {
 
     public UserFacade() {
         super(User.class);
+    }
+
+    public List<User> findVerifyUsers() {
+        TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+        return query.getResultList();
     }
 
 }
