@@ -62,6 +62,11 @@ public class StudentCourseSubscription implements Serializable {
         this.invoice = invoice;
     }
 
+    public StudentCourseSubscription(StudentCourse studentCourse, Date expiry) {
+        this.studentCourse = studentCourse;
+        this.expiry = expiry;
+    }
+
     public StudentCourseSubscriptionPK getStudentCourseSubscriptionPK() {
         return studentCourseSubscriptionPK;
     }

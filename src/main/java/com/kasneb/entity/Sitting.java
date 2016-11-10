@@ -74,6 +74,10 @@ public class Sitting implements Serializable {
     @OneToMany(mappedBy = "sitting")
     private Collection<SittingPaper> sittingPapers;
 
+    public Sitting(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

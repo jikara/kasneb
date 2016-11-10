@@ -17,6 +17,21 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "KASNEB")
 public class KasnebStudentCourseQualification extends StudentCourseQualification {
 
+    public KasnebStudentCourseQualification() {
+    }
+
+    public KasnebStudentCourseQualification(StudentCourseQualificationPK studentCourseQualificationPK) {
+        super(studentCourseQualificationPK);
+    }
+
+    public KasnebStudentCourseQualification(Course qualification) {
+        super(qualification);
+    }
+
+    public KasnebStudentCourseQualification(StudentCourse studentCourse, Course qualification) {
+        super(studentCourse, qualification);
+    }
+
     @Override
     public StudentCourseQualificationPK getStudentCourseQualificationPK() {
         return super.getStudentCourseQualificationPK(); //To change body of generated methods, choose Tools | Templates.

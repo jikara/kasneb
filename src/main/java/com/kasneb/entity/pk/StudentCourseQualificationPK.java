@@ -17,10 +17,22 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class StudentCourseQualificationPK implements Serializable {
 
-    @Column(name = "studentCourseId")
+    @Column(name = "studentCourseId", insertable = false, updatable = false)
     private Integer studentCourseId;
-    @Column(name = "qualificationId")
+    @Column(name = "qualificationId", insertable = false, updatable = false)
     private String qualificationId;
+
+    public StudentCourseQualificationPK() {
+    }
+
+    public StudentCourseQualificationPK(String qualificationId) {
+        this.qualificationId = qualificationId;
+    }
+
+    public StudentCourseQualificationPK(Integer studentCourseId, String qualificationId) {
+        this.studentCourseId = studentCourseId;
+        this.qualificationId = qualificationId;
+    }
 
     public Integer getStudentCourseId() {
         return studentCourseId;

@@ -34,11 +34,11 @@ public class StudentCourseQualification implements Serializable {
     @EmbeddedId
     private StudentCourseQualificationPK studentCourseQualificationPK;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     @JsonIgnore
     private StudentCourse studentCourse;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "qualificationId", referencedColumnName = "id")
     @JsonManagedReference
     private Course qualification;
     @Transient
@@ -47,12 +47,25 @@ public class StudentCourseQualification implements Serializable {
     public StudentCourseQualification() {
     }
 
+    public StudentCourseQualification(StudentCourseQualificationPK studentCourseQualificationPK) {
+        this.studentCourseQualificationPK = studentCourseQualificationPK;
+    }
+
     public StudentCourseQualificationPK getStudentCourseQualificationPK() {
         return studentCourseQualificationPK;
     }
 
+    public StudentCourseQualification(Course qualification) {
+        this.qualification = qualification;
+    }
+
     public void setStudentCourseQualificationPK(StudentCourseQualificationPK studentCourseQualificationPK) {
         this.studentCourseQualificationPK = studentCourseQualificationPK;
+    }
+
+    public StudentCourseQualification(StudentCourse studentCourse, Course qualification) {
+        this.studentCourse = studentCourse;
+        this.qualification = qualification;
     }
 
     public StudentCourse getStudentCourse() {

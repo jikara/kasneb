@@ -184,6 +184,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException {
+
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }

@@ -337,6 +337,11 @@ public class Student implements Serializable {
     }
 
     public void setStudentCourses(Collection<StudentCourse> studentCourses) {
+        if (studentCourses != null) {
+            for (StudentCourse sc : studentCourses) {
+                sc.setStudent(this);
+            }
+        }
         this.studentCourses = studentCourses;
     }
 
@@ -349,25 +354,35 @@ public class Student implements Serializable {
     }
 
     public Collection<Invoice> getInvoices() {
-        if (getStudentCourses() != null) {
-            for (StudentCourse studentCourse : getStudentCourses()) {
-                invoices.addAll(studentCourse.getInvoices());
+        try {
+            if (getStudentCourses() != null) {
+                for (StudentCourse studentCourse : getStudentCourses()) {
+                    if (studentCourse != null) {
+                        invoices.addAll(studentCourse.getInvoices());
+                    }
+                }
             }
+        } catch (Exception e) {
+
         }
         return invoices;
     }
 
     public Collection<Invoice> getPendingInvoices() {
-        if (getStudentCourses() != null) {
-            for (StudentCourse studentCourse : getStudentCourses()) {
-                if (studentCourse.getInvoices() != null) {
-                    for (Invoice invoice : studentCourse.getInvoices()) {
-                        if (invoice.getStatus().getStatus().equals("PENDING")) {
-                            pendingInvoices.add(invoice);
+        try {
+            if (getStudentCourses() != null) {
+                for (StudentCourse studentCourse : getStudentCourses()) {
+                    if (studentCourse.getInvoices() != null) {
+                        for (Invoice invoice : studentCourse.getInvoices()) {
+                            if (invoice.getStatus().getStatus().equals("PENDING")) {
+                                pendingInvoices.add(invoice);
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception e) {
+
         }
         return pendingInvoices;
     }

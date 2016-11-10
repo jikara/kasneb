@@ -6,16 +6,34 @@
 package com.kasneb.session;
 
 import com.kasneb.client.Registration;
+import com.kasneb.entity.Course;
 import com.kasneb.entity.Invoice;
+import com.kasneb.entity.KasnebCourse;
+import com.kasneb.entity.KasnebStudentCourseQualification;
+import com.kasneb.entity.Part;
+import com.kasneb.entity.Sitting;
 import com.kasneb.entity.Student;
+import com.kasneb.entity.StudentCourse;
+import com.kasneb.entity.StudentCourseStatus;
+import com.kasneb.entity.StudentCourseSubscription;
+import com.kasneb.entity.User;
+import com.kasneb.entity.VerificationStatus;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.SecurityUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -106,7 +124,7 @@ public class StudentFacade extends AbstractFacade<Student> {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Email already taken");
         }
         getEntityManager().persist(entity);
-        createWallet(entity);
+        // createWallet(entity);
         return entity;
     }
 
@@ -145,6 +163,7 @@ public class StudentFacade extends AbstractFacade<Student> {
     }
 
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
+        Collection<StudentCourse> studentCourses = new ArrayList<>();
         switch (entity.getPreviousCourseCode()) {
             case "01":
                 Registration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
@@ -154,11 +173,47 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (reg == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
         }
-        if (!reg.getDateOfBirth().equals(entity.getDob())) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
-        } 
+//        if (!reg.getDateOfBirth().equals(entity.getDob())) {
+//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
+//        } 
         //String firstName, String middleName, String lastName, String phoneNumber, String gender, String email
-        return new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
+        Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
+        //String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
+        Sitting firstSitting = new Sitting(1);
+        Part currentPart = getCurrentPart(reg);
+        StudentCourse studentCourse = new StudentCourse(reg.getRegistrationNumber(), true, new Date(), new User(1), "Existing at Kasneb", VerificationStatus.APPROVED, new KasnebCourse("01"), firstSitting, true);
+        studentCourse.setCurrentPart(currentPart);
+        StudentCourseStatus courseStatus = StudentCourseStatus.ACTIVE;
+        if (reg.getEligiblePapers().isEmpty()) {
+            Set<KasnebStudentCourseQualification> qs = new HashSet<>();
+            courseStatus = StudentCourseStatus.COMPLETED;
+            studentCourse.setActive(false);
+            //Set as qualification
+            qs.add(new KasnebStudentCourseQualification(new Course("01")));
+            studentCourse.setKasnebQualifications(qs);
+        }
+        studentCourse.setCourseStatus(courseStatus);
+        studentCourse.setCurrentSubscription(new StudentCourseSubscription(studentCourse, getNextRenewalDate()));
+        studentCourses.add(studentCourse);//Add to collection
+        existing.setStudentCourses(studentCourses);
+        return existing;
+    }
+
+    private Part getCurrentPart(Registration reg) {
+        return new Part(1);
+    }
+
+    private Date getNextRenewalDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date nextRenewalDate = null;
+        Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        try {
+            nextRenewalDate = sdf.parse((currentYear + 1) + "-06-30");
+        } catch (ParseException ex) {
+            Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        return nextRenewalDate;
     }
 
 }

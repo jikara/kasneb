@@ -88,6 +88,9 @@ public class StudentCourse implements Serializable {
     @Column(name = "verificationStatus")
     @Enumerated(EnumType.STRING)
     private VerificationStatus verificationStatus;
+    @Column(name = "courseStatus")
+    @Enumerated(EnumType.STRING)
+    private StudentCourseStatus courseStatus = StudentCourseStatus.PENDING;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     @JsonManagedReference
@@ -178,6 +181,18 @@ public class StudentCourse implements Serializable {
         this.verified = verified;
     }
 
+    public StudentCourse(String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Sitting firstSitting, Boolean verified) {
+        this.registrationNumber = registrationNumber;
+        this.active = active;
+        this.dateVerified = dateVerified;
+        this.verifiedBy = verifiedBy;
+        this.remarks = remarks;
+        this.verificationStatus = verificationStatus;
+        this.course = course;
+        this.firstSitting = firstSitting;
+        this.verified = verified;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -243,6 +258,14 @@ public class StudentCourse implements Serializable {
 
     public void setVerificationStatus(VerificationStatus verificationStatus) {
         this.verificationStatus = verificationStatus;
+    }
+
+    public StudentCourseStatus getCourseStatus() {
+        return courseStatus;
+    }
+
+    public void setCourseStatus(StudentCourseStatus courseStatus) {
+        this.courseStatus = courseStatus;
     }
 
     public String getRemarks() {
@@ -407,6 +430,11 @@ public class StudentCourse implements Serializable {
     }
 
     public void setKasnebQualifications(Set<KasnebStudentCourseQualification> kasnebQualifications) {
+        if (kasnebQualifications != null) {
+            for (KasnebStudentCourseQualification k : kasnebQualifications) {
+                k.setStudentCourse(this);
+            }
+        }
         this.kasnebQualifications = kasnebQualifications;
     }
 
