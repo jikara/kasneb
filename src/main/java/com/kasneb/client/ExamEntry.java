@@ -5,7 +5,6 @@
  */
 package com.kasneb.client;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ public class ExamEntry {
     private Registration cpaRegistration;
     private Integer year;
     private Integer sittingId;
-    private Date created;
+    private String created;
     private List<ExamPaper> examPapers;
 
     public Integer getRegNo() {
@@ -53,11 +52,11 @@ public class ExamEntry {
         this.sittingId = sittingId;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

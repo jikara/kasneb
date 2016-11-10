@@ -6,7 +6,6 @@
 package com.kasneb.client;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  *
@@ -22,7 +21,7 @@ public class Paper {
     private BigDecimal exemptionFee;
     private Integer examDay;
     private Integer dayPart;
-    private Date examDate;
+    private String examDate;
 
     public String getCode() {
         return code;
@@ -88,11 +87,11 @@ public class Paper {
         this.dayPart = dayPart;
     }
 
-    public Date getExamDate() {
+    public String getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(Date examDate) {
+    public void setExamDate(String examDate) {
         this.examDate = examDate;
     }
 }

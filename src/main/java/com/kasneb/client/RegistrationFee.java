@@ -6,7 +6,6 @@
 package com.kasneb.client;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  *
@@ -22,7 +21,7 @@ public class RegistrationFee {
     private BigDecimal registrationRenewalFee;
     private BigDecimal registrationReinstatementFee;
     private BigDecimal studentIdFee;
-    private Date lastEdited;
+    private String lastEdited;
 
     public Integer getId() {
         return id;
@@ -88,11 +87,11 @@ public class RegistrationFee {
         this.studentIdFee = studentIdFee;
     }
 
-    public Date getLastEdited() {
+    public String getLastEdited() {
         return lastEdited;
     }
 
-    public void setLastEdited(Date lastEdited) {
+    public void setLastEdited(String lastEdited) {
         this.lastEdited = lastEdited;
     }
 }

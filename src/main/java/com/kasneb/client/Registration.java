@@ -6,7 +6,6 @@
 package com.kasneb.client;
 
 import java.util.Collection;
-import java.util.Date;
 
 /**
  *
@@ -19,7 +18,7 @@ public class Registration {
     private String registrationNumber;
     private Stream stream;
     private String stringStream;
-    private Date registered;
+    private String registered;
     private Integer firstExamDate;
     private String lastName;
     private String firstName;
@@ -31,7 +30,7 @@ public class Registration {
     private Nation nation;
     private String idNumber;
     private Qualification quali;
-    private Date rrDate;
+    private String rrDate;
     private String rrNumber;
     private String pReg;
     private String idNo2;
@@ -57,7 +56,7 @@ public class Registration {
     public Registration() {
     }
 
-    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, String dateOfBirth, String idNumber, Qualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
+    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, String registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, String dateOfBirth, String idNumber, Qualification quali, String rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
         this.regNo = regNo;
         this.registrationNumber = registrationNumber;
         this.stream = stream;
@@ -128,11 +127,11 @@ public class Registration {
         this.stringStream = stringStream;
     }
 
-    public Date getRegistered() {
+    public String getRegistered() {
         return registered;
     }
 
-    public void setRegistered(Date registered) {
+    public void setRegistered(String registered) {
         this.registered = registered;
     }
 
@@ -212,11 +211,11 @@ public class Registration {
         this.quali = quali;
     }
 
-    public Date getRrDate() {
+    public String getRrDate() {
         return rrDate;
     }
 
-    public void setRrDate(Date rrDate) {
+    public void setRrDate(String rrDate) {
         this.rrDate = rrDate;
     }
 

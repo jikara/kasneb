@@ -154,9 +154,9 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (reg == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
         }
-        if (!reg.getDateOfBirth().equals(entity.getDateOfBirth())) {
+        if (!reg.getDateOfBirth().equals(entity.getDob())) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
-        }
+        } 
         //String firstName, String middleName, String lastName, String phoneNumber, String gender, String email
         return new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
     }

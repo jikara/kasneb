@@ -5,7 +5,6 @@
  */
 package com.kasneb.client;
 
-import java.util.Date;
 
 /**
  *
@@ -21,7 +20,7 @@ public class Exemption {
     private String flaq;
     private String altered;
     private String reference;
-    private Date date;
+    private String date;
 
     public Integer getId() {
         return id;
@@ -87,11 +86,11 @@ public class Exemption {
         this.reference = reference;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

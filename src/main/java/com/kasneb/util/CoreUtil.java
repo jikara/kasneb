@@ -72,7 +72,7 @@ public class CoreUtil {
         String usdResponse = new RestUtil().doGet(BASE_URL + "api/csregfee/" + course.getId() + "/" + Currency.USD.toString());
         com.kasneb.client.RegistrationFee kesRegistrationFee = gson.fromJson(kesResponse, com.kasneb.client.RegistrationFee.class);
         com.kasneb.client.RegistrationFee usdRegistrationFee = gson.fromJson(usdResponse, com.kasneb.client.RegistrationFee.class);
-        return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), kesRegistrationFee.getLastEdited(), new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
+        return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), null, new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
     }
 
     public static Fee getExemptionFee(Paper entity) throws IOException, CustomHttpException {
@@ -150,7 +150,7 @@ public class CoreUtil {
                 "",//registrationNumber
                 Stream.AC, //stream
                 "", //stringStream
-                student.getCreated(), //registered
+                student.getCreated() + "", //registered
                 getFirstExemDate(studentCourse.getFirstSitting()), //firstExamDate
                 student.getLastName(), //lastName
                 studentCourse.getStudent().getFirstName(), //firstName
@@ -160,7 +160,7 @@ public class CoreUtil {
                 student.getDateOfBirth().toString(), //dateOfBirth
                 student.getDocumentNo(),//idNumber
                 new Qualification(1), //quali
-                new Date(), //rrDAre
+                new Date() + "", //rrDAre
                 "", //rrNumber
                 student.getPreviousRegistrationNo() + "", //pReg
                 "", //idNo2
@@ -187,11 +187,11 @@ public class CoreUtil {
             if ("PAID".equals(invoice.getStatus().getStatus())) {
                 Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
                 //String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, List<ReceiptDetail> receiptDetails
-                Receipt receipt = new Receipt(generateReceipt(), new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, "", "MOBILE", new Date(), "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), new BigDecimal(0), receiptDetails);
+                Receipt receipt = new Receipt(generateReceipt(), new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, "", "MOBILE", new Date() + "", "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), new BigDecimal(0), receiptDetails);
                 for (InvoiceDetail invDetail : invoice.getInvoiceDetails()) {
                     //Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency
                     String studentName = studentCourse.getStudent().getFirstName();
-                    ReceiptDetail rcpDetail = new ReceiptDetail(receipt, new Course(studentCourse.getCourse().getId()), "MOBILE", new Date(), studentName, new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", "", new com.kasneb.client.Currency(Currency.KSH.toString()));
+                    ReceiptDetail rcpDetail = new ReceiptDetail(receipt, new Course(studentCourse.getCourse().getId()), "MOBILE", new Date() + "", studentName, new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", "", new com.kasneb.client.Currency(Currency.KSH.toString()));
                     receiptDetails.add(rcpDetail);
                 }
                 receipts.add(receipt);

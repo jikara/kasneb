@@ -6,7 +6,6 @@
 package com.kasneb.client;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  *
@@ -17,7 +16,7 @@ public class ReceiptDetail {
     private Receipt receipt;
     private Course course;
     private String lastUser;
-    private Date created;
+    private String created;
     private String studentName;
     private ReceiptCategory category;
     private String description;
@@ -27,7 +26,7 @@ public class ReceiptDetail {
     private String fullRegNo;
     private Currency currency;
 
-    public ReceiptDetail(Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency) {
+    public ReceiptDetail(Receipt receipt, Course course, String lastUser, String created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency) {
         this.receipt = receipt;
         this.course = course;
         this.lastUser = lastUser;
@@ -66,11 +65,11 @@ public class ReceiptDetail {
         this.lastUser = lastUser;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

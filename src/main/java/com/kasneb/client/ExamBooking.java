@@ -5,7 +5,6 @@
  */
 package com.kasneb.client;
 
-import java.util.Date;
 
 /**
  *
@@ -22,7 +21,7 @@ public class ExamBooking {
     private Integer examSitting;
     private Receipt receipt;
     private String lastUser;
-    private Date created;
+    private String created;
     private Boolean processed;
     private Centre centre;
     private String centreName;
@@ -99,11 +98,11 @@ public class ExamBooking {
         this.lastUser = lastUser;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

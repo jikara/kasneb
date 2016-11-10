@@ -7,7 +7,6 @@ package com.kasneb.client;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  *
@@ -21,7 +20,7 @@ public class Receipt {
     private Registration registration;
     private String fullRegistrationNumber;
     private String lastUser;
-    private Date mdate;
+    private String mdate;
     private String paymentType;
     private BigDecimal amount;
     private String referenceNumber;
@@ -29,7 +28,7 @@ public class Receipt {
     private BigDecimal amount2;
     private Collection<ReceiptDetail> receiptDetails;
 
-    public Receipt(String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, Collection<ReceiptDetail> receiptDetails) {
+    public Receipt(String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, String mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, Collection<ReceiptDetail> receiptDetails) {
         this.receiptNo = receiptNo;
         this.course = course;
         this.receivedFrom = receivedFrom;
@@ -93,11 +92,11 @@ public class Receipt {
         this.lastUser = lastUser;
     }
 
-    public Date getMdate() {
+    public String getMdate() {
         return mdate;
     }
 
-    public void setMdate(Date mdate) {
+    public void setMdate(String mdate) {
         this.mdate = mdate;
     }
 
