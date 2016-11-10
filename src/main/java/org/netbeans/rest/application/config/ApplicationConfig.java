@@ -54,6 +54,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.kasneb.api.SittingRest.class);
         resources.add(com.kasneb.api.StudentCourseRest.class);
         resources.add(com.kasneb.api.StudentCourseSittingRest.class);
+        resources.add(com.kasneb.api.StudentDeclarationRest.class);
         resources.add(com.kasneb.api.StudentRest.class);
         resources.add(com.kasneb.api.TransactionRest.class);
         resources.add(com.kasneb.api.UserRest.class);

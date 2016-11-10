@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -49,6 +50,8 @@ public class StudentDeclaration implements Serializable {
     @ManyToOne(optional = false)
     @JsonBackReference
     private StudentCourse studentCourse;
+    @Transient
+    private Student student;
 
     public StudentDeclaration() {
     }
@@ -91,6 +94,13 @@ public class StudentDeclaration implements Serializable {
 
     public void setStudentCourse(StudentCourse studentCourse) {
         this.studentCourse = studentCourse;
+    }
+
+    public Student getStudent() {
+        if (getStudentCourse() != null) {
+            student = getStudentCourse().getStudentObj();
+        }
+        return student;
     }
 
     @Override

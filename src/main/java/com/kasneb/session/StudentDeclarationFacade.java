@@ -6,9 +6,11 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.StudentDeclaration;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,6 +29,25 @@ public class StudentDeclarationFacade extends AbstractFacade<StudentDeclaration>
 
     public StudentDeclarationFacade() {
         super(StudentDeclaration.class);
+    }
+
+    public List<StudentDeclaration> findAll(Integer id, Boolean response) {
+        TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.declaration.id =:id AND sd.response=:response", StudentDeclaration.class);
+        query.setParameter("response", response);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
+    public List<StudentDeclaration> findAll(Integer id) {
+        TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.declaration.id =:id", StudentDeclaration.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
+    public List<StudentDeclaration> findAll(Boolean response) {
+        TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.response=:response", StudentDeclaration.class);
+        query.setParameter("response", response);
+        return query.getResultList();
     }
 
 }

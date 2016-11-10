@@ -53,6 +53,7 @@ public class UserRest {
         try {
             anyResponse = userFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
+            httpStatus = Response.Status.OK;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,13 +69,12 @@ public class UserRest {
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         anyResponse = userFacade.find(id);
         json = mapper.writeValueAsString(anyResponse);
+        httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
                 .entity(json)
                 .build();
     }
-    
-    
 
     @GET
     @Path("verify")
@@ -82,6 +82,7 @@ public class UserRest {
     public Response findVerifyUsers() throws JsonProcessingException {
         anyResponse = userFacade.findVerifyUsers();
         json = mapper.writeValueAsString(anyResponse);
+        httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
                 .entity(json)
