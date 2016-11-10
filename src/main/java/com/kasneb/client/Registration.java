@@ -26,7 +26,8 @@ public class Registration {
     private String otherName;
     private String otherName2;
     private Sex sex;
-    private Date dateOfBirth;
+    private String dateOfBirth;
+    private String dobString;
     private Nation nation;
     private String idNumber;
     private Qualification quali;
@@ -56,7 +57,7 @@ public class Registration {
     public Registration() {
     }
 
-    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, Date dateOfBirth, String idNumber, Qualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
+    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, String dateOfBirth, String idNumber, Qualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
         this.regNo = regNo;
         this.registrationNumber = registrationNumber;
         this.stream = stream;
@@ -183,16 +184,12 @@ public class Registration {
         this.sex = sex;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public Nation getNation() {
-        return nation;
     }
 
     public void setNation(Nation nation) {

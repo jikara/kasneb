@@ -131,7 +131,7 @@ public class CoreUtil {
     public static Registration getStudentCourse(Integer regNo) throws IOException, CustomHttpException {
         Gson gson = new Gson();
         String responseJson = new RestUtil().doGet(BASE_URL + "api/cpa/" + regNo);
-        return gson.fromJson(responseJson, Registration.class); 
+        return gson.fromJson(responseJson, Registration.class);
     }
 
     public static Registration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException {
@@ -156,8 +156,8 @@ public class CoreUtil {
                 studentCourse.getStudent().getFirstName(), //firstName
                 student.getMiddleName(), //otherName
                 "", //otherName2
-                new Sex("M"), //Sex
-                student.getDateOfBirth(), //dateOfBirth
+                new Sex("M"), //Sex 
+                student.getDateOfBirth().toString(), //dateOfBirth
                 student.getDocumentNo(),//idNumber
                 new Qualification(1), //quali
                 new Date(), //rrDAre
