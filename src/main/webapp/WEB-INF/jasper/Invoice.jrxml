@@ -71,7 +71,7 @@
 			<bottomPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="ReceiptDetails" uuid="5639723b-c731-4247-9359-b60041dab4b1">
+	<subDataset name="InvoiceDetails" uuid="5639723b-c731-4247-9359-b60041dab4b1">
 		<field name="description" class="java.lang.String"/>
 		<field name="amount" class="java.math.BigDecimal"/>
 	</subDataset>
@@ -111,6 +111,8 @@
 	<field name="receiptNumber" class="java.lang.String">
 		<fieldDescription><![CDATA[receiptNumber]]></fieldDescription>
 	</field>
+	<field name="kesTotal" class="java.math.BigDecimal"/>
+	<field name="usdTotal" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -122,13 +124,6 @@
 					<font size="22" isBold="true"/>
 				</textElement>
 				<text><![CDATA[KASNEB INVOICE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="455" y="1" width="100" height="36" forecolor="#FF0033" uuid="3861ee4a-6355-4bf2-864b-98f5a4a8f432"/>
-				<textElement>
-					<font fontName="Sitka Display" size="22"/>
-				</textElement>
-				<text><![CDATA[901464]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -179,20 +174,6 @@
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="346" y="69" width="90" height="20" uuid="4742bec2-f6bd-47b9-b1ab-c7cd47fee0c0"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Registration No]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="346" y="95" width="90" height="20" uuid="68e9d538-6d06-4679-acb0-cd4e4f822a68"/>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Examination]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="100" y="29" width="180" height="20" uuid="05bb90ad-3772-43e9-96ec-0f3ef59b59fb"/>
 				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
@@ -210,20 +191,34 @@
 				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="440" y="29" width="100" height="20" uuid="048330e1-77da-4f1d-9a11-b250fbe3a495"/>
+				<reportElement x="440" y="27" width="100" height="20" uuid="048330e1-77da-4f1d-9a11-b250fbe3a495"/>
 				<textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="440" y="48" width="100" height="20" uuid="45082b2e-4050-4acd-959b-d4aa25db6d06"/>
+				<reportElement x="440" y="49" width="100" height="20" uuid="45082b2e-4050-4acd-959b-d4aa25db6d06"/>
 				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="346" y="70" width="90" height="20" uuid="fe6c08ce-332e-4a00-a9bc-720618b5d61a"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KES Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="96" width="90" height="20" uuid="5caf54b3-3f3b-4b48-bea0-7e0b2b427188"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[USD Total]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="440" y="70" width="100" height="20" uuid="95269bca-e127-4d76-9b9c-1235e127a67b"/>
-				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
+				<reportElement x="440" y="70" width="100" height="20" uuid="311d97a1-c49e-45e6-a1a6-007d944e9d95"/>
+				<textFieldExpression><![CDATA[$F{kesTotal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="440" y="96" width="100" height="20" uuid="337e09f3-9244-4f1f-85d5-936f24b57157"/>
-				<textFieldExpression><![CDATA[$F{courseName}]]></textFieldExpression>
+				<reportElement x="440" y="96" width="100" height="20" uuid="c46f8f5a-2ea0-4a8c-b04a-3f5acef5a12c"/>
+				<textFieldExpression><![CDATA[$F{usdTotal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -232,7 +227,7 @@
 			<componentElement>
 				<reportElement key="table 2" x="0" y="0" width="555" height="40" uuid="4f6186b0-1768-437e-af7e-7d3270a595d9"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="ReceiptDetails" uuid="21ac86d9-ef31-4818-aea5-385718250c63">
+					<datasetRun subDataset="InvoiceDetails" uuid="171c46d0-689f-4da5-af53-141297c215b4">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{items})]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="90" uuid="f8a36ba0-a58d-4ead-82df-2a1edfe107a6">

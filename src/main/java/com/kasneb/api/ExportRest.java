@@ -6,7 +6,12 @@
 package com.kasneb.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +23,13 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -63,9 +68,9 @@ public class ExportRest {
      * @return an instance of javax.ws.rs.core.Response
      */
     @GET
-    @Path("receipt/{id}")
+    @Path("receipt1/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getReceipt(@PathParam("id") String receiptNumber) {
+    public Response getReceipt1(@PathParam("id") String receiptNumber) {
         try {
             com.kasneb.jasper.ReceiptDocument receipt = exportFacade.generateReceipt(receiptNumber);
             List<com.kasneb.jasper.ReceiptDocument> receipts = new ArrayList();
@@ -85,6 +90,34 @@ public class ExportRest {
                 .entity(null)
                 .type("application/pdf")
                 .build();
+    }
+
+    @GET
+    @Path("receipt/{id}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getReceipt(@PathParam("id") String receiptNumber) {
+        StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream out) throws IOException, WebApplicationException {
+                try {
+                    com.kasneb.jasper.ReceiptDocument receipt = exportFacade.generateReceipt(receiptNumber);
+                    List<com.kasneb.jasper.ReceiptDocument> receipts = new ArrayList();
+                    receipts.add(receipt);
+                    Map<String, Object> parameters = new HashMap<>();
+                    JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(receipts);
+                    InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Receipt.jasper");
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
+                    JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+                    Writer writer = new BufferedWriter(new OutputStreamWriter(out));
+                    writer.write("test");
+                    writer.flush();
+                    httpStatus = Response.Status.OK;
+                } catch (JRException ex) {
+                    Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        return Response.ok(stream).build();
     }
 
     @GET
