@@ -88,6 +88,31 @@ public class ExportRest {
     }
 
     @GET
+    @Path("invoice/{id}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getInvoice(@PathParam("id") String receiptNumber) {
+        try {
+            com.kasneb.jasper.ReceiptDocument receipt = exportFacade.generateReceipt(receiptNumber);
+            List<com.kasneb.jasper.ReceiptDocument> receipts = new ArrayList();
+            receipts.add(receipt);
+            Map<String, Object> parameters = new HashMap<>();
+            // parameters.put("RECEIPT_DETAILS", receipt.getItems());
+            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(receipts);
+            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Receipt.jasper");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\receipt.pdf");
+            httpStatus = Response.Status.OK;
+        } catch (JRException ex) {
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response
+                .status(httpStatus)
+                .entity(null)
+                .type("application/pdf")
+                .build();
+    }
+
+    @GET
     @Path("timetable/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getTimetable(@PathParam("id") String id) {
@@ -113,30 +138,7 @@ public class ExportRest {
     }
 
     @GET
-    @Path("timetable/subreport")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getTimetableSubreport() {
-        try {
-            com.kasneb.jasper.TimetableDocument timetable = exportFacade.generateTimetable(1);
-            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(timetable.getPapers());
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("PAPERS", timetable.getPapers());
-            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Timetable_subreport1.jasper");
-            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\timetablesub.pdf");
-            httpStatus = Response.Status.OK;
-        } catch (JRException ex) {
-            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return Response
-                .status(httpStatus)
-                .entity(null)
-                .type("application/pdf")
-                .build();
-    }
-
-    @GET
-    @Path("exemptionletter")
+    @Path("exemptionletter/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getExemptionLetter() {
         try {
@@ -156,36 +158,5 @@ public class ExportRest {
                 .entity(null)
                 .type("application/pdf")
                 .build();
-    }
-
-    @GET
-    @Path("invoice")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getInvoice() {
-        try {
-            com.kasneb.jasper.InvoiceDocument invoice = exportFacade.generateInvoice(1);
-            JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(invoice.getItems());
-            InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/ExemptionLetter.jasper");
-            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, new HashMap<>(), beanCollectionDataSource);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\jikara\\Documents\\KASNEB\\exemption_letter.pdf");
-            httpStatus = Response.Status.OK;
-        } catch (JRException ex) {
-            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return Response
-                .status(httpStatus)
-                .entity(null)
-                .type("application/pdf")
-                .build();
-    }
-
-    /**
-     * PUT method for updating or creating an instance of ExportRest
-     *
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void putJson(Response content) {
     }
 }
