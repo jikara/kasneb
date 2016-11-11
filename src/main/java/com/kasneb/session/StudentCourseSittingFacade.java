@@ -7,7 +7,6 @@ package com.kasneb.session;
 
 import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.Invoice;
-import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Level;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Part;
@@ -137,7 +136,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (examCentre == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Exam centre does not exist");
         }
-        Collection<KasnebCourse> examsOffered = examCentre.getExamsOffered();
         managed.setSittingCentre(entity.getSittingCentre());
         managed.setStatus(StudentCourseSittingStatus.CONFIRMED);
         //Send email

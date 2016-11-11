@@ -7,6 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kasneb.exception.CustomHttpException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -51,17 +53,19 @@ public class CentreZoneRest {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(){
+    public Response findAll() {
         try {
-            anyResponse = centreZoneFacade.findAll();
+            anyResponse = centreZoneFacade.findZones();
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(CentreZoneRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | CustomHttpException ex) {
+            Logger.getLogger(CentreZoneRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(json)
-                    .build();
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
     }
 
     /**

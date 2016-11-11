@@ -5,6 +5,7 @@
  */
 package com.kasneb.client;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 
 /**
@@ -47,6 +48,7 @@ public class Registration {
     private LearnAbout learnt;
     private Nation nationality;
     private Qualification qualification;
+    @JsonManagedReference
     private Collection<Receipt> receipts;
     private Collection<StudentCoursePaper> eligiblePapers;
     private Collection<Exemption> exemptions;

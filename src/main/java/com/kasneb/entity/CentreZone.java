@@ -6,17 +6,19 @@
 package com.kasneb.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -30,19 +32,26 @@ public class CentreZone implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "code")
+    private String code;
+    @Transient
+    private String id;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
+    @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL)
+    private Collection<ExamCentre> centres;
 
-    public Integer getId() {
-        return id;
+    public String getCode() {
+        return code;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getId() {
+        return code;
     }
 
     public String getName() {
@@ -53,10 +62,23 @@ public class CentreZone implements Serializable {
         this.name = name;
     }
 
+    public Collection<ExamCentre> getCentres() {
+        return centres;
+    }
+
+    public void setCentres(Collection<ExamCentre> centres) {
+        if (centres != null) {
+            for (ExamCentre c : centres) {
+                c.setZone(this);
+            }
+        }
+        this.centres = centres;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
@@ -72,12 +94,10 @@ public class CentreZone implements Serializable {
             return false;
         }
         final CentreZone other = (CentreZone) obj;
-        return Objects.equals(this.id, other.id);
-    }
-
-    @Override
-    public String toString() {
-        return "CentreZone{" + "id=" + id + ", name=" + name + '}';
+        if (!Objects.equals(this.code, other.code)) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -5,6 +5,8 @@
  */
 package com.kasneb.client;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -17,6 +19,7 @@ public class Receipt {
     private String receiptNo;
     private Course course;
     private String receivedFrom;
+    @JsonBackReference
     private Registration registration;
     private String fullRegistrationNumber;
     private String lastUser;
@@ -26,6 +29,7 @@ public class Receipt {
     private String referenceNumber;
     private Currency currency;
     private BigDecimal amount2;
+    @JsonManagedReference
     private Collection<ReceiptDetail> receiptDetails;
 
     public Receipt(String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, String mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, Collection<ReceiptDetail> receiptDetails) {

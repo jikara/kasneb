@@ -5,17 +5,13 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -43,16 +39,8 @@ public class ExamCentre implements Serializable {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
     @ManyToOne
-    @JoinColumn(name = "zoneId", referencedColumnName = "id")
-    @JsonBackReference
-    private NonKenyanCentre zone;
-    @ManyToOne
-    @JoinColumn(name = "clusterId", referencedColumnName = "id")
-    @JsonBackReference
-    private CentreCluster clusterId;
-    @ManyToMany(mappedBy = "examCentres")
-    @JsonManagedReference
-    private Collection<KasnebCourse> examsOffered;
+    @JoinColumn(name = "zoneCode", referencedColumnName = "code")
+    private CentreZone zone;
 
     public Integer getCode() {
         return code;
@@ -78,28 +66,12 @@ public class ExamCentre implements Serializable {
         this.capacity = capacity;
     }
 
-    public NonKenyanCentre getZone() {
+    public CentreZone getZone() {
         return zone;
     }
 
-    public void setZone(NonKenyanCentre zone) {
+    public void setZone(CentreZone zone) {
         this.zone = zone;
-    }
-
-    public CentreCluster getClusterId() {
-        return clusterId;
-    }
-
-    public void setClusterId(CentreCluster clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    public Collection<KasnebCourse> getExamsOffered() {
-        return examsOffered;
-    }
-
-    public void setExamsOffered(Collection<KasnebCourse> examsOffered) {
-        this.examsOffered = examsOffered;
     }
 
     @Override

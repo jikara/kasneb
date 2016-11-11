@@ -18,6 +18,7 @@ import com.kasneb.client.Receipt;
 import com.kasneb.client.ReceiptCategory;
 import com.kasneb.client.ReceiptDetail;
 import com.kasneb.client.Stream;
+import com.kasneb.entity.CentreZone;
 import com.kasneb.entity.Country;
 import com.kasneb.entity.Currency;
 import com.kasneb.entity.ExamCentre;
@@ -87,6 +88,18 @@ public class CoreUtil {
     public static List<ExamCentre> getCentres() throws IOException, CustomHttpException {
         Gson gson = new Gson();
         return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/centre"), new TypeToken<List<ExamCentre>>() {
+        }.getType());
+    }
+
+    public static List<ExamCentre> getCentres(String zoneCode) throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/centre?zoneCode=" + zoneCode), new TypeToken<List<ExamCentre>>() {
+        }.getType());
+    }
+
+    public static List<CentreZone> getZones() throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/zone"), new TypeToken<List<CentreZone>>() {
         }.getType());
     }
 

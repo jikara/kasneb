@@ -67,14 +67,6 @@ public class KasnebCourse extends Course {
     @OneToMany(mappedBy = "course")
     @JsonManagedReference
     private Collection<Part> parts;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "courseExamCentre",
-            joinColumns = {
-                @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)},
-            inverseJoinColumns
-            = @JoinColumn(name = "centreId", referencedColumnName = "code", nullable = false))
-    @JsonBackReference
-    private Collection<ExamCentre> examCentres;
     @Transient
     private Collection kasnebCourseExemptions;
 
@@ -140,14 +132,6 @@ public class KasnebCourse extends Course {
 
     public void setParts(Collection<Part> parts) {
         this.parts = parts;
-    }
-
-    public Collection<ExamCentre> getExamCentres() {
-        return examCentres;
-    }
-
-    public void setExamCentres(Collection<ExamCentre> examCentres) {
-        this.examCentres = examCentres;
     }
 
     public KasnebCourseType getKasnebCourseType() {
