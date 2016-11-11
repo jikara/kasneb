@@ -49,6 +49,9 @@ public class Payment implements Serializable {
     private String currency;
     @Column(name = "channel", nullable = false)
     private String channel;
+    @Basic(optional = false)
+    @Column(name = "reference", nullable = false)
+    private String reference;
     @Transient
     private String phoneNumber;
     @Transient
