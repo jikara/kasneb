@@ -111,6 +111,4 @@ public class StudentCourseSittingPaper implements Serializable {
         return Objects.equals(this.paperCode, other.paperCode);
     }
 
-    
-
 }

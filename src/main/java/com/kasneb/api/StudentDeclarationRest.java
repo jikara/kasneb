@@ -52,7 +52,6 @@ public class StudentDeclarationRest {
      * @param response
      * @return an instance of javax.ws.rs.core.Response
      */
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll(@QueryParam("id") Integer id, @QueryParam("response") Boolean response) {

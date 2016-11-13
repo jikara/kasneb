@@ -26,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -115,17 +116,27 @@ public class StudentCourse implements Serializable {
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Sitting firstSitting;
-    @JoinColumn(name = "partId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "partId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JsonManagedReference
-    @JsonIgnore
+    //@JsonIgnore
     private Part currentPart;
-    @JoinColumn(name = "sectionId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "sectionId", referencedColumnName = "id"),
+        @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true)
     @JsonManagedReference
     @JsonIgnore
     private Section currentSection;
-    @JoinColumn(name = "levelId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "levelId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Level currentLevel;
@@ -370,9 +381,9 @@ public class StudentCourse implements Serializable {
             for (Section section : getCurrentPart().getSectionCollection()) {
                 Collection<Paper> elligiblePapers = getEligiblePapers(section.getPaperCollection(), getExemptedPapers(), getPassedPapers());
                 ElligibleSection mySection = new ElligibleSection(section.getName(), elligiblePapers, section.isOptional());
-                if (!mySection.getPapers().isEmpty()) {
-                    elligibleSections.add(mySection);
-                }
+                //if (!mySection.getPapers().isEmpty()) {
+                elligibleSections.add(mySection);
+                // }
             }
         }
         return elligibleSections;

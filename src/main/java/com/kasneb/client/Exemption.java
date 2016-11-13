@@ -5,7 +5,6 @@
  */
 package com.kasneb.client;
 
-
 /**
  *
  * @author jikara

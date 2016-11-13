@@ -6,23 +6,23 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.kasneb.entity.pk.SectionPK;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -40,21 +40,21 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Section implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EmbeddedId
+    private SectionPK sectionPK;
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "isOptional", nullable = false)
+    @Transient
     private Boolean optional;
-    @JoinColumn(name = "partId", referencedColumnName = "id")
-    @ManyToOne(optional = false)
     @JsonBackReference
+    @ManyToOne(optional = false)
+    @JoinColumns({
+        @JoinColumn(name = "partId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    })
     private Part part;
     @OneToMany(mappedBy = "section")
     private Collection<Paper> paperCollection;
@@ -68,8 +68,21 @@ public class Section implements Serializable {
     public Section() {
     }
 
-    public Section(Integer id) {
+    public Section(SectionPK sectionPK) {
+        this.sectionPK = sectionPK;
+    }
+
+    public Section(Integer id, Part part) {
         this.id = id;
+        this.part = part;
+    }
+
+    public SectionPK getSectionPK() {
+        return sectionPK;
+    }
+
+    public void setSectionPK(SectionPK sectionPK) {
+        this.sectionPK = sectionPK;
     }
 
     public Integer getId() {
@@ -115,8 +128,8 @@ public class Section implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.sectionPK);
         return hash;
     }
 
@@ -132,12 +145,10 @@ public class Section implements Serializable {
             return false;
         }
         final Section other = (Section) obj;
-        return Objects.equals(this.id, other.id);
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" + "id=" + id + ", name=" + name + '}';
+        if (!Objects.equals(this.sectionPK, other.sectionPK)) {
+            return false;
+        }
+        return true;
     }
 
 }

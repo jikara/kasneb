@@ -64,7 +64,7 @@ public class KasnebCourse extends Course {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     @JsonBackReference
     private Collection<StudentCourse> studentCourses;
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Collection<Part> parts;
     @Transient

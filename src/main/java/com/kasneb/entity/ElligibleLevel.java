@@ -14,16 +14,14 @@ import java.util.Collection;
 public class ElligibleLevel {
 
     private String name;
-    private Boolean optional = true;
     private Collection<Paper> papers;
 
     public ElligibleLevel() {
     }
 
-    public ElligibleLevel(String name, Collection<Paper> papers, Boolean optional) {
+    public ElligibleLevel(String name, Collection<Paper> papers) {
         this.name = name;
         this.papers = papers;
-        this.optional = optional;
     }
 
     public String getName() {
@@ -40,13 +38,5 @@ public class ElligibleLevel {
 
     public void setPapers(Collection<Paper> papers) {
         this.papers = papers;
-    }
-
-    public Boolean getOptional() {
-        return optional;
-    }
-
-    public void setOptional(Boolean optional) {
-        this.optional = optional;
     }
 }

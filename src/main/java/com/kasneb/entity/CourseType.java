@@ -17,8 +17,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -38,15 +36,12 @@ public class CourseType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @NotNull
     @Basic(optional = false)
     @Column(name = "code", nullable = false)
-    private Integer code;
+    protected Integer code;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
     @Column(name = "name", nullable = false)
-    private String name;
+    protected String name;
 
     public CourseType() {
     }

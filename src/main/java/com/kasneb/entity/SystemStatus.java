@@ -35,10 +35,10 @@ public class SystemStatus implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "code",nullable=false)
+    @Column(name = "code", nullable = false)
     private Integer code;
     @Size(max = 45)
-    @Column(name = "description",nullable=false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     public SystemStatus() {
@@ -90,5 +90,5 @@ public class SystemStatus implements Serializable {
     public String toString() {
         return "com.kasneb.entity.SystemStatus[ code=" + code + " ]";
     }
-    
+
 }

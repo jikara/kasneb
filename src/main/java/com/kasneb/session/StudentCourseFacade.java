@@ -38,6 +38,8 @@ import com.kasneb.entity.StudentCourseSittingPaper;
 import com.kasneb.entity.StudentCourse_;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
+import com.kasneb.entity.pk.PartPK;
+import com.kasneb.entity.pk.SectionPK;
 import com.kasneb.entity.pk.StudentCourseExemptionPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
@@ -101,7 +103,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
-        entity.setCourse(new KasnebCourse("01"));
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
         }
@@ -123,8 +124,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return findByStudentCourse(entity);
         }
         if (course.getCourseTypeCode() == 100) {
-            entity.setCurrentPart(em.find(Part.class, 1));
-            entity.setCurrentSection(em.find(Section.class, 1));
+            Part part = em.find(Part.class, new PartPK(1, course.getId()));
+            Section section = em.find(Section.class, new SectionPK(1, part.getId(), course.getId()));
+            entity.setCurrentPart(part);
+            entity.setCurrentSection(section);
         } else if (course.getCourseTypeCode() == 200) {
             entity.setCurrentLevel(new Level(1));
         }
@@ -174,16 +177,17 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         KasnebCourse dbCourse = em.find(KasnebCourse.class, managed.getCourse().getId());
         if (dbCourse.getKasnebCourseType().getCode() == 100) {
-            managed.setCurrentPart(em.find(Part.class, 1));
-            managed.setCurrentSection(em.find(Section.class, 1));
+            Part part = em.find(Part.class, new PartPK(1, dbCourse.getId()));
+            Section section = em.find(Section.class, new SectionPK(1, part.getId(), dbCourse.getId()));
+            managed.setCurrentPart(part);
+            managed.setCurrentSection(section);
         } else if (dbCourse.getKasnebCourseType().getCode() == 200) {
             managed.setCurrentLevel(new Level(1));
         }
-        em.merge(managed);
-        return managed;
+        return em.merge(managed);
     }
 
-    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException {
+    public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException {
 
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
@@ -262,7 +266,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return nextRenewalDate;
     }
 
-    private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException {
+    private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException, ParseException {
         Registration registration = new Registration();
         switch (entity.getCourse().getId()) {
             case "01": //CPA
@@ -341,7 +345,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     public ElligibleLevel getElligibleLevel(StudentCourse studentCourse) {
         Collection<Paper> elligiblePapers = getEligiblePapers(studentCourse.getCurrentLevel().getPaperCollection(), getExemptedPapers(studentCourse), getPassedPapers(studentCourse));
-        return new ElligibleLevel(studentCourse.getCurrentLevel().getName(), elligiblePapers, studentCourse.getCurrentLevel().isOptional());
+        return new ElligibleLevel(studentCourse.getCurrentLevel().getName(), elligiblePapers);
     }
 
     public StudentCourse findActive(Integer id) {
@@ -521,7 +525,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         return query.getResultList();
     }
 
-    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException, MessagingException {
+    public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }

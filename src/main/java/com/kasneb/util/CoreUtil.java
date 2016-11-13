@@ -28,6 +28,7 @@ import com.kasneb.entity.FeeTypeCode;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.KasnebCourse;
+import com.kasneb.entity.KasnebCourseType;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
@@ -37,6 +38,7 @@ import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -55,13 +57,29 @@ public class CoreUtil {
 
     public static List<Country> getCountries() throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/nation"), new TypeToken<List<Country>>() {
+        String json = new RestUtil().doGet(BASE_URL + "api/nation");
+        return gson.fromJson(json, new TypeToken<List<Country>>() {
+        }.getType());
+    }
+
+    public static List<KasnebCourseType> getCourseTypes() throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        String json = new RestUtil().doGet(BASE_URL + "api/coursetype");
+        return gson.fromJson(json, new TypeToken<List<KasnebCourseType>>() {
         }.getType());
     }
 
     public static List<KasnebCourse> getCourses() throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        return gson.fromJson(new RestUtil().doGet(BASE_URL + "api/course"), new TypeToken<List<KasnebCourse>>() {
+        String json = new RestUtil().doGet(BASE_URL + "api/course");
+        return gson.fromJson(json, new TypeToken<List<KasnebCourse>>() {
+        }.getType());
+    }
+
+    public static List<KasnebCourse> getCourses(Integer courseTypeCode) throws IOException, CustomHttpException {
+        Gson gson = new Gson();
+        String json = new RestUtil().doGet(BASE_URL + "api/course/type/" + courseTypeCode);
+        return gson.fromJson(json, new TypeToken<List<KasnebCourse>>() {
         }.getType());
     }
 
@@ -147,33 +165,54 @@ public class CoreUtil {
         return gson.fromJson(responseJson, Registration.class);
     }
 
-    public static Registration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException {
+    public static Registration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException, ParseException {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         Student student = studentCourse.getStudent();
         //Create core object
         Set<Receipt> receipts = new HashSet<>();
+        Stream stream = Stream.AC;
+        String endpoint = "cpa";
+        Course previousCourse = new Course("00");
+        if (student.getPreviousCourseCode() != null) {
+            previousCourse = new Course(student.getPreviousCourseCode());
+        }
+        switch (studentCourse.getCourse().getId()) {
+            case "01":
+                stream = Stream.AC;
+                endpoint = "cpa";
+                break;
+            case "02":
+                stream = Stream.SC;
+                endpoint = "cs";
+                break;
+            case "03":
+                stream = Stream.AC;
+                endpoint = "kame";
+                break;
+        }
         //String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate,
         //String lastName, String firstName, String otherName, String otherName2, Sex sex, Date dateOfBirth, String idNumber,
         //Qualification quali, Date rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2,
         //String address3, String address4, String address5, String email, String cellphone, String telephone,
         //Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification,
         //List<Receipt> receipts, List<StudentCoursePaper> eligiblePapers, List<Exemption> exemptions, List<ExamBooking> examBookings, ExamEntry cpaExamEntry
+
         Registration registration = new Registration(null, //regNo
                 "",//registrationNumber
-                Stream.AC, //stream
+                stream, //stream
                 "", //stringStream
-                student.getCreated() + "", //registered
+                DateUtil.getString(student.getCreated()), //registered
                 getFirstExemDate(studentCourse.getFirstSitting()), //firstExamDate
                 student.getLastName(), //lastName
                 studentCourse.getStudent().getFirstName(), //firstName
                 student.getMiddleName(), //otherName
                 "", //otherName2
                 new Sex("M"), //Sex 
-                student.getDateOfBirth().toString(), //dateOfBirth
+                DateUtil.getString(student.getDob()), //dateOfBirth
                 student.getDocumentNo(),//idNumber
                 new Qualification(1), //quali
-                new Date() + "", //rrDAre
+                DateUtil.getString(new Date()), //rrDAre
                 "", //rrNumber
                 student.getPreviousRegistrationNo() + "", //pReg
                 "", //idNo2
@@ -185,7 +224,7 @@ public class CoreUtil {
                 student.getEmail(), //email
                 student.getPhoneNumber(), //Cell phone
                 "", //Telephone
-                new Course(student.getPreviousCourseCode()), //previousCourse
+                previousCourse, //previousCourse
                 "", //Learn about
                 new LearnAbout(4), //learnt 
                 new Nation(student.getCountryId().getCode()), //Nationality
@@ -200,11 +239,11 @@ public class CoreUtil {
             if ("PAID".equals(invoice.getStatus().getStatus())) {
                 Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
                 //String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, List<ReceiptDetail> receiptDetails
-                Receipt receipt = new Receipt(generateReceipt(), new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, "", "MOBILE", new Date() + "", "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), new BigDecimal(0), receiptDetails);
+                Receipt receipt = new Receipt(generateReceipt(), new Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), registration, "", "MOBILE", DateUtil.getString(new Date()), "999", invoice.getKesTotal(), "wrwerr", new com.kasneb.client.Currency(Currency.KSH.toString()), new BigDecimal(0), receiptDetails);
                 for (InvoiceDetail invDetail : invoice.getInvoiceDetails()) {
                     //Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency
                     String studentName = studentCourse.getStudent().getFirstName();
-                    ReceiptDetail rcpDetail = new ReceiptDetail(receipt, new Course(studentCourse.getCourse().getId()), "MOBILE", new Date() + "", studentName, new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", "", new com.kasneb.client.Currency(Currency.KSH.toString()));
+                    ReceiptDetail rcpDetail = new ReceiptDetail(receipt, new Course(studentCourse.getCourse().getId()), "MOBILE", DateUtil.getString(new Date()), studentName, new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", "", new com.kasneb.client.Currency(Currency.KSH.toString()));
                     receiptDetails.add(rcpDetail);
                 }
                 receipts.add(receipt);
@@ -212,7 +251,7 @@ public class CoreUtil {
         }
         registration.setReceipts(receipts);
         String jsonReq = mapper.writeValueAsString(registration);
-        String jsonResponse = new RestUtil().doPost(BASE_URL + "api/cpa", jsonReq);
+        String jsonResponse = new RestUtil().doPost(BASE_URL + "api/registration/" + endpoint, jsonReq);
         Registration created = gson.fromJson(jsonResponse, Registration.class);
         return created;
     }
@@ -239,4 +278,5 @@ public class CoreUtil {
     public static Integer generateRegistrationNumber() {
         return 1;
     }
+
 }

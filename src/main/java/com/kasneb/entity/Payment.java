@@ -51,7 +51,7 @@ public class Payment implements Serializable {
     private String channel;
     @Basic(optional = false)
     @Column(name = "reference", nullable = false)
-    private String reference;
+    private String reference = "2";
     @Transient
     private String phoneNumber;
     @Transient
@@ -130,6 +130,14 @@ public class Payment implements Serializable {
 
     public void setPaymentTimestamp(Date paymentTimestamp) {
         this.paymentTimestamp = paymentTimestamp;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public Invoice getInvoice() {

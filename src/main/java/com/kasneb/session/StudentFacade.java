@@ -18,6 +18,7 @@ import com.kasneb.entity.StudentCourseStatus;
 import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
+import com.kasneb.entity.pk.PartPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.SecurityUtil;
@@ -180,7 +181,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
         //String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
         Sitting firstSitting = new Sitting(1);
-        Part currentPart = getCurrentPart(reg);
+        Part currentPart = getCurrentPart(reg, entity.getPreviousCourseCode());
         StudentCourse studentCourse = new StudentCourse(reg.getRegistrationNumber(), true, new Date(), new User(1), "Existing at Kasneb", VerificationStatus.APPROVED, new KasnebCourse("01"), firstSitting, true);
         studentCourse.setCurrentPart(currentPart);
         StudentCourseStatus courseStatus = StudentCourseStatus.ACTIVE;
@@ -199,8 +200,8 @@ public class StudentFacade extends AbstractFacade<Student> {
         return existing;
     }
 
-    private Part getCurrentPart(Registration reg) {
-        return new Part(1);
+    private Part getCurrentPart(Registration reg, String courseCode) {
+        return em.find(Part.class, new PartPK(1, courseCode));
     }
 
     private Date getNextRenewalDate() {

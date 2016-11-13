@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -83,14 +84,24 @@ public class Fee implements Serializable {
     @ManyToOne(optional = true)
     @JsonManagedReference
     private CourseType courseType;
-    @JoinColumn(name = "levelId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "levelId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true)
     private Level level;
-    @JoinColumn(name = "partId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "partId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Part part;
-    @JoinColumn(name = "sectionId", referencedColumnName = "id")
+    @JoinColumns({
+        @JoinColumn(name = "sectionId", referencedColumnName = "id"),
+        @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     @ManyToOne(optional = true)
     @JsonManagedReference
     private Section section;

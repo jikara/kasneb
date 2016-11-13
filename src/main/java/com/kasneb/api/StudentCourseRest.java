@@ -13,6 +13,7 @@ import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -239,7 +240,7 @@ public class StudentCourseRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | InstantiationException | IOException ex) {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
@@ -294,9 +295,7 @@ public class StudentCourseRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MessagingException ex) {
+        } catch (IOException | MessagingException | ParseException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
@@ -323,9 +322,7 @@ public class StudentCourseRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MessagingException ex) {
+        } catch (IOException | MessagingException | ParseException ex) {
             Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {

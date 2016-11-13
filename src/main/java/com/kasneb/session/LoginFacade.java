@@ -80,7 +80,7 @@ public class LoginFacade extends AbstractFacade<Login> {
             //Routine check for next renewal
             StudentCourse active = studentCourseFacade.findActiveCourse(login.getStudent());
             StudentCourseSubscription latest = studentCourseSubscriptionFacade.getLastSubscription(active);
-            if (active != null && latest!=null && new Date().after(latest.getExpiry())) {
+            if (active != null && latest != null && new Date().after(latest.getExpiry())) {
                 Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", active.getStudent());
                 notificationFacade.create(notification);
             }

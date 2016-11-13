@@ -237,7 +237,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
 
     public Fee getExamEntryFeePerSection(Section section) throws CustomHttpException {
         Fee feeType = null;
-        section = em.find(Section.class, section.getId());
+        section = em.find(Section.class, section.getSectionPK());
         if (section == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Section does not exist");
         }
@@ -255,7 +255,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
 
     public Fee getExamEntryFeePerSection1(Section section) throws CustomHttpException {
         Fee feeType = null;
-        section = em.find(Section.class, section.getId());
+        section = em.find(Section.class, section.getSectionPK());
         if (section == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Section does not exist");
         }

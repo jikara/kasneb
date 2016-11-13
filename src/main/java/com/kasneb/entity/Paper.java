@@ -17,13 +17,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -36,8 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Paper.findAll", query = "SELECT p FROM Paper p"),
     @NamedQuery(name = "Paper.findByCode", query = "SELECT p FROM Paper p WHERE p.code = :code"),
-    @NamedQuery(name = "Paper.findByName", query = "SELECT p FROM Paper p WHERE p.name = :name"),
-    @NamedQuery(name = "Paper.findByTypeId", query = "SELECT p FROM Paper p WHERE p.typeId = :typeId")})
+    @NamedQuery(name = "Paper.findByName", query = "SELECT p FROM Paper p WHERE p.name = :name")})
 @JsonInclude(Include.NON_NULL)
 public class Paper implements Serializable {
 
@@ -45,23 +44,29 @@ public class Paper implements Serializable {
     @Id
     @Column(name = "code", nullable = false)
     protected String code;
-    @Size(max = 45)
     @Column(name = "name", nullable = false)
     private String name;
-    @JoinColumn(name = "levelId", referencedColumnName = "id")
+    @JsonIgnore
     @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "levelId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     private Level level;
-    @JoinColumn(name = "typeId", referencedColumnName = "id")
-    @ManyToOne(optional = false)
     @JsonIgnore
-    private PaperType typeId;
-    @JoinColumn(name = "partId", referencedColumnName = "id")
     @ManyToOne
-    @JsonIgnore
+    @JoinColumns({
+        @JoinColumn(name = "partId", referencedColumnName = "id"),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     private Part part;
-    @JoinColumn(name = "sectionId", referencedColumnName = "id")
-    @ManyToOne
     @JsonIgnore
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "sectionId", referencedColumnName = "id"),
+        @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false),
+        @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
+    })
     private Section section;
     @OneToOne(mappedBy = "paper")
     @JsonBackReference
@@ -113,14 +118,6 @@ public class Paper implements Serializable {
 
     public void setLevel(Level level) {
         this.level = level;
-    }
-
-    public PaperType getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(PaperType typeId) {
-        this.typeId = typeId;
     }
 
     public Part getPart() {

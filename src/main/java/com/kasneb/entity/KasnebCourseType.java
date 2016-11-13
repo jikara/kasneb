@@ -38,6 +38,19 @@ public class KasnebCourseType extends CourseType {
     @JsonIgnore
     private KasnebQualification qualification;
 
+    public KasnebCourseType() {
+    }
+
+    public KasnebCourseType(Collection<KasnebCourse> courseCollection, Integer code) {
+        super(code);
+        this.courseCollection = courseCollection;
+    }
+
+    public KasnebCourseType(Collection<KasnebCourse> courseCollection, Integer code, String name) {
+        super(code, name);
+        this.courseCollection = courseCollection;
+    }
+
     @Override
     public Integer getCode() {
         return super.getCode(); //To change body of generated methods, choose Tools | Templates.
@@ -48,11 +61,26 @@ public class KasnebCourseType extends CourseType {
         super.setCode(code); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void setName(String name) {
+        super.setName(name); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getName() {
+        return super.getName(); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public Collection<KasnebCourse> getCourseCollection() {
         return courseCollection;
     }
 
     public void setCourseCollection(Collection<KasnebCourse> courseCollection) {
+        if (courseCollection != null) {
+            for (KasnebCourse course : courseCollection) {
+                course.setKasnebCourseType(this);
+            }
+        }
         this.courseCollection = courseCollection;
     }
 

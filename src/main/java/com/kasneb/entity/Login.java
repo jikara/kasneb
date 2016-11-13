@@ -62,15 +62,15 @@ public class Login implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "password", nullable = false)
     @JsonIgnore
-    private String password;    
+    private String password;
     @Size(max = 200)
     @Column(name = "verificationToken")
     @JsonIgnore
-    private String verificationToken;    
+    private String verificationToken;
     @Size(max = 200)
     @Column(name = "smsToken")
     @JsonIgnore
-    private String smsToken;    
+    private String smsToken;
     @Basic(optional = false)
     @Column(name = "loginAttempts", nullable = false)
     private int loginAttempts = 0;

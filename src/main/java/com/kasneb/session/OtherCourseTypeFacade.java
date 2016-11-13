@@ -28,5 +28,5 @@ public class OtherCourseTypeFacade extends AbstractFacade<OtherCourseType> {
     public OtherCourseTypeFacade() {
         super(OtherCourseType.class);
     }
-    
+
 }

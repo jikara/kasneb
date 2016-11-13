@@ -23,6 +23,11 @@ public class DateUtil {
         return date;
     }
 
+    public static String getString(Date date) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
+
     public static Date getToDate(String stringDate) throws ParseException {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");

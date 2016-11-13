@@ -6,18 +6,16 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kasneb.entity.pk.PartPK;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -25,7 +23,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -42,18 +39,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Part implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EmbeddedId
+    private PartPK partPK;
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "courseId")
-    private int courseId;
-    @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "courseId", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonBackReference
     private KasnebCourse course;
@@ -70,6 +63,24 @@ public class Part implements Serializable {
     private Collection<StudentCourse> studentCourses;
 
     public Part() {
+    }
+
+    public Part(PartPK partPK) {
+        this.partPK = partPK;
+    }
+
+    public Part(Integer id, KasnebCourse course) {
+        this.id = id;
+        this.course = course;
+    }
+
+    public PartPK getPartPK() {
+        return partPK;
+    }
+
+    public void setPartPK(PartPK partPK) {
+        partPK = new PartPK(getId(), getCourse().getId());
+        this.partPK = partPK;
     }
 
     public Part(Integer id) {
@@ -92,14 +103,6 @@ public class Part implements Serializable {
         this.name = name;
     }
 
-    public int getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
-    }
-
     public KasnebCourse getCourse() {
         return course;
     }
@@ -107,6 +110,7 @@ public class Part implements Serializable {
     public void setCourse(KasnebCourse course) {
         this.course = course;
     }
+
     public Collection<Section> getSectionCollection() {
         return sectionCollection;
     }
@@ -114,6 +118,7 @@ public class Part implements Serializable {
     public void setSectionCollection(Collection<Section> sectionCollection) {
         this.sectionCollection = sectionCollection;
     }
+
     public Collection<Paper> getPaperCollection() {
         return paperCollection;
     }
@@ -160,6 +165,9 @@ public class Part implements Serializable {
         return Objects.equals(this.id, other.id);
     }
 
-    
+    @Override
+    public String toString() {
+        return "Part{" + "partPK=" + partPK + ", feeTypes=" + feeTypes + '}';
+    }
 
 }

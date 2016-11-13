@@ -65,6 +65,14 @@ public class Course implements Serializable {
     }
 
     public void setId(String id) {
+        try {
+            int code = Integer.parseInt(id);
+            if (code < 10) {
+                id = "0" + code;
+            }
+        } catch (Exception e) {
+
+        }
         this.id = id;
     }
 

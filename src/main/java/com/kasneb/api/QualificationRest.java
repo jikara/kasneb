@@ -60,10 +60,10 @@ public class QualificationRest {
         } catch (JsonProcessingException ex) {
             Logger.getLogger(QualificationRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(json)
-                    .build();
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
     }
 
     /**

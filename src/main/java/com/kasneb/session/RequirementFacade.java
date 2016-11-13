@@ -5,7 +5,7 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.entity.PaperType;
+import com.kasneb.entity.Requirement;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author jikara
  */
 @Stateless
-public class PaperTypeFacade extends AbstractFacade<PaperType> {
+public class RequirementFacade extends AbstractFacade<Requirement> {
 
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
@@ -25,8 +25,8 @@ public class PaperTypeFacade extends AbstractFacade<PaperType> {
         return em;
     }
 
-    public PaperTypeFacade() {
-        super(PaperType.class);
+    public RequirementFacade() {
+        super(Requirement.class);
     }
-
+    
 }

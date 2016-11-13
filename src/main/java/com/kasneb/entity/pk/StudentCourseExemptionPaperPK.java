@@ -75,6 +75,4 @@ public class StudentCourseExemptionPaperPK implements Serializable {
         return true;
     }
 
-   
-
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kasneb.api;  
+package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,17 +46,17 @@ public class CountryRest {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(){
+    public Response findAll() {
         try {
             anyResponse = countryFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(json)
-                    .build();
+        return Response
+                .status(Response.Status.OK)
+                .entity(json)
+                .build();
     }
 
     /**

@@ -28,5 +28,5 @@ public class DocumentTypeFacade extends AbstractFacade<DocumentType> {
     public DocumentTypeFacade() {
         super(DocumentType.class);
     }
-    
+
 }

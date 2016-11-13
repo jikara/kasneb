@@ -41,5 +41,5 @@ public class OtherQualification extends Qualification {
     public void setOtherQualificationTypes(Collection<OtherCourseType> otherQualificationTypes) {
         this.otherQualificationTypes = otherQualificationTypes;
     }
-    
+
 }
