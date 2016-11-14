@@ -397,9 +397,11 @@ public class StudentCourse implements Serializable {
 
     private Collection<Paper> getPassedPapers() {
         Collection<Paper> passedPapers = new ArrayList<>();
-        for (StudentCourseSitting sitting : getStudentCourseSittings()) {
-            for (StudentCourseSittingPaper sp : sitting.getPapers()) {
-                passedPapers.add(sp.getPaper());
+        if (getStudentCourseSittings() != null) {
+            for (StudentCourseSitting sitting : getStudentCourseSittings()) {
+                for (StudentCourseSittingPaper sp : sitting.getPapers()) {
+                    passedPapers.add(sp.getPaper());
+                }
             }
         }
         return passedPapers;
