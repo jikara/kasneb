@@ -261,7 +261,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
     public Fee getExemptionFee(Paper paper) throws CustomHttpException {
         Fee fee = null;
         try {
-            fee = CoreUtil.getExemptionFee(paper);
+            fee = CoreUtil.getExemptionFee(paper, "cpa");
         } catch (IOException | CustomHttpException e) {
             e.printStackTrace();
         }

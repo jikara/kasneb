@@ -94,13 +94,16 @@ public class CoreUtil {
         return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), null, new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
     }
 
-    public static Fee getExemptionFee(Paper entity) throws IOException, CustomHttpException {
+    public static Fee getExemptionFee(Paper entity, String endPoint) throws IOException, CustomHttpException {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object 
-        String response = new RestUtil().doGet(BASE_URL + "api/cpa/paper/" + entity.getCode());
-        com.kasneb.client.Paper paper = gson.fromJson(response, com.kasneb.client.Paper.class);
-        return new Fee(null, "Exemption Fee", new BigDecimal(0), paper.getExemptionFee(), new BigDecimal(0), new Date(), new FeeTypeCode("exemption_fee_per_paper"), new FeeCode("EXEMPTION_FEE"), new KasnebCourse("01"), null, null, null, null, null);
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.USD.toString());
+        com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
+        com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
+
+        return new Fee(null, "Exemption Fee", new BigDecimal(0), kesExaminationFee.getExemptionFee(), usdExaminationFee.getExemptionFee(), new Date(), new FeeTypeCode("exemption_fee_per_paper"), new FeeCode("EXEMPTION_FEE"), new KasnebCourse("01"), null, null, null, null, null);
     }
 
     public static List<ExamCentre> getCentres() throws IOException, CustomHttpException {

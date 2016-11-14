@@ -56,6 +56,9 @@ public class StudentCourseQualification implements Serializable {
     }
 
     public StudentCourseQualification(Course qualification) {
+        if (studentCourseQualificationPK != null) {
+            qualification = new Course(studentCourseQualificationPK.getQualificationId());
+        }
         this.qualification = qualification;
     }
 
@@ -73,6 +76,9 @@ public class StudentCourseQualification implements Serializable {
     }
 
     public void setStudentCourse(StudentCourse studentCourse) {
+        if (studentCourseQualificationPK != null) {
+            studentCourse = new StudentCourse(studentCourseQualificationPK.getStudentCourseId());
+        }
         this.studentCourse = studentCourse;
     }
 

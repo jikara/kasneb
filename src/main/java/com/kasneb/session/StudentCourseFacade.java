@@ -79,7 +79,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
-
+    
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
@@ -92,16 +92,16 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     com.kasneb.session.CourseExemptionFacade courseExemptionFacade;
     @EJB
     com.kasneb.session.InvoiceFacade invoiceFacade;
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     public StudentCourseFacade() {
         super(StudentCourse.class);
     }
-
+    
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
@@ -135,7 +135,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         em.persist(entity);
         return entity;
     }
-
+    
     public StudentCourse updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException, IOException {
         //Check if student is registered and confirmed  
         if (entity.getId() == null) {
@@ -149,7 +149,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         if (current != null && current.getInvoice() != null && current.getInvoice().getStatus().getStatus().equals("PAID")) {
             //Current Suscription has already been verified and course cannot be changed so get by course id
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This course registration has already been paid for and cannot be updated.");
-
+            
         }
         try {
             em.detach(managed);
@@ -186,9 +186,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return em.merge(managed);
     }
-
+    
     public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException {
-
+        
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
         }
@@ -246,7 +246,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         EmailUtil.sendEmail(new Email(managed.getStudent().getLoginId().getEmail(), "Course registration verification", body));
         return em.merge(managed);
     }
-
+    
     private Date getNextRenewalDate(StudentCourse entity) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -265,7 +265,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return nextRenewalDate;
     }
-
+    
     private String generateRegistrationNumber(StudentCourse entity) throws IOException, CustomHttpException, ParseException {
         Registration registration = new Registration();
         switch (entity.getCourse().getId()) {
@@ -278,7 +278,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return registration.getRegistrationNumber();
     }
-
+    
     public Collection<Paper> getPassedPapers(StudentCourse studentCourse) {
         TypedQuery<Paper> query
                 = em.createQuery("SELECT p FROM Paper p JOIN p.studentCourseSittingPaper sp WHERE sp.studentCourseSitting.studentCourse=:studentCourse AND sp.paperStatus =:paperStatus", Paper.class);
@@ -286,13 +286,13 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setParameter("paperStatus", PaperStatus.PASS);
         return query.getResultList();
     }
-
+    
     public Collection<Paper> getEligiblePapers(Collection<Paper> papers, Collection<Paper> exempted, Collection<Paper> passedPapers) {
         papers.removeAll(exempted); //remove exempted
         papers.removeAll(passedPapers); //remove passed
         return papers;
     }
-
+    
     public Collection<Paper> getPartPapers(Part part) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Paper.class);
@@ -301,7 +301,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<Paper> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public Collection getSectionPapers(Section section) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Paper.class);
@@ -310,7 +310,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<Paper> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public Collection getExemptedPapers(StudentCourse studentCourse) {
         Set<Paper> exemptions = new HashSet<>();
         studentCourse.getQualifications().stream().forEach((StudentCourseQualification qualification) -> {
@@ -320,7 +320,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         });
         return exemptions;
     }
-
+    
     public Collection<Paper> getLevelPapers(Level level) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Paper.class);
@@ -328,12 +328,12 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<Paper> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public ElligiblePart getElligiblePart(StudentCourse studentCourse) {
         Collection<ElligibleSection> elligibleSections = getElligibleSections(studentCourse);
         return new ElligiblePart(studentCourse.getCurrentPart().getName(), elligibleSections);
     }
-
+    
     public Collection<ElligibleSection> getElligibleSections(StudentCourse studentCourse) {
         Collection<ElligibleSection> elligibleSections = new ArrayList<>();
         studentCourse.getCurrentPart().getSectionCollection().stream().forEach((Section section) -> {
@@ -342,12 +342,12 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         });
         return elligibleSections;
     }
-
+    
     public ElligibleLevel getElligibleLevel(StudentCourse studentCourse) {
         Collection<Paper> elligiblePapers = getEligiblePapers(studentCourse.getCurrentLevel().getPaperCollection(), getExemptedPapers(studentCourse), getPassedPapers(studentCourse));
         return new ElligibleLevel(studentCourse.getCurrentLevel().getName(), elligiblePapers);
     }
-
+    
     public StudentCourse findActive(Integer id) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -360,14 +360,14 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return null;
         }
     }
-
+    
     public List<StudentCourse> findPending() {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s JOIN s.invoices i WHERE i.studentCourse=s AND s.verified =:verified AND i.status = :status", StudentCourse.class);
         query.setParameter("status", new InvoiceStatus("PAID"));
         query.setParameter("verified", false);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findVerified() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -376,7 +376,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public StudentCourse findStudentCourse(Integer id) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -385,7 +385,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getSingleResult();
     }
-
+    
     public StudentCourse findActiveCourse(Student entity) {
         TypedQuery<StudentCourse> query
                 = em.createQuery("SELECT s FROM StudentCourse s WHERE s.student =:student AND s.active =:active", StudentCourse.class);
@@ -399,7 +399,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return query.getResultList().get(0);
         }
     }
-
+    
     public StudentCourse findByStudentCourse(StudentCourse entity) {
         TypedQuery<StudentCourse> query
                 = em.createQuery("SELECT s FROM StudentCourse s WHERE s.student =:student AND s.course =:course", StudentCourse.class);
@@ -411,7 +411,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return null;
         }
     }
-
+    
     public Invoice prepareNextRenewal(StudentCourse active) throws CustomHttpException {
         StudentCourse managed = super.find(active.getId());
         Invoice invoice = invoiceFacade.generateRenewalInvoice(managed);
@@ -423,7 +423,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         em.merge(managed);
         return invoice;
     }
-
+    
     public void completeExemption(StudentCourse entity) throws CustomHttpException {
         Integer id = entity.getId();
         StudentCourse managed = super.find(entity.getId());
@@ -440,7 +440,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         //Check if there are any managed qualifications
         Set<Paper> eligibleExemptions = managed.getEligibleExemptions();
-
+        
         if (entity.getOtherQualification() != null) {
             Course qualification = em.find(Course.class, entity.getOtherQualification().getStudentCourseQualificationPK().getQualificationId());
             if (qualification == null) {
@@ -449,7 +449,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             qualification.getCourseExemptions().stream().forEach((CourseExemption c) -> {
                 eligibleExemptions.add(c.getPaper());
             });
-            managed.getOtherQualifications().add(entity.getOtherQualification());
+            OtherStudentCourseQualification qs = entity.getOtherQualification();
+            qs.setQualification(qualification);
+            qs.setStudentCourse(managed);
+            managed.getOtherQualifications().add(qs);
         }
 //        if (!eligibleExemptions.containsAll(entity.getExemptedPapers())) {
 //            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Some requested exemptions are not eligible");
@@ -482,7 +485,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 });
             });
         }
-
+        
         managed.setExemptions(studentCourseExemptions);
         if (entity.getKasnebQualification() != null) {
             //Generate invoice
@@ -496,7 +499,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         em.persist(notification);
         em.merge(managed);
     }
-
+    
     public Set<Paper> getEligibleExemptions(Integer studentCourseId, String qualificationId, Integer codeType) throws CustomHttpException {
         Set<Paper> papers = new HashSet<>();
         StudentCourse studentCourse = super.find(studentCourseId);
@@ -515,7 +518,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return papers;
     }
-
+    
     public List<StudentCourse> findVerificationByUser(User user) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -524,7 +527,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
@@ -576,28 +579,28 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             em.merge(managed);
         }
     }
-
+    
     public List<StudentCourse> findVerifications(Integer userId) {
         return super.findAll();
     }
-
+    
     public List<StudentCourse> findVerifications(Integer userId, Date startDate, Date endDate) {
         return super.findAll();
     }
-
+    
     public List<StudentCourse> findAll(Integer userId) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user", StudentCourse.class);
         query.setParameter("user", new User(userId));
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findAll(Date startDate, Date endDate) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.created BETWEEN :startDate AND :endDate", StudentCourse.class);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findAll(Date startDate, Date endDate, Integer userId) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user AND s.created BETWEEN :startDate AND :endDate", StudentCourse.class);
         query.setParameter("startDate", startDate);
@@ -605,5 +608,5 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setParameter("user", new User(userId));
         return query.getResultList();
     }
-
+    
 }
