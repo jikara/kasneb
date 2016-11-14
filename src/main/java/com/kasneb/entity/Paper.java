@@ -64,7 +64,7 @@ public class Paper implements Serializable {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "sectionId", referencedColumnName = "id"),
-        @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false),
+        @JoinColumn(name = "partId", referencedColumnName = "partId", insertable = false, updatable = false),
         @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)
     })
     private Section section;

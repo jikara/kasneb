@@ -14,11 +14,13 @@ import java.math.BigDecimal;
 public class ExaminationFee {
 
     private Integer id;
-    private Integer section;
-    private BigDecimal sectionFee;
-    private BigDecimal paperFee;
-    private BigDecimal lateSectionFee;
-    private BigDecimal latePaperFee;
+    private Integer sectionId;
+    private BigDecimal sectionExamFee;
+    private BigDecimal paperExamFee;
+    private BigDecimal lateSectionExamFee;
+    private BigDecimal latePaperExamFee;
+    private BigDecimal exemptionFee;
+    private BigDecimal remarkingFee;
     private Boolean current;
     private Currency currency;
 
@@ -30,44 +32,60 @@ public class ExaminationFee {
         this.id = id;
     }
 
-    public Integer getSection() {
-        return section;
+    public Integer getSectionId() {
+        return sectionId;
     }
 
-    public void setSection(Integer section) {
-        this.section = section;
+    public void setSectionId(Integer sectionId) {
+        this.sectionId = sectionId;
     }
 
-    public BigDecimal getSectionFee() {
-        return sectionFee;
+    public BigDecimal getSectionExamFee() {
+        return sectionExamFee;
     }
 
-    public void setSectionFee(BigDecimal sectionFee) {
-        this.sectionFee = sectionFee;
+    public void setSectionExamFee(BigDecimal sectionExamFee) {
+        this.sectionExamFee = sectionExamFee;
     }
 
-    public BigDecimal getPaperFee() {
-        return paperFee;
+    public BigDecimal getPaperExamFee() {
+        return paperExamFee;
     }
 
-    public void setPaperFee(BigDecimal paperFee) {
-        this.paperFee = paperFee;
+    public void setPaperExamFee(BigDecimal paperExamFee) {
+        this.paperExamFee = paperExamFee;
     }
 
-    public BigDecimal getLateSectionFee() {
-        return lateSectionFee;
+    public BigDecimal getLateSectionExamFee() {
+        return lateSectionExamFee;
     }
 
-    public void setLateSectionFee(BigDecimal lateSectionFee) {
-        this.lateSectionFee = lateSectionFee;
+    public void setLateSectionExamFee(BigDecimal lateSectionExamFee) {
+        this.lateSectionExamFee = lateSectionExamFee;
     }
 
-    public BigDecimal getLatePaperFee() {
-        return latePaperFee;
+    public BigDecimal getLatePaperExamFee() {
+        return latePaperExamFee;
     }
 
-    public void setLatePaperFee(BigDecimal latePaperFee) {
-        this.latePaperFee = latePaperFee;
+    public void setLatePaperExamFee(BigDecimal latePaperExamFee) {
+        this.latePaperExamFee = latePaperExamFee;
+    }
+
+    public BigDecimal getExemptionFee() {
+        return exemptionFee;
+    }
+
+    public void setExemptionFee(BigDecimal exemptionFee) {
+        this.exemptionFee = exemptionFee;
+    }
+
+    public BigDecimal getRemarkingFee() {
+        return remarkingFee;
+    }
+
+    public void setRemarkingFee(BigDecimal remarkingFee) {
+        this.remarkingFee = remarkingFee;
     }
 
     public Boolean getCurrent() {
@@ -85,4 +103,6 @@ public class ExaminationFee {
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
+
+    
 }

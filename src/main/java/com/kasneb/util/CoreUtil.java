@@ -125,17 +125,17 @@ public class CoreUtil {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object 
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/cpa/fee/" + section.getId() + "/" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/cpa/fee/" + section.getId() + "/" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + section.getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + section.getId() + "&currency=" + Currency.USD.toString());
         com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
         com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
         switch (rate) {
             case "paper":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "section":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "part":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
         }
         return null;
     }
@@ -150,11 +150,11 @@ public class CoreUtil {
         com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
         switch (rate) {
             case "paper":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "section":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperFee(), usdExaminationFee.getSectionFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "part":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
         }
         return null;
     }

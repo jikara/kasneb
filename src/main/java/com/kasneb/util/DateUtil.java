@@ -24,8 +24,11 @@ public class DateUtil {
     }
 
     public static String getString(Date date) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(date);
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            return formatter.format(date);
+        }
+        return "1989-03-29";
     }
 
     public static Date getToDate(String stringDate) throws ParseException {
