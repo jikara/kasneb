@@ -175,6 +175,9 @@ public class StudentFacade extends AbstractFacade<Student> {
             case "02":
                 reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cs");
                 break;
+            case "03":
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cict");
+                break;
         }
         if (reg == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
@@ -186,7 +189,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         //Contact(String postalAddress, String postalCode, String town, Student student, Country countryId, County countyId) 
 
         Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
-        Contact contact = new Contact(reg.getAddress1(), reg.getAddress2(), reg.getAddress3(), null, new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
+        Contact contact = new Contact(reg.getAddress3(), reg.getAddress2(), reg.getAddress3(), null, new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
         existing.setContact(contact);
         Sitting firstSitting = new Sitting(1);
         Part currentPart = getCurrentPart(reg, entity.getPreviousCourseCode());

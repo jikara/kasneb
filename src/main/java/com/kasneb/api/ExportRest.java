@@ -76,7 +76,7 @@ public class ExportRest {
             List<com.kasneb.jasper.ReceiptDocument> receipts = new ArrayList();
             receipts.add(receipt);
             Map<String, Object> parameters = new HashMap<>();
-            // parameters.put("RECEIPT_DETAILS", receipt.getItems());
+            //parameters.put("RECEIPT_DETAILS", receipt.getItems());
             JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(receipts);
             InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/Receipt.jasper");
             JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parameters, beanCollectionDataSource);

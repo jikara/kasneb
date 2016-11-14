@@ -87,8 +87,8 @@ public class CoreUtil {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/csregfee/" + course.getId() + "/" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/csregfee/" + course.getId() + "/" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration?courseId=" + course.getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration?courseId=" + course.getId() + "&currency=" + Currency.USD.toString());
         com.kasneb.client.RegistrationFee kesRegistrationFee = gson.fromJson(kesResponse, com.kasneb.client.RegistrationFee.class);
         com.kasneb.client.RegistrationFee usdRegistrationFee = gson.fromJson(usdResponse, com.kasneb.client.RegistrationFee.class);
         return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), null, new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
@@ -159,12 +159,11 @@ public class CoreUtil {
         return null;
     }
 
-    public static Registration getStudentCourse(Integer regNo,String endpoint) throws IOException, CustomHttpException {
+    public static Registration getStudentCourse(Integer regNo, String endpoint) throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        String responseJson = new RestUtil().doGet(BASE_URL + "api/"+endpoint+"/" + regNo);
+        String responseJson = new RestUtil().doGet(BASE_URL + "api/" + endpoint + "/" + regNo);
         return gson.fromJson(responseJson, Registration.class);
     }
-    
 
     public static Registration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException, ParseException {
         Gson gson = new Gson();
