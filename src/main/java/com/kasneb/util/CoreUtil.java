@@ -164,7 +164,7 @@ public class CoreUtil {
 
     public static Registration getStudentCourse(Integer regNo, String endpoint) throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        String responseJson = new RestUtil().doGet(BASE_URL + "api/" + endpoint + "/" + regNo);
+        String responseJson = new RestUtil().doGet(BASE_URL + "api/registration/" + endpoint + "/" + regNo);
         return gson.fromJson(responseJson, Registration.class);
     }
 
