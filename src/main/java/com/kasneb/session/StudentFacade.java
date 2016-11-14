@@ -6,6 +6,8 @@
 package com.kasneb.session;
 
 import com.kasneb.client.Registration;
+import com.kasneb.entity.Contact;
+import com.kasneb.entity.Country;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.KasnebCourse;
@@ -165,12 +167,15 @@ public class StudentFacade extends AbstractFacade<Student> {
 
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
         Collection<StudentCourse> studentCourses = new ArrayList<>();
+        Registration reg = null;
         switch (entity.getPreviousCourseCode()) {
             case "01":
-                Registration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cpa");
+                break;
+            case "02":
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cs");
                 break;
         }
-        Registration reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo());
         if (reg == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
         }
@@ -178,8 +183,11 @@ public class StudentFacade extends AbstractFacade<Student> {
 //            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
 //        } 
         //String firstName, String middleName, String lastName, String phoneNumber, String gender, String email
+        //Contact(String postalAddress, String postalCode, String town, Student student, Country countryId, County countyId) 
+
         Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
-        //String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
+        Contact contact = new Contact(reg.getAddress1(), reg.getAddress2(), reg.getAddress3(), null, new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
+        existing.setContact(contact);
         Sitting firstSitting = new Sitting(1);
         Part currentPart = getCurrentPart(reg, entity.getPreviousCourseCode());
         StudentCourse studentCourse = new StudentCourse(reg.getRegistrationNumber(), true, new Date(), new User(1), "Existing at Kasneb", VerificationStatus.APPROVED, new KasnebCourse("01"), firstSitting, true);

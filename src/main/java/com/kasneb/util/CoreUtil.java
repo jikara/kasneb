@@ -159,11 +159,12 @@ public class CoreUtil {
         return null;
     }
 
-    public static Registration getStudentCourse(Integer regNo) throws IOException, CustomHttpException {
+    public static Registration getStudentCourse(Integer regNo,String endpoint) throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        String responseJson = new RestUtil().doGet(BASE_URL + "api/cpa/" + regNo);
+        String responseJson = new RestUtil().doGet(BASE_URL + "api/"+endpoint+"/" + regNo);
         return gson.fromJson(responseJson, Registration.class);
     }
+    
 
     public static Registration registerStudent(StudentCourse studentCourse) throws IOException, CustomHttpException, ParseException {
         Gson gson = new Gson();

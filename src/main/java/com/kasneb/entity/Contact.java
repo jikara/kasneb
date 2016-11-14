@@ -54,6 +54,22 @@ public class Contact implements Serializable {
     @JsonManagedReference
     private County countyId;
 
+    public Contact() {
+    }
+
+    public Contact(Integer id) {
+        this.id = id;
+    }
+
+    public Contact(String postalAddress, String postalCode, String town, Student student, Country countryId, County countyId) {
+        this.postalAddress = postalAddress;
+        this.postalCode = postalCode;
+        this.town = town;
+        this.student = student;
+        this.countryId = countryId;
+        this.countyId = countyId;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -134,13 +150,6 @@ public class Contact implements Serializable {
     @Override
     public String toString() {
         return "com.kasneb.entity.Contact[ id=" + id + " ]";
-    }
-
-    public Contact() {
-    }
-
-    public Contact(Integer id) {
-        this.id = id;
     }
 
 }
