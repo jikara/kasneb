@@ -98,8 +98,8 @@ public class CoreUtil {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object 
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + endPoint + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + endPoint + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.USD.toString());
         com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
         com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
 

@@ -17,6 +17,7 @@ import com.kasneb.entity.Section;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import java.io.IOException;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,7 +51,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         try {
             fee = CoreUtil.getRegistrationFee(course);
         } catch (IOException | CustomHttpException e) {
-            e.printStackTrace();
+            Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
         /*    if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Course does not exist");
@@ -219,7 +220,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         try {
             fee = CoreUtil.getCpaExaminationFee(section, "part");
         } catch (IOException | CustomHttpException e) {
-            e.printStackTrace();
+            Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
         return fee;
     }
@@ -229,7 +230,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
         try {
             fee = CoreUtil.getCpaExaminationFee(section, "section");
         } catch (IOException | CustomHttpException e) {
-            e.printStackTrace();
+            Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
         return fee;
     }
@@ -261,9 +262,9 @@ public class FeeFacade extends AbstractFacade<Fee> {
     public Fee getExemptionFee(Paper paper) throws CustomHttpException {
         Fee fee = null;
         try {
-            fee = CoreUtil.getExemptionFee(paper, "cpa");
+            fee = CoreUtil.getExemptionFee(paper, paper.getCourse().getId());
         } catch (IOException | CustomHttpException e) {
-            e.printStackTrace();
+            Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
 //        Fee fee = null;
 //        paper = em.find(Paper.class, paper.getCode());
