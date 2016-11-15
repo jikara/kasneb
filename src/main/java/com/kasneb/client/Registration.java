@@ -6,6 +6,8 @@
 package com.kasneb.client;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kasneb.entity.Level;
+import com.kasneb.entity.Section;
 import java.util.Collection;
 
 /**
@@ -36,13 +38,14 @@ public class Registration {
     private String pReg;
     private String idNo2;
     private String address1;
-    private String address2;
-    private String address3;
-    private String address4;
-    private String address5;
+    private String physicalAddress;
+    private String address;
+    private String town;
+    private String country;
     private String email;
     private String cellphone;
     private String telephone;
+    private String postalCode;
     private Course previousCourse;
     private String learnAbout;
     private LearnAbout learnt;
@@ -54,11 +57,16 @@ public class Registration {
     private Collection<Exemption> exemptions;
     private Collection<ExamBooking> examBookings;
     private ExamEntry cpaExamEntry;
+    private Collection<Renewal> renewals;
+    //core transient
+    private Section currentSection;
+    private Level currentLevel;
+    private String nextRenewal;
 
     public Registration() {
     }
 
-    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, String registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, String dateOfBirth, String idNumber, Qualification quali, String rrDate, String rrNumber, String pReg, String idNo2, String address1, String address2, String address3, String address4, String address5, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
+    public Registration(String regNo, String registrationNumber, Stream stream, String stringStream, String registered, Integer firstExamDate, String lastName, String firstName, String otherName, String otherName2, Sex sex, String dateOfBirth, String idNumber, Qualification quali, String rrDate, String rrNumber, String pReg, String idNo2, String address1, String physicalAddress, String address, String town, String country, String email, String cellphone, String telephone, Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification, Collection<Receipt> receipts, Collection<StudentCoursePaper> eligiblePapers, Collection<Exemption> exemptions, Collection<ExamBooking> examBookings, ExamEntry cpaExamEntry) {
         this.regNo = regNo;
         this.registrationNumber = registrationNumber;
         this.stream = stream;
@@ -78,10 +86,10 @@ public class Registration {
         this.pReg = pReg;
         this.idNo2 = idNo2;
         this.address1 = address1;
-        this.address2 = address2;
-        this.address3 = address3;
-        this.address4 = address4;
-        this.address5 = address5;
+        this.physicalAddress = physicalAddress;
+        this.address = address;
+        this.town = town;
+        this.country = country;
         this.email = email;
         this.cellphone = cellphone;
         this.telephone = telephone;
@@ -253,36 +261,60 @@ public class Registration {
         this.address1 = address1;
     }
 
-    public String getAddress2() {
-        return address2;
+    public String getDobString() {
+        return dobString;
     }
 
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+    public void setDobString(String dobString) {
+        this.dobString = dobString;
     }
 
-    public String getAddress3() {
-        return address3;
+    public String getPhysicalAddress() {
+        return physicalAddress;
     }
 
-    public void setAddress3(String address3) {
-        this.address3 = address3;
+    public void setPhysicalAddress(String physicalAddress) {
+        this.physicalAddress = physicalAddress;
     }
 
-    public String getAddress4() {
-        return address4;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddress4(String address4) {
-        this.address4 = address4;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getAddress5() {
-        return address5;
+    public String getTown() {
+        return town;
     }
 
-    public void setAddress5(String address5) {
-        this.address5 = address5;
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public Collection<Renewal> getRenewals() {
+        return renewals;
+    }
+
+    public void setRenewals(Collection<Renewal> renewals) {
+        this.renewals = renewals;
     }
 
     public String getEmail() {
@@ -387,5 +419,25 @@ public class Registration {
 
     public void setCpaExamEntry(ExamEntry cpaExamEntry) {
         this.cpaExamEntry = cpaExamEntry;
+    }
+
+    public Section getCurrentSection() {
+        return currentSection;
+    }
+
+    public void setCurrentSection(Section currentSection) {
+        this.currentSection = currentSection;
+    }
+
+    public Level getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(Level currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public String getNextRenewal() {
+        return nextRenewal;
     }
 }

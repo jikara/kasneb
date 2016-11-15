@@ -144,21 +144,23 @@ public class Student implements Serializable {
         this.id = id;
     }
 
-    public Student(Integer id, String firstName, String gender, Date dob, String email, Date created) {
-        this.id = id;
-        this.firstName = firstName;
-        this.gender = gender;
-        this.dob = dob;
-        this.email = email;
-        this.created = created;
-    }
-
-    public Student(String firstName, String middleName, String lastName, String phoneNumber, String gender, String email) {
+    public Student(String firstName, String middleName, String lastName, String phoneNumber, String gender, String email, Country countryId, Date dob) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
+        this.email = email;
+        this.countryId = countryId;
+        this.nationality = countryId;
+        this.dob = dob;
+    }
+
+    public Student(String firstName, String middleName, String lastName, String phoneNumber, String email) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
         this.email = email;
     }
 

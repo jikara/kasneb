@@ -12,6 +12,7 @@ import com.kasneb.entity.Course;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.KasnebStudentCourseQualification;
+import com.kasneb.entity.Level;
 import com.kasneb.entity.Part;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.Student;
@@ -23,6 +24,7 @@ import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.PartPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
+import com.kasneb.util.DateUtil;
 import com.kasneb.util.SecurityUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -165,7 +167,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         return query.getResultList();
     }
 
-    public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException {
+    public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException, ParseException {
         Collection<StudentCourse> studentCourses = new ArrayList<>();
         Registration reg = null;
         switch (entity.getPreviousCourseCode()) {
@@ -186,10 +188,18 @@ public class StudentFacade extends AbstractFacade<Student> {
 //            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "No match for date of birth");
 //        } 
         //String firstName, String middleName, String lastName, String phoneNumber, String gender, String email
-        //Contact(String postalAddress, String postalCode, String town, Student student, Country countryId, County countyId) 
-
-        Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), entity.getPhoneNumber(), reg.getSex().getDescription(), entity.getEmail());
-        Contact contact = new Contact(reg.getAddress3(), reg.getAddress2(), reg.getAddress3(), null, new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
+        //Contact(String postalAddress, String postalCode, String town, Country countryId, County countyId) 
+        String sexCode = "1";
+        switch (reg.getSex().getCode()) {
+            case "M":
+                sexCode = "1";
+                break;
+            case "F":
+                sexCode = "2";
+                break;
+        }
+        Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), reg.getCellphone(), sexCode, entity.getEmail(), new Country(reg.getNationality().getCode()), DateUtil.getDate(reg.getDateOfBirth()));
+        Contact contact = new Contact(reg.getAddress(), reg.getPostalCode(), reg.getTown(), new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
         existing.setContact(contact);
         Sitting firstSitting = new Sitting(1);
         Part currentPart = getCurrentPart(reg, entity.getPreviousCourseCode());
@@ -213,6 +223,10 @@ public class StudentFacade extends AbstractFacade<Student> {
 
     private Part getCurrentPart(Registration reg, String courseCode) {
         return em.find(Part.class, new PartPK(1, courseCode));
+    }
+
+    private Level getCurrentLevel(Registration reg, String courseCode) {
+        return null;
     }
 
     private Date getNextRenewalDate() {

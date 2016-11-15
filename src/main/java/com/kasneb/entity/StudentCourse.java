@@ -305,7 +305,7 @@ public class StudentCourse implements Serializable {
 
     public Student getStudentObj() {
         if (getStudent() != null) {
-            studentObj = new Student(getStudent().getFirstName(), getStudent().getMiddleName(), getStudent().getLastName(), getStudent().getPhoneNumber(), getStudent().getGender(), getStudent().getEmail());
+            studentObj = new Student(getStudent().getFirstName(), getStudent().getMiddleName(), getStudent().getLastName(), getStudent().getPhoneNumber(),getStudent().getEmail());
             studentObj.setId(getStudent().getId());
         }
         return studentObj;

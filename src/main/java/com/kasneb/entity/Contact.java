@@ -61,11 +61,10 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    public Contact(String postalAddress, String postalCode, String town, Student student, Country countryId, County countyId) {
+    public Contact(String postalAddress, String postalCode, String town, Country countryId, County countyId) {
         this.postalAddress = postalAddress;
         this.postalCode = postalCode;
         this.town = town;
-        this.student = student;
         this.countryId = countryId;
         this.countyId = countyId;
     }
