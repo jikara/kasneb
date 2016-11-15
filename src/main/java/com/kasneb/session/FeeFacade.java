@@ -217,7 +217,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
             section = s;
         }
         try {
-            fee = CoreUtil.getCpaExaminationFee(section, "section");
+            fee = CoreUtil.getCpaExaminationFee(section, "part");
         } catch (IOException | CustomHttpException e) {
             e.printStackTrace();
         }
