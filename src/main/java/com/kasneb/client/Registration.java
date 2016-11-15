@@ -7,7 +7,7 @@ package com.kasneb.client;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kasneb.entity.Level;
-import com.kasneb.entity.Section;
+import com.kasneb.entity.Part;
 import java.util.Collection;
 
 /**
@@ -59,7 +59,7 @@ public class Registration {
     private ExamEntry cpaExamEntry;
     private Collection<Renewal> renewals;
     //core transient
-    private Section currentSection;
+    private Part currentPart;
     private Level currentLevel;
     private String nextRenewal;
 
@@ -421,12 +421,12 @@ public class Registration {
         this.cpaExamEntry = cpaExamEntry;
     }
 
-    public Section getCurrentSection() {
-        return currentSection;
+    public Part getCurrentPart() {
+        return currentPart;
     }
 
-    public void setCurrentSection(Section currentSection) {
-        this.currentSection = currentSection;
+    public void setCurrentPart(Part currentPart) {
+        this.currentPart = currentPart;
     }
 
     public Level getCurrentLevel() {

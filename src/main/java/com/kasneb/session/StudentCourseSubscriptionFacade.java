@@ -32,10 +32,20 @@ public class StudentCourseSubscriptionFacade extends AbstractFacade<StudentCours
         super(StudentCourseSubscription.class);
     }
 
-    public StudentCourseSubscription getLastSubscription(StudentCourse currentCourse) {
+    public StudentCourseSubscription getLastSubscription1(StudentCourse currentCourse) {
         TypedQuery<StudentCourseSubscription> query = em.createQuery("SELECT s FROM StudentCourseSubscription s WHERE s.invoice.status =:status ORDER BY s.studentCourseSubscriptionPK.year DESC", StudentCourseSubscription.class);
         query.setMaxResults(1);
         query.setParameter("status", new InvoiceStatus("PAID"));
+        try {
+            return query.getSingleResult();
+        } catch (javax.persistence.NoResultException ex) {
+            return null;
+        }
+    }
+
+    public StudentCourseSubscription getLastSubscription(StudentCourse currentCourse) {
+        TypedQuery<StudentCourseSubscription> query = em.createQuery("SELECT s FROM StudentCourseSubscription s ORDER BY s.studentCourseSubscriptionPK.year DESC", StudentCourseSubscription.class);
+        query.setMaxResults(1);
         try {
             return query.getSingleResult();
         } catch (javax.persistence.NoResultException ex) {

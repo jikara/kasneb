@@ -136,9 +136,9 @@ public class CoreUtil {
             case "paper":
                 return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "section":
-                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getSectionExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "part":
-                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
         }
         return null;
     }

@@ -23,6 +23,12 @@ public class DateUtil {
         return date;
     }
 
+    public static Integer getYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+    }
+
     public static String getString(Date date) throws ParseException {
         if (date != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

@@ -33,9 +33,11 @@ public class StudentCourseSubscription implements Serializable {
     @EmbeddedId
     private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
     @ManyToOne
-    @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     @JsonBackReference
     private StudentCourse studentCourse;
+    @Column(name = "rYear")
+    private Integer year;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false)
@@ -62,8 +64,9 @@ public class StudentCourseSubscription implements Serializable {
         this.invoice = invoice;
     }
 
-    public StudentCourseSubscription(StudentCourse studentCourse, Date expiry) {
+    public StudentCourseSubscription(StudentCourse studentCourse, Integer year, Date expiry) {
         this.studentCourse = studentCourse;
+        this.year = year;
         this.expiry = expiry;
     }
 
@@ -81,6 +84,14 @@ public class StudentCourseSubscription implements Serializable {
 
     public void setStudentCourse(StudentCourse studentCourse) {
         this.studentCourse = studentCourse;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public Date getCreated() {

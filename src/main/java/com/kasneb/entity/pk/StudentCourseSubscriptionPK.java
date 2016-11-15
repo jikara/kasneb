@@ -17,9 +17,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class StudentCourseSubscriptionPK implements Serializable {
 
-    @Column(name = "studentCourseId")
+    @Column(name = "studentCourseId",insertable=false,updatable=false)
     private Integer studentCourseId;
-    @Column(name = "rYear")
+    @Column(name = "rYear",insertable=false,updatable=false)
     private Integer year;
 
     public StudentCourseSubscriptionPK() {

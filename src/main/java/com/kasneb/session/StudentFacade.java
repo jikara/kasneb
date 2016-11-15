@@ -6,14 +6,13 @@
 package com.kasneb.session;
 
 import com.kasneb.client.Registration;
+import com.kasneb.client.Renewal;
 import com.kasneb.entity.Contact;
 import com.kasneb.entity.Country;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.KasnebStudentCourseQualification;
-import com.kasneb.entity.Level;
-import com.kasneb.entity.Part;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
@@ -21,7 +20,6 @@ import com.kasneb.entity.StudentCourseStatus;
 import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
-import com.kasneb.entity.pk.PartPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.DateUtil;
@@ -30,15 +28,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -198,13 +193,13 @@ public class StudentFacade extends AbstractFacade<Student> {
                 sexCode = "2";
                 break;
         }
-        Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), reg.getCellphone(), sexCode, entity.getEmail(), new Country(reg.getNationality().getCode()), DateUtil.getDate(reg.getDateOfBirth()));
+        Student existing = new Student(reg.getFirstName(), reg.getOtherName(), reg.getLastName(), reg.getCellphone(), sexCode, entity.getEmail(), new Country(reg.getNationality().getCode()), DateUtil.getDate(reg.getDateOfBirth()), reg.getIdNumber());
         Contact contact = new Contact(reg.getAddress(), reg.getPostalCode(), reg.getTown(), new Country(reg.getNationality().getCode()), null);//String registrationNumber, Boolean active, Date dateVerified, User verifiedBy, String remarks, VerificationStatus verificationStatus, KasnebCourse course, Student student, Sitting firstSitting, Date nextRenewal
         existing.setContact(contact);
         Sitting firstSitting = new Sitting(1);
-        Part currentPart = getCurrentPart(reg, entity.getPreviousCourseCode());
         StudentCourse studentCourse = new StudentCourse(reg.getRegistrationNumber(), true, new Date(), new User(1), "Existing at Kasneb", VerificationStatus.APPROVED, new KasnebCourse("01"), firstSitting, true);
-        studentCourse.setCurrentPart(currentPart);
+        studentCourse.setCurrentPart(reg.getCurrentPart());
+        studentCourse.setCurrentLevel(reg.getCurrentLevel());
         StudentCourseStatus courseStatus = StudentCourseStatus.ACTIVE;
         if (reg.getEligiblePapers().isEmpty()) {
             Set<KasnebStudentCourseQualification> qs = new HashSet<>();
@@ -215,31 +210,20 @@ public class StudentFacade extends AbstractFacade<Student> {
             studentCourse.setKasnebQualifications(qs);
         }
         studentCourse.setCourseStatus(courseStatus);
-        studentCourse.setCurrentSubscription(new StudentCourseSubscription(studentCourse, getNextRenewalDate()));
+        List<StudentCourseSubscription> subscriptions = new ArrayList<>();
+        Integer currentYear = DateUtil.getYear(new Date());
+        for (Renewal renewal : reg.getRenewals()) {
+            Date subscriptionExpiry = DateUtil.getDate("30-06-" + renewal.getEndYear());
+            StudentCourseSubscription subscription = new StudentCourseSubscription(studentCourse, renewal.getStartYear(), DateUtil.getDate(reg.getNextRenewal()));
+            if (new Date().before(subscriptionExpiry) && (renewal.getEndYear() - currentYear) <= 1) {
+                subscription.setCurrent(Boolean.TRUE);
+            } 
+            subscriptions.add(subscription);
+        }
+        studentCourse.setSubscriptions(subscriptions);
         studentCourses.add(studentCourse);//Add to collection
         existing.setStudentCourses(studentCourses);
         return existing;
-    }
-
-    private Part getCurrentPart(Registration reg, String courseCode) {
-        return em.find(Part.class, new PartPK(1, courseCode));
-    }
-
-    private Level getCurrentLevel(Registration reg, String courseCode) {
-        return null;
-    }
-
-    private Date getNextRenewalDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date nextRenewalDate = null;
-        Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        try {
-            nextRenewalDate = sdf.parse((currentYear + 1) + "-06-30");
-        } catch (ParseException ex) {
-            Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        return nextRenewalDate;
     }
 
 }

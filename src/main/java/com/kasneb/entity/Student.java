@@ -144,7 +144,7 @@ public class Student implements Serializable {
         this.id = id;
     }
 
-    public Student(String firstName, String middleName, String lastName, String phoneNumber, String gender, String email, Country countryId, Date dob) {
+    public Student(String firstName, String middleName, String lastName, String phoneNumber, String gender, String email, Country countryId, Date dob, String documentNo) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -154,6 +154,7 @@ public class Student implements Serializable {
         this.countryId = countryId;
         this.nationality = countryId;
         this.dob = dob;
+        this.documentNo = documentNo;
     }
 
     public Student(String firstName, String middleName, String lastName, String phoneNumber, String email) {
