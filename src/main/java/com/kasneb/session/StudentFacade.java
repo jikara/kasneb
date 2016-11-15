@@ -170,13 +170,13 @@ public class StudentFacade extends AbstractFacade<Student> {
         Registration reg = null;
         switch (entity.getPreviousCourseCode()) {
             case "01":
-                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cpa");
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), new KasnebCourse("01"));
                 break;
             case "02":
-                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cs");
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), new KasnebCourse("02"));
                 break;
             case "03":
-                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), "cict");
+                reg = CoreUtil.getStudentCourse(entity.getPreviousRegistrationNo(), new KasnebCourse("03"));
                 break;
         }
         if (reg == null) {

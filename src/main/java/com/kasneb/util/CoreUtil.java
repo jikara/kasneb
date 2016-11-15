@@ -87,19 +87,19 @@ public class CoreUtil {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration?courseId=" + course.getId() + "&currency=" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration?courseId=" + course.getId() + "&currency=" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration/" + course.getId() + "?currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/registration/" + course.getId() + "?currency=" + Currency.USD.toString());
         com.kasneb.client.RegistrationFee kesRegistrationFee = gson.fromJson(kesResponse, com.kasneb.client.RegistrationFee.class);
         com.kasneb.client.RegistrationFee usdRegistrationFee = gson.fromJson(usdResponse, com.kasneb.client.RegistrationFee.class);
-        return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), null, new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
+        return new Fee(null, "Exam registration fee", new BigDecimal(0), kesRegistrationFee.getRegistrationFee(), usdRegistrationFee.getRegistrationFee(), null, new FeeTypeCode("course_registration_fees"), new FeeCode("REGISTRATION_FEE"), new KasnebCourse(kesRegistrationFee.getCourse().getId()), null, null, null, null, null);
     }
 
-    public static Fee getExemptionFee(Paper entity, String endPoint) throws IOException, CustomHttpException {
+    public static Fee getExemptionFee(Paper entity, KasnebCourse course) throws IOException, CustomHttpException {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object 
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + endPoint + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + endPoint + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + course.getId() + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + course.getId() + "?sectionId=" + entity.getSection().getId() + "&currency=" + Currency.USD.toString());
         com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
         com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
 
@@ -124,47 +124,28 @@ public class CoreUtil {
         }.getType());
     }
 
-    public static Fee getCpaExaminationFee(Section section, String rate) throws IOException, CustomHttpException {
+    public static Fee getExaminationFee(Section section, KasnebCourse course, String rate) throws IOException, CustomHttpException {
         Gson gson = new Gson();
         ObjectMapper mapper = new ObjectMapper();
         //Create core object 
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + section.getId() + "&currency=" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/cpa?sectionId=" + section.getId() + "&currency=" + Currency.USD.toString());
+        String kesResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + course.getId() + "?sectionId=" + section.getId() + "&currency=" + Currency.KSH.toString());
+        String usdResponse = new RestUtil().doGet(BASE_URL + "api/fee/exam/" + course.getId() + "?sectionId=" + section.getId() + "&currency=" + Currency.USD.toString());
         com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
         com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
         switch (rate) {
             case "paper":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "section":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
             case "part":
-                return new Fee(null, "Professional exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
+                return new Fee(null, "Exam registration fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
         }
         return null;
     }
 
-    public static Fee getCpsExaminationFee(Section section, String rate) throws IOException, CustomHttpException {
+    public static Registration getStudentCourse(Integer regNo, KasnebCourse course) throws IOException, CustomHttpException {
         Gson gson = new Gson();
-        ObjectMapper mapper = new ObjectMapper();
-        //Create core object 
-        String kesResponse = new RestUtil().doGet(BASE_URL + "api/cps/fee/" + section.getId() + "/" + Currency.KSH.toString());
-        String usdResponse = new RestUtil().doGet(BASE_URL + "api/cps/fee/" + section.getId() + "/" + Currency.USD.toString());
-        com.kasneb.client.ExaminationFee kesExaminationFee = gson.fromJson(kesResponse, com.kasneb.client.ExaminationFee.class);
-        com.kasneb.client.ExaminationFee usdExaminationFee = gson.fromJson(usdResponse, com.kasneb.client.ExaminationFee.class);
-        switch (rate) {
-            case "paper":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_paper"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
-            case "section":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee(), usdExaminationFee.getSectionExamFee(), new Date(), new FeeTypeCode("exam_entry_fee_per_section"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
-            case "part":
-                return new Fee(null, "CS exam entry fee", new BigDecimal(0), kesExaminationFee.getPaperExamFee().multiply(new BigDecimal(2)), usdExaminationFee.getSectionExamFee().multiply(new BigDecimal(2)), new Date(), new FeeTypeCode("exam_entry_fee_per_part"), new FeeCode("EXAM_ENTRY_FEE"), section.getPart().getCourse(), null, null, null, null, null);
-        }
-        return null;
-    }
-
-    public static Registration getStudentCourse(Integer regNo, String endpoint) throws IOException, CustomHttpException {
-        Gson gson = new Gson();
-        String responseJson = new RestUtil().doGet(BASE_URL + "api/registration/" + endpoint + "/" + regNo);
+        String responseJson = new RestUtil().doGet(BASE_URL + "api/registration/" + course.getId() + "/" + regNo);
         return gson.fromJson(responseJson, Registration.class);
     }
 
@@ -183,15 +164,12 @@ public class CoreUtil {
         switch (studentCourse.getCourse().getId()) {
             case "01":
                 stream = Stream.AC;
-                endpoint = "cpa";
                 break;
             case "02":
                 stream = Stream.SC;
-                endpoint = "cs";
                 break;
             case "03":
                 stream = Stream.AC;
-                endpoint = "kame";
                 break;
         }
         //String regNo, String registrationNumber, Stream stream, String stringStream, Date registered, Integer firstExamDate,
@@ -200,7 +178,6 @@ public class CoreUtil {
         //String address3, String address4, String address5, String email, String cellphone, String telephone,
         //Course previousCourse, String learnAbout, LearnAbout learnt, Nation nationality, Qualification qualification,
         //List<Receipt> receipts, List<StudentCoursePaper> eligiblePapers, List<Exemption> exemptions, List<ExamBooking> examBookings, ExamEntry cpaExamEntry
-
         Registration registration = new Registration(null, //regNo
                 "",//registrationNumber
                 stream, //stream
@@ -254,7 +231,7 @@ public class CoreUtil {
         }
         registration.setReceipts(receipts);
         String jsonReq = mapper.writeValueAsString(registration);
-        String jsonResponse = new RestUtil().doPost(BASE_URL + "api/registration/" + endpoint, jsonReq);
+        String jsonResponse = new RestUtil().doPost(BASE_URL + "api/registration/" + studentCourse.getCourse().getId(), jsonReq);
         Registration created = gson.fromJson(jsonResponse, Registration.class);
         return created;
     }
@@ -276,10 +253,6 @@ public class CoreUtil {
         int n = maximum - minimum + 1;
         int i = rn.nextInt() % n;
         return "C" + minimum + i;
-    }
-
-    public static Integer generateRegistrationNumber() {
-        return 1;
     }
 
 }

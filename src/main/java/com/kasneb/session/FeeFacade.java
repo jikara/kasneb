@@ -218,7 +218,7 @@ public class FeeFacade extends AbstractFacade<Fee> {
             section = s;
         }
         try {
-            fee = CoreUtil.getCpaExaminationFee(section, "part");
+            fee = CoreUtil.getExaminationFee(section, part.getCourse(), "part");
         } catch (IOException | CustomHttpException e) {
             Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
@@ -228,64 +228,20 @@ public class FeeFacade extends AbstractFacade<Fee> {
     public Fee getExamEntryFeePerSection(Section section) throws CustomHttpException {
         Fee fee = null;
         try {
-            fee = CoreUtil.getCpaExaminationFee(section, "section");
+            fee = CoreUtil.getExaminationFee(section, section.getPart().getCourse(), "section");
         } catch (IOException | CustomHttpException e) {
             Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
         return fee;
     }
 
-    public Fee getExamEntryFeePerSection1(Section section) throws CustomHttpException {
-        Fee feeType = null;
-        section = em.find(Section.class, section.getSectionPK());
-        if (section == null) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Section does not exist");
-        }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
-        Root<Fee> ft = cq.from(Fee.class);
-
-        cq.where(cb.equal(ft.get(Fee_.section), section),
-                cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("EXAM_ENTRY_FEE"))),
-                cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_section"))));
-        TypedQuery<Fee> query = em.createQuery(cq);
-        try {
-            feeType = query.getSingleResult();
-        } catch (javax.persistence.NoResultException e) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
-        } catch (javax.persistence.NonUniqueResultException e) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this section");
-        }
-        return feeType;
-    }
-
     public Fee getExemptionFee(Paper paper) throws CustomHttpException {
         Fee fee = null;
         try {
-            fee = CoreUtil.getExemptionFee(paper, paper.getCourse().getId());
+            fee = CoreUtil.getExemptionFee(paper, paper.getCourse());
         } catch (IOException | CustomHttpException e) {
             Logger.getLogger(FeeFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
-//        Fee fee = null;
-//        paper = em.find(Paper.class, paper.getCode());
-//        if (paper == null) {
-//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper does not exist");
-//        }
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<Fee> cq = cb.createQuery(Fee.class);
-//        Root<Fee> ft = cq.from(Fee.class);
-//
-//        cq.where(cb.equal(ft.get(Fee_.paper), paper),
-//                cb.and(cb.equal(ft.get(Fee_.feeCode), new FeeCode("EXAM_ENTRY_FEE"))),
-//                cb.and(cb.equal(ft.get(Fee_.feeTypeCode), new FeeTypeCode("exam_entry_fee_per_paper"))));
-//        TypedQuery<Fee> query = em.createQuery(cq);
-//        try {
-//            fee = query.getSingleResult();
-//        } catch (javax.persistence.NoResultException e) {
-//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This fee is not configured");
-//        } catch (javax.persistence.NonUniqueResultException e) {
-//            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "More than one exam entry fee is configured for this paper");
-//        }
         return fee;
     }
 
