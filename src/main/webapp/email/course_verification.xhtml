@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <p>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</p> 
+        <c:if test="#{ email.communication.studentCourse.verificationStatus  eq 'REJECTED'}">
+            <c:if test="#{ email.communication.studentCourse.rejectCode  eq 'REJ_1'}">
+                <p>
+                    Your Registration for #{email.communication.studentCourse.course.name} has been rejected.For clarifications contact:info@kasneb.or.ke.
+                </p>
+            </c:if>
+            <c:if test="#{ email.communication.studentCourse.rejectCode  eq 'REJ_2'}">
+                <p>
+                    Your Registration for #{email.communication.studentCourse.course.name} has been rejected.For clarifications contact:info@kasneb.or.ke.
+                </p>
+            </c:if>
+            <c:if test="#{ email.communication.studentCourse.rejectCode  eq 'REJ_3'}">
+                <p>
+                    Your Registration for #{email.communication.studentCourse.course.name} has been rejected.For clarifications contact:info@kasneb.or.ke.
+                </p>
+            </c:if>
+            <c:if test="#{ email.communication.studentCourse.rejectCode  eq 'REJ_4'}">
+                <p>
+                    Your Registration for #{email.communication.studentCourse.course.name} has been rejected.For clarifications contact:info@kasneb.or.ke.
+                </p>
+            </c:if>
+            <c:if test="#{ email.communication.studentCourse.rejectCode  eq 'REJ_5'}">
+                <p>
+                    Your Registration for #{email.communication.studentCourse.course.name} has been rejected.For clarifications contact:info@kasneb.or.ke.
+                </p>
+            </c:if>
+        </c:if>
+        <c:if test="#{ email.communication.studentCourse.verificationStatus  eq 'APPROVED'}">
+            <p>
+                Your registration for #{email.communication.studentCourse.course.name} was successful. Your student registration number is  #{email.communication.studentCourse.fullRegistrationNumber}. You can now proceed to book for exemptions and examination.
+                Please note the deadlines for the #{email.communication.studentCourse.firstSitting.sittingDescription} examination booking is as follows
+            </p>
+            <ul>
+                <li>
+                    <p>
+                        <strong>Normal deadline:</strong>
+                        <h:outputText value="#{email.communication.studentCourse.firstSitting.examEntryDeadline}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <strong>Late deadline:</strong>
+                        <h:outputText value="#{email.communication.studentCourse.firstSitting.lateExamEntryDeadline}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                Your first renewal is <h:outputText value="#{email.communication.studentCourse.lastSubscription.renewalDate}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p>
+            <p>Click the link below to download an advanced copy of the syllabus</p>
+            <div style="text-align: center; margin: 10px;"> 
+                <a  style="font: bold 11px Arial; text-decoration: none; background-color: #EACB3C; color: #333129;  padding: 10px 40px; border-radius: 2px;" href="#{constantBean.baseUrl}syllabus/#{email.communication.studentCourse.course.id}.pdf">Syllabus</a>
+            </div>
+        </c:if>
+    </ui:define>
+</ui:composition>

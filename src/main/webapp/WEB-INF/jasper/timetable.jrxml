@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="timetable" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="1e2114ea-f8e1-4c2d-a216-9f1bc07858c5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1792"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Transparent" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="PaperDataset" uuid="6231bb3b-c3c2-4a0d-8d8b-2e2bc8aa9691">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="code" class="java.lang.String"/>
+		<field name="name" class="java.lang.String"/>
+		<field name="date" class="java.lang.String"/>
+		<field name="time" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\jikara\\Documents\\NetBeansProjects\\kasneb-dev\\src\\main\\webapp\\WEB-INF\\jasper\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="centreName" class="java.lang.String">
+		<fieldDescription><![CDATA[centreName]]></fieldDescription>
+	</field>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="examinationDetails" class="java.lang.String">
+		<fieldDescription><![CDATA[examinationDetails]]></fieldDescription>
+	</field>
+	<field name="nameAndId" class="java.lang.String">
+		<fieldDescription><![CDATA[nameAndId]]></fieldDescription>
+	</field>
+	<field name="papers" class="java.util.List">
+		<fieldDescription><![CDATA[papers]]></fieldDescription>
+	</field>
+	<field name="registrationNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[registrationNumber]]></fieldDescription>
+	</field>
+	<field name="sitting" class="java.lang.String">
+		<fieldDescription><![CDATA[sitting]]></fieldDescription>
+	</field>
+	<field name="fullName" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="town" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<background>
+		<band height="802">
+			<image>
+				<reportElement x="130" y="257" width="368" height="341" uuid="ebd64489-0e1b-44ab-bac8-ab8c0641dd94"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "resources\\images\\kasneb_logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="105" splitType="Stretch">
+			<image>
+				<reportElement positionType="Float" x="232" y="0" width="95" height="103" uuid="23ab7b00-a738-47d7-95f1-3e11f246baa2"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "resources\\images\\kasneb_logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="40" uuid="e84bbfdf-b44c-4cbd-8685-771563f48b29"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[KASNEB Towers, Hospital Road , Upper Hill, P.O. Box 41362 - 00100 Nairobi, Kenya
+Telephone: 254(020) 4923000 / 254(020) 2712640/2712828 Cellphone: 0734 600624/0722 201214
+ Fax: 254(020) 2712915 Email: info@kasneb.or.ke Website: www.kasneb.or.ke]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="191" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="555" height="20" uuid="6795965d-67f4-4d31-90cf-56b8cc0e16cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTHORITY TO SIT EXAMINATION/TIMETABLE
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="40" width="100" height="20" uuid="93c1d743-95d0-475c-a8ec-94fe48af501d"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registration No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="327" y="40" width="215" height="20" uuid="9dce59cc-88da-4a29-93ee-9dbcb0b7f94e"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name and I.D. Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="94" width="100" height="20" uuid="7cc6e01a-76fe-42e1-8097-b34442e20ad2"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="94" width="142" height="20" uuid="8e95f30e-d95c-4d67-980d-3ec4c530e071"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Examination SItting]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="94" width="152" height="20" uuid="2badd79c-8cd2-4d04-8917-3c3c3026cb0b"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Examination Centre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="148" width="555" height="20" uuid="59883074-4744-4c21-af27-3dfe9fcaabdb"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="11" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[EXAMINATION DETAILS
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="327" y="62" width="212" height="20" forecolor="#990000" uuid="ecbc8235-6f0b-4f1d-903a-b5ee750e2247"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nameAndId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="62" width="100" height="20" forecolor="#990000" uuid="199c4c0d-a1b7-42c5-b737-b42b0797dba2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{registrationNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="116" width="100" height="20" forecolor="#990000" uuid="8d951ee5-55c7-435f-aa2c-fd6637db7b77"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="116" width="142" height="20" forecolor="#990000" uuid="fe50190a-4c04-492d-96ca-b85f5c690ebf"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{sitting}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="390" y="116" width="149" height="20" isPrintWhenDetailOverflows="true" forecolor="#990000" uuid="5c4def5b-ea28-44c6-8710-75489109c6bd"/>
+				<textElement textAlignment="Center">
+					<font pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{centreName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="170" width="555" height="20" forecolor="#990000" uuid="d12e4907-244e-4086-b148-d65bbb4e6041"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{examinationDetails}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" mode="Transparent" x="0" y="0" width="555" height="20" uuid="d47e0ec8-0f74-40f0-81ac-c17984f11ccb"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="PaperDataset" uuid="efc33e40-71b4-495d-9b73-a37d0eb4b7e7">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{papers})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="70" uuid="b6e62672-1ca2-4607-9e68-9db2bf5ceb69">
+						<jr:columnHeader style="table_TD" height="20" rowSpan="1">
+							<staticText>
+								<reportElement mode="Transparent" x="0" y="0" width="70" height="20" forecolor="#990000" uuid="2f121614-7910-4b53-9c25-ea81d1474fd3"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  CODE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement mode="Transparent" x="2" y="0" width="68" height="20" uuid="7ec689f7-dfe2-4e8e-8351-31a437c76a84"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="205" uuid="76bdf7d7-e50d-4319-952d-0273b0da14f2">
+						<jr:columnHeader style="table_TD" height="20" rowSpan="1">
+							<staticText>
+								<reportElement mode="Transparent" x="0" y="0" width="205" height="20" forecolor="#990000" uuid="da3e6576-6c95-4534-9c43-478f5031f9f8"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  PAPER]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement mode="Transparent" x="2" y="0" width="203" height="20" uuid="7bebacf8-07ab-4541-91ba-e43e4036477c"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="fbe6458e-4557-42d8-9980-1b8ab20739b9">
+						<jr:columnHeader style="table_TD" height="20" rowSpan="1">
+							<staticText>
+								<reportElement mode="Transparent" x="0" y="0" width="140" height="20" forecolor="#990000" uuid="8f7a1d46-7b00-4706-af41-f38b4dcdb471"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  DATE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement mode="Transparent" x="2" y="0" width="138" height="20" uuid="39c2ebee-e1f3-417c-af21-707f231517dc"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="9b54f713-256d-4cf4-9961-3434111797e4">
+						<jr:columnHeader style="table_TD" height="20" rowSpan="1">
+							<staticText>
+								<reportElement mode="Transparent" x="0" y="0" width="140" height="20" forecolor="#990000" uuid="d765ab66-c819-4e7a-93b5-b93128cdfd46"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[  TIME]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement mode="Transparent" x="2" y="0" width="138" height="20" uuid="d912be0e-f025-4b4f-9143-eeb9cd377fbd"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{time}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="141" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="58" uuid="ef381e37-7380-465f-afd3-2ce44c964d67"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[You have been entered for the above examination at the designated examination centre and for the paper(s) indicated.Your attention is drawn to " INSTRUCTIONS TO CANDIDATES " relating to the conduct of the candidates during the examinations as outlined in the next page of this document.This authority letter must be presented to the invigilators at each session of the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="452" y="88" width="100" height="30" uuid="9b3dce7d-6ebd-4e37-8890-ffffa017d353"/>
+				<text><![CDATA[J. N. KARIGA
+FOR: SECRETARY
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="452" y="60" width="100" height="20" uuid="7c1c6a44-a95d-4685-b432-de69087e850b"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ISSUE BY:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="120" width="180" height="20" uuid="a7f16c46-8915-4350-9506-2a57b914bd90"/>
+				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="100" width="180" height="20" uuid="9152e783-80d9-4f15-8751-a6a1785ad922"/>
+				<textFieldExpression><![CDATA[$F{town}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="60" width="180" height="20" uuid="b972baff-dc8e-4812-8bb8-0b1109517604"/>
+				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="80" width="180" height="20" uuid="5be71c75-3f94-48d0-bc5b-e82fe3f6c222"/>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="20" uuid="27d1fd5b-d65a-45ef-a48b-012822dfddb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Copyright @ KASNEB website download. For any enquiry contact KASNEB]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="802">
+			<staticText>
+				<reportElement x="10" y="41" width="535" height="42" uuid="1f09b282-cf61-44c6-b9e5-c333aa376c59"/>
+				<textElement markup="none">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[The following instructions are issued for the benefit of candidates. All candidates are advised to read carefully and understand the instructions. The candidates attention is also drawn to Section 42 of the Accountants Act, No. 15 of 2008 on examination offences.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="10" width="535" height="20" uuid="ba076934-06db-449a-a997-e3a4cc12c0a2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INSTRUCTIONS TO CANDIDATES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="730" width="535" height="34" uuid="32785ab4-3572-4d68-9069-b5c882356338"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BEFORE YOU START TO ANSWER THE QUESTIONS, MAKE SURE THAT YOU HAVE BEEN ISSUED WITH THE CORRECT EXAMINATION QUESTION PAPER.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="104" width="514" height="30" uuid="1d18d011-37c9-4e33-be7c-54491d84822b"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates should present themselves for the examination<b> at least 30 minutes</b> before the scheduled time for the  commencement of the paper they are taking (see note (a) and (b) below).]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="104" width="21" height="30" uuid="ddc4e999-2341-44fe-ac1d-c3f3ae13131d"/>
+				<text><![CDATA[1.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="134" width="514" height="51" uuid="ec643685-4e37-4dc7-a59c-996dc9e2fc02"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates will neither be allowed to take the examination if they arrive 30 minutes or more after the commencement of the examination nor will candidates be permitted to leave the examinations room until after the end of the first 30 minutes following the commencement of the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="134" width="21" height="51" uuid="51908a09-1f64-41e2-8058-a1b2c7ca9c0f"/>
+				<text><![CDATA[2.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="185" width="21" height="53" uuid="4aa93c79-6f05-4159-a2c7-c04851e86030"/>
+				<text><![CDATA[3.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="185" width="514" height="53" uuid="54611630-b5ba-4fed-bf3c-7273987458be"/>
+				<textElement markup="html"/>
+				<text><![CDATA[IDENTIFICATION: Candidates who are Kenya citizens will be required to produce their National Identity Cards and/or KASNEB Student Identification Cards. Non-Kenyans will be required to produce relevant identification documents such as Passports. Candidates who do not have the aforementioned identification documents will be required to avail other acceptable identification documents.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="240" width="21" height="30" uuid="a18d1a6d-22b4-471c-bf81-6f1ca124adfe"/>
+				<text><![CDATA[4.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="240" width="514" height="30" uuid="4bca8dda-8d4a-4c69-9226-03f4fe3faa27"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Stationery will be provided but candidates must bring their own pens, pencils, rulers and ink. No stationery whatsoever may be removed from the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="270" width="21" height="45" uuid="c648e12e-55a4-41aa-b39a-1655add60a48"/>
+				<text><![CDATA[5.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="270" width="514" height="45" uuid="64cb33f4-5052-4974-82e2-7944546ff663"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Each candidate has a registration number assigned at the time of registration. Each candidate must take his/herseat at the place allocated and indicated by the registration number. The registration number must be entered at the top right hand corner of each answer sheet.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="315" width="21" height="17" uuid="4e9f03ef-7e64-49d7-bb21-aea423f901a0"/>
+				<text><![CDATA[6.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="315" width="514" height="17" uuid="c5db41b6-ee7a-40b9-8c64-a7889795354b"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates MUST NOT write their names on the answer booklet.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="332" width="514" height="20" uuid="8410d4bf-40b6-4637-9766-5e0b88cd413c"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Strict silence must be observed during the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="332" width="21" height="17" uuid="1904c440-61bc-415e-ac0c-69f47d8124fa"/>
+				<text><![CDATA[7.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="352" width="514" height="34" uuid="4a0ef8ab-c56a-4b3c-9684-fa7752429dca"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates MUST NOT retain any notes, printed papers or books during the examination, but must leave any such documents outside the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="352" width="21" height="34" uuid="cf8d93c5-5a44-48dd-b816-a712049e377f"/>
+				<text><![CDATA[8.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="386" width="514" height="34" uuid="f2f14135-9b0f-494d-935f-aa43d994925d"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates are allowed to use calculators provided that such calculators are noiseless and cordless. Calculators which are programmable are not allowed.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="386" width="21" height="34" uuid="69ba4914-35fb-47a1-86bb-94c8f73e963b"/>
+				<text><![CDATA[9.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="420" width="514" height="60" uuid="afa3a969-a29c-4064-8de1-c1bade61fbf7"/>
+				<textElement markup="html"/>
+				<text><![CDATA[During the course of the examination, no candidate may leave the examinations room without permission. Any candidate who does so will not be allowed back into the examinations room. Candidates who finish the paper before the invigilators announce the end of the examination session and who wish to leave the examinations room while the examination is in progress must hand in their scripts to the invigilators.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="420" width="21" height="54" uuid="ebfdd982-4b7f-49bd-8ee7-ac07524705d8"/>
+				<text><![CDATA[10.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="480" width="514" height="34" uuid="87279c7f-f209-46d1-bef9-85eacb4a9f77"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Mobile phones MUST BE switched off and should not be used in or outside the examinations room until the examination session is over]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="480" width="21" height="34" uuid="c217cc82-2a23-4cc6-8e42-e0c8af91ceb6"/>
+				<text><![CDATA[11.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="514" width="514" height="27" uuid="b9d1dbb3-221d-4140-a539-cf56e7cc650e"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Candidates MUST NOT take away the examination question papers from the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="514" width="21" height="27" uuid="6593af73-667f-461d-a178-f0c59302aa96"/>
+				<text><![CDATA[12.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="541" width="21" height="34" uuid="5e94954b-26d0-4192-989c-0426ce888234"/>
+				<text><![CDATA[13.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="541" width="514" height="34" uuid="6d869d0f-0ea4-4b1e-b24a-57ac38af2b0f"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Mobile phones MUST BE switched off and should not be used in or outside the examinations room until the examination session is over]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="575" width="514" height="17" uuid="215889c0-484a-4652-8b21-5848d82d1193"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Smoking is not allowed in the examinations room]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="575" width="21" height="17" uuid="1d7f80b8-ad3e-4c05-915b-4bf597cf3a78"/>
+				<text><![CDATA[14.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="605" width="535" height="85" uuid="ccf83046-012c-4d16-b725-3ae00e04e732"/>
+				<textElement markup="none"/>
+				<text><![CDATA[NOTE:       (a) THE MORNING SESSIONS BEGIN AT 9.00 A.M.
+                  (b) THE AFTERNOON SESSIONS BEGIN AT 2.00 P.M.
+                  (c) ALL PAPERS ARE OF THREE HOURS DURATION.]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

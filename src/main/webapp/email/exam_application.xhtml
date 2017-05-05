@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <p>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</p>
+        <p>Your examination booking for  #{email.communication.sitting.sitting.sittingDescription}  was successful.</p>
+        <p>Please click on the link below to access your timetable.  </p>
+        <div style="text-align: center; margin: 10px;"> 
+            <a style="font: bold 11px Arial; text-decoration: none; background-color: #EACB3C; color: #333129;  padding: 10px 40px; border-radius: 2px;" href="#{constantBean.baseUrl}api/export/timetable/#{email.communication.sitting.id}">Link</a>
+        </div>
+        <p>Kindly note that you will be required to present your timetable and national ID at the examination room.
+            Wishing you success in your examination </p>
+    </ui:define>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+

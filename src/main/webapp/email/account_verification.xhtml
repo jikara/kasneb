@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <p><strong>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</strong></p> 
+        <p>Thank you for registering with the KASNEB student portal. To log-in into the KASNEB student portal use the Email Address and Password used during account Sign up.</p>
+        <p>Please click on the link below to verify your account </p>
+        <div style="text-align: center; margin: 10px;">
+            <a style="font: bold 11px Arial; text-decoration: none; background-color: #EACB3C; color: #333129;  padding: 10px 40px; border-radius: 2px;" href="#{constantBean.portalUrl}site/activate-account?token=#{email.communication.student.loginId.verificationToken}">Link</a>
+        </div>
+    </ui:define>
+</ui:composition>

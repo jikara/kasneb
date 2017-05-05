@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="timetable_instructions" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6ad0799-cc34-491a-bb96-ea7d53d6c222">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="802" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="41" width="535" height="42" uuid="b5d1239f-23f1-4809-b951-1b4aa01f3c53"/>
+				<textElement markup="styled">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[The following instructions are issued for the benefit of candidates. All candidates are advised to read
+carefully and understand the instructions. The candidates attention is also drawn to Section 42 of the
+Accountants Act, No. 15 of 2008 on examination offences.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="10" width="535" height="20" uuid="b3eab974-8b91-4421-a584-e826fcb966af"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INSTRUCTIONS TO CANDIDATES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="730" width="535" height="34" uuid="964c40ac-f305-4f35-b7c6-3ccf2c96c38d"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BEFORE YOU START TO ANSWER THE QUESTIONS, MAKE SURE THAT YOU HAVE BEEN ISSUED WITH THE CORRECT EXAMINATION QUESTION PAPER.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="104" width="514" height="30" uuid="05ebeeb4-1325-4696-984f-e61e6d0197a2"/>
+				<text><![CDATA[Candidates should present themselves for the examination<b> at least 30 minutes</b> before the scheduled time for the  commencement of the paper they are taking (see note (a) and (b) below).]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="104" width="21" height="30" uuid="d5ba1f2c-a285-4197-8643-45d1178e24d2"/>
+				<text><![CDATA[1.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="134" width="514" height="51" uuid="9340d2ca-74c5-4077-8b35-0e2432225242"/>
+				<text><![CDATA[Candidates will neither be allowed to take the examination if they arrive 30 minutes or more after the commencement of the examination nor will candidates be permitted to leave the examinations room until after the end of the first 30 minutes following the commencement of the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="134" width="21" height="51" uuid="c1acb48d-3a2f-4337-9d2a-a2d194e77f35"/>
+				<text><![CDATA[2.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="185" width="21" height="53" uuid="d90539d1-6634-4c3d-a1c0-0c7ca134ac67"/>
+				<text><![CDATA[3.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="185" width="514" height="53" uuid="c0472fca-c563-4efb-b8fb-8b29fae35082"/>
+				<text><![CDATA[IDENTIFICATION: Candidates who are Kenya citizens will be required to produce their National Identity Cards and/or KASNEB Student Identification Cards. Non-Kenyans will be required to produce relevant identification documents such as Passports. Candidates who do not have the aforementioned identification documents will be required to avail other acceptable identification documents.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="240" width="21" height="30" uuid="26e61c72-8faa-4acc-ad70-0828ff775c93"/>
+				<text><![CDATA[4.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="240" width="514" height="30" uuid="6ffb6f04-952d-46e6-b9a9-bca642556128"/>
+				<text><![CDATA[Stationery will be provided but candidates must bring their own pens, pencils, rulers and ink. No stationery whatsoever may be removed from the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="270" width="21" height="45" uuid="278ce278-840c-4c30-8844-01e60243896f"/>
+				<text><![CDATA[5.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="270" width="514" height="45" uuid="6902d4b8-abe3-477b-9935-a6a43783a209"/>
+				<text><![CDATA[Each candidate has a registration number assigned at the time of registration. Each candidate must take his/herseat at the place allocated and indicated by the registration number. The registration number must be entered at the top right hand corner of each answer sheet.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="315" width="21" height="17" uuid="80898dee-67ef-42a5-96a7-d5fd1878a5ec"/>
+				<text><![CDATA[6.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="315" width="514" height="17" uuid="1f04b8b9-3783-45b4-94d0-1493cb015e5c"/>
+				<text><![CDATA[Candidates MUST NOT write their names on the answer booklet.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="332" width="514" height="20" uuid="82eb6a07-aeb2-4b2c-a41b-31395d1c9de2"/>
+				<text><![CDATA[Strict silence must be observed during the examination.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="332" width="21" height="17" uuid="8eb2a34a-9854-44d5-a522-e217e0f63e47"/>
+				<text><![CDATA[7.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="352" width="514" height="34" uuid="eeece260-6781-4e43-91e5-621037962e29"/>
+				<text><![CDATA[Candidates MUST NOT retain any notes, printed papers or books during the examination, but must leave any such documents outside the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="352" width="21" height="34" uuid="0d67fa78-af3b-4dbd-831b-2fe549d66668"/>
+				<text><![CDATA[8.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="386" width="514" height="34" uuid="554877a6-a191-476a-842e-6af63791319a"/>
+				<text><![CDATA[Candidates are allowed to use calculators provided that such calculators are noiseless and cordless. Calculators which are programmable are not allowed.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="386" width="21" height="34" uuid="56745f8e-f8ba-40fc-8a21-03b937f98ec6"/>
+				<text><![CDATA[9.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="420" width="514" height="60" uuid="d24ec266-8d73-41a2-be54-48173c7c0d00"/>
+				<text><![CDATA[During the course of the examination, no candidate may leave the examinations room without permission. Any candidate who does so will not be allowed back into the examinations room. Candidates who finish the paper before the invigilators announce the end of the examination session and who wish to leave the examinations room while the examination is in progress must hand in their scripts to the invigilators.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="420" width="21" height="54" uuid="04ea6233-fee0-48f9-ad04-b37612da0e67"/>
+				<text><![CDATA[10.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="480" width="514" height="34" uuid="8d0df5ff-f29b-441d-8e4d-853f84e16507"/>
+				<text><![CDATA[Mobile phones MUST BE switched off and should not be used in or outside the examinations room until the examination session is over]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="480" width="21" height="34" uuid="29056027-e43c-4fc3-9dee-335e2dbb13ba"/>
+				<text><![CDATA[11.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="514" width="514" height="27" uuid="2452096b-03b8-4432-808c-08a4f53234b7"/>
+				<text><![CDATA[Candidates MUST NOT take away the examination question papers from the examinations room.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="514" width="21" height="27" uuid="b7437931-1749-481f-be2a-5e5fbd9ec5e0"/>
+				<text><![CDATA[12.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="541" width="21" height="34" uuid="dd39701b-c316-4c36-885e-7a68870df54f"/>
+				<text><![CDATA[13.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="541" width="514" height="34" uuid="0d3f6b91-8b88-4491-87a4-39552c038da8"/>
+				<text><![CDATA[Mobile phones MUST BE switched off and should not be used in or outside the examinations room until the examination session is over]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="31" y="575" width="514" height="17" uuid="ab43baa0-2d25-4396-b790-3c4d3d1f8eef"/>
+				<text><![CDATA[Smoking is not allowed in the examinations room]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="575" width="21" height="17" uuid="424db91d-fb76-4222-8d54-1d4dadc54fc9"/>
+				<text><![CDATA[14.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="605" width="535" height="85" uuid="565920df-f5ce-47e3-87f2-1bd19ab019c1"/>
+				<text><![CDATA[NOTE:       (a) THE MORNING SESSIONS BEGIN AT 9.00 A.M.
+                  (b) THE AFTERNOON SESSIONS BEGIN AT 2.00 P.M.
+                  (c) ALL PAPERS ARE OF THREE HOURS DURATION.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

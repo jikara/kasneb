@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ExemptionLetter_subreport_parts" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0ffcfda8-6d22-4a96-a37b-777e018491e9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="sections" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="105" height="20" uuid="8718cba7-46f6-4154-80be-417cef34b85f"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="105" y="0" width="450" height="20" uuid="7794117c-ed65-4750-ae82-5bed55cd5b4f"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{sections})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"WEB-INF\\jasper\\ExemptionLetter_subreport_parts_sections.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="238" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="38" width="555" height="200" uuid="522577a6-a088-45c9-add3-ba5e2a597cdd"/>
+				<textElement markup="styled">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[You are advised to retain this letter as no other document will be issued in respect of these exemptions. You are further urged <b>NOT</b> to attempt any of the paper(s) in which you have been exempted and should you wish to do so,you must seek the consent of KASNEB in advance.
+
+Please note that if you attempt and fail any of the exempted paper(s) the exemption will be withdrawn and you will be required  to take all the paper(s) prescribed by KASNEB.
+
+Remember to quote the above reference number and date of this letter when submitting your examination entry form.
+
+
+Yours faithfully,
+
+<b>Christabel L. Osango
+For: SECRETARY AND CHIEF EXECUTIVE</b>]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

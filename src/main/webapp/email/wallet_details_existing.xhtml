@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <f:metadata>
+            <f:viewParam name="pin" value="#{email.pin}" />
+        </f:metadata>
+        <p>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</p> 
+        <p>Your Jambopay(Kasneb) wallet details will be used to make payments.</p>
+        <p>To change your PIN</p>
+        <ol>
+            <li>Go to <a href="https://www.jambopay.com">https://www.jambopay.com</a> </li>
+            <li>Sign in and navigate to change Password menu and change your PIN.</li>
+        </ol>
+    </ui:define>
+</ui:composition>

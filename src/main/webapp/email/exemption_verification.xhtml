@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <p>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</p>
+        <p>
+            Your application for exemption was successful. Kindly find the exemption letter attached.Wishing you the best in your studies.
+        </p>
+        <p>Click on the link below to access your exemption letter</p>
+
+        <div style="text-align: center; margin: 10px;"> 
+            <a  style="font: bold 11px Arial; text-decoration: none; background-color: #EACB3C; color: #333129;  padding: 10px 40px; border-radius: 2px;" href="#{constantBean.baseUrl}api/export/exemptionletter/#{email.communication.exemption.id}">Link</a>
+        </div>
+    </ui:define>
+</ui:composition>

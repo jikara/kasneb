@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43357f61-94a2-47b5-83ca-1ed8ba1c5426">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="73"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{SUBREPORT_DIR}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="regNo" class="java.lang.String">
+		<fieldDescription><![CDATA[regNo]]></fieldDescription>
+	</field>
+	<field name="letterTitle" class="java.lang.String">
+		<fieldDescription><![CDATA[letterTitle]]></fieldDescription>
+	</field>
+	<field name="country" class="java.lang.String">
+		<fieldDescription><![CDATA[country]]></fieldDescription>
+	</field>
+	<field name="studentName" class="java.lang.String">
+		<fieldDescription><![CDATA[studentName]]></fieldDescription>
+	</field>
+	<field name="reference" class="java.lang.String">
+		<fieldDescription><![CDATA[reference]]></fieldDescription>
+	</field>
+	<field name="parts" class="java.util.List">
+		<fieldDescription><![CDATA[parts]]></fieldDescription>
+	</field>
+	<field name="issuedBy" class="java.lang.String">
+		<fieldDescription><![CDATA[issuedBy]]></fieldDescription>
+	</field>
+	<field name="address" class="java.lang.String">
+		<fieldDescription><![CDATA[address]]></fieldDescription>
+	</field>
+	<field name="city" class="java.lang.String">
+		<fieldDescription><![CDATA[city]]></fieldDescription>
+	</field>
+	<field name="studentAndReg" class="java.lang.String">
+		<fieldDescription><![CDATA[studentAndReg]]></fieldDescription>
+	</field>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="courseName" class="java.lang.String"/>
+	<field name="levels" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="67" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="1" width="555" height="32" uuid="b96cac85-e217-44f5-91c7-20ec0182cccf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[KASNEB]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="0e8677a2-6be0-4ffc-a91c-91e81494d243"/>
+			</line>
+			<line>
+				<reportElement x="0" y="34" width="555" height="1" uuid="1012d16a-4549-474d-b0f5-fcd9dbed375c"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="37" width="555" height="17" uuid="541adca3-188a-4a4b-b62b-819b20d194be"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kasneb Towers,Hospital Road,Upper hill P.O. BOX 41362-00100,Nairobi -Kenya Tel:(020) 2712640 / 2712818  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="555" height="15" uuid="e237da5f-da2f-49b9-8ca3-76f9f4d3639b"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cellphone: +254 722 201214 / 734600624 Fax:(020) 2712915 E-mail: info@kasneb.or.ke,Website :www.kasneb.or.ke]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="129" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="26" height="20" uuid="02733eee-f744-44dc-9c78-94dc05da2697"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REF:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="9" width="33" height="20" uuid="768a5452-d9b6-4924-949f-70395700b897"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date : ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="52" width="200" height="20" uuid="f0a2e187-4a81-4664-a030-b16a1801e371"/>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="72" width="200" height="20" uuid="b7bc3547-f763-4387-ab01-fb026d968517"/>
+				<textFieldExpression><![CDATA[$F{city}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="92" width="200" height="20" uuid="e1a0648e-1e2f-4046-99a8-92383518e055"/>
+				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="9" width="100" height="20" uuid="d2115cff-3e0f-483a-887e-c24fd461f0a1"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="26" y="9" width="174" height="20" uuid="42af85d7-8579-48d1-8424-1686e129a609"/>
+				<textFieldExpression><![CDATA[$F{reference}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="32" width="200" height="20" uuid="bd9e2603-83b1-450d-95d4-abc74e3d5c32"/>
+				<textFieldExpression><![CDATA[$F{studentAndReg}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="26" height="20" uuid="49f240ed-a151-4cb0-8695-3e0852540a2d"/>
+				<text><![CDATA[Dear ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="26" y="2" width="100" height="20" uuid="72e7d91a-c631-446d-938c-00b5ebb7e208"/>
+				<textFieldExpression><![CDATA[$F{studentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="21" width="555" height="20" uuid="fb597ca9-d207-45b1-9a4e-720e14c66e4b"/>
+				<textElement>
+					<font size="11" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{letterTitle}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="17" uuid="a15f8e6e-86cb-4a47-9d38-3d56ece59384"/>
+				<text><![CDATA[We are pleased to inform you that you have been granted exemption in the following paper(s):]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="17" width="555" height="30" uuid="e54252ba-f66a-4276-b9a3-1667ec50a1ef"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{levels})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "WEB-INF\\jasper\\ExemptionLetter_subreport_levels.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="20" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

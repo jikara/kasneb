@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">    
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{email.communicationId}" />
+        </f:metadata>
+        <p>Dear #{email.communication.student.firstName} #{email.communication.student.lastName},</p> 
+        <c:choose>
+            <c:when test="#{ email.communication.studentCourse.courseStatus  eq 'ACTIVE'}">
+                <p>   We have successfully verified your identity and your account is now active.</p>
+            </c:when>
+            <c:otherwise>
+                <p> Your identity verification has been unsuccessful. Please ensure that you attach clear Documents, a valid ID Document and Passport Photo.</p>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>
