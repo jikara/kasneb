@@ -5,8 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -54,44 +54,50 @@ public class Login implements Serializable {
     private String email;
     @Basic(optional = false)
     @Column(name = "phoneNumber", nullable = false)
-    private String phoneNumber;
+    private String phoneNumber;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Basic(optional = false)
     @Column(name = "password", nullable = false)
-    @JsonIgnore
     private String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "verificationToken")
-    @JsonIgnore
-    private String verificationToken;
+    private String verificationToken; 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "smsToken")
-    @JsonIgnore
     private String smsToken;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "resetToken")
-    @JsonIgnore
     private String resetToken;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "smsResetToken")
-    @JsonIgnore
     private String smsResetToken;
     @Basic(optional = false)
     @Column(name = "loginAttempts", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int loginAttempts = 0;
     @Basic(optional = false)
     @Column(name = "emailActivated", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean emailActivated = false;
     @Basic(optional = false)
     @Column(name = "phoneNumberActivated", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean phoneNumberActivated = false;
     @Basic(optional = false)
     @Column(name = "banned", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean banned = false;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient Date lastLogin;
+    @JsonManagedReference(value="student-login")
     @OneToOne
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = true)
-    @JsonManagedReference
-    private Student student;
+    private Student student;    
+    @JsonManagedReference(value="user-login")
     @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = true)
-    @JsonManagedReference
     private User user;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
     private Integer status;
 

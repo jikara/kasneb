@@ -61,7 +61,7 @@ public class RenewalRest {
     @Path("invoice/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRenewalInvoice(@PathParam("id") Integer id) {
-        Student student = studentFacade.findStudent(id);
+        Student student = studentFacade.find(id);
         try {
             if (student == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist");

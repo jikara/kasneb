@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Exemption;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.Student;
@@ -20,6 +23,7 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.mail.MessagingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -37,9 +41,13 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("studentcourse")
+@Stateless
 public class StudentCourseRest {
 
     Object anyResponse = new Object();
+    String json;
+    ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     @EJB
     com.kasneb.session.StudentFacade studentFacade;
@@ -60,15 +68,18 @@ public class StudentCourseRest {
      * Creates a new instance of StudentCourseRest
      */
     public StudentCourseRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         List<StudentCourse> studentCourses = studentCourseFacade.findAll();
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourses)
+                .entity(json)
                 .build();
     }
 
@@ -77,26 +88,29 @@ public class StudentCourseRest {
      * com.kasneb.api.StudentCourseRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPending() {
+    public Response findPending() throws JsonProcessingException {
         List<StudentCourse> studentCourses = studentCourseFacade.findPending();
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourses)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("pending/identification")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPendingIdentification() {
+    public Response findPendingIdentification() throws JsonProcessingException {
         List<StudentCourse> studentCourses = studentCourseFacade.findPendingIdentification();
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourses)
+                .entity(json)
                 .build();
     }
 
@@ -126,27 +140,29 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(managed);
         return Response
                 .status(httpStatus)
-                .entity(managed)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("verified")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVerified() {
+    public Response findVerified() throws JsonProcessingException {
         List<StudentCourse> studentCourses = studentCourseFacade.findVerified();
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourses)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("active/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findActive(@PathParam("id") Integer id) {
+    public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
         StudentCourse studentCourse = null;
         try {
             studentCourse = studentCourseFacade.findActive(id);
@@ -159,16 +175,17 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(studentCourse);
         return Response
                 .status(httpStatus)
-                .entity(studentCourse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         Collection<Paper> papers = null;
         try {
             StudentCourse studentCourse = studentCourseFacade.find(id);
@@ -184,16 +201,17 @@ public class StudentCourseRest {
         } catch (Exception ex) {
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("eligible_exemptions/{studentCourseId}/{qualification_id}/{code_type}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") String qualificationId, @PathParam("code_type") Integer codeType) {
+    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") String qualificationId, @PathParam("code_type") Integer codeType) throws JsonProcessingException {
         try {
             anyResponse = studentCourseFacade.getEligibleExemptionsByQualification(studentCourseId, qualificationId, codeType);
             httpStatus = Response.Status.OK;
@@ -204,9 +222,10 @@ public class StudentCourseRest {
         } catch (Exception ex) {
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -214,7 +233,7 @@ public class StudentCourseRest {
     @Path("eligible_exemptions/{studentCourseId}")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, List<String> qualificationIds) {
+    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, List<String> qualificationIds) throws JsonProcessingException {
         try {
             anyResponse = studentCourseFacade.getEligibleExemptions(studentCourseId, qualificationIds);
             httpStatus = Response.Status.OK;
@@ -225,9 +244,10 @@ public class StudentCourseRest {
         } catch (Exception ex) {
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -239,7 +259,7 @@ public class StudentCourseRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response create(StudentCourse entity) {
+    public Response create(StudentCourse entity) throws JsonProcessingException {
         try {
             if (entity.getStudent() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student id is required");
@@ -255,9 +275,10 @@ public class StudentCourseRest {
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -265,7 +286,7 @@ public class StudentCourseRest {
     @Path("documents")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response updateDocuments(StudentCourse entity) {
+    public Response updateDocuments(StudentCourse entity) throws JsonProcessingException {
         try {
             anyResponse = studentCourseFacade.updateStudentCourseDocuments(entity);
             httpStatus = Response.Status.OK;
@@ -276,18 +297,19 @@ public class StudentCourseRest {
         } catch (IllegalAccessException | InstantiationException | IOException | InvocationTargetException ex) {
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response update(StudentCourse entity) {
+    public Response update(StudentCourse entity) throws JsonProcessingException {
         try {
-            entity = studentCourseFacade.updateStudentCourse(entity);
+            anyResponse = studentCourseFacade.updateStudentCourse(entity);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
@@ -296,9 +318,10 @@ public class StudentCourseRest {
         } catch (IllegalAccessException | InstantiationException | IOException | InvocationTargetException ex) {
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -306,13 +329,14 @@ public class StudentCourseRest {
     @Path("exemption/complete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response completeExemption(Exemption entity) {
-            entity=exemptionFacade.edit(entity);
-            anyResponse = entity;
-            httpStatus = Response.Status.OK;
+    public Response completeExemption(Exemption entity) throws JsonProcessingException {
+        entity = exemptionFacade.edit(entity);
+        anyResponse = entity;
+        httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -320,10 +344,10 @@ public class StudentCourseRest {
     @Path("verify")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response verify(StudentCourse entity) {
+    public Response verify(StudentCourse entity) throws JsonProcessingException {
         String body;
         try {
-            entity = studentCourseFacade.verifyStudentCourse(entity);
+            anyResponse = studentCourseFacade.verifyStudentCourse(entity);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
@@ -332,9 +356,10 @@ public class StudentCourseRest {
         } catch (IOException | MessagingException | ParseException | IllegalAccessException | InvocationTargetException ex) {
             // Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -342,7 +367,7 @@ public class StudentCourseRest {
     @Path("verify/batch")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public Response verifyBatch(BatchStudentCourse entity) {
+    public Response verifyBatch(BatchStudentCourse entity) throws JsonProcessingException {
         try {
             studentCourseFacade.verifyBatchStudentCourse(entity);
             anyResponse = new CustomMessage(200, "Batch verification successfully processed");
@@ -354,9 +379,10 @@ public class StudentCourseRest {
         } catch (IOException | MessagingException | ParseException ex) {
             // Logger.getLogger(StudentCourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 }

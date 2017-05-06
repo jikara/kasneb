@@ -28,15 +28,15 @@ public class CourseExemption implements Serializable {
     private CourseExemptionPK courseExemptionPK;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id",insertable=false,updatable=false)
-    @JsonBackReference
+
     private Course qualification;
     @ManyToOne
     @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
-    @JsonManagedReference
+
     private KasnebCourse course;
     @ManyToOne
     @JoinColumn(name = "paperCode", referencedColumnName = "code",insertable=false,updatable=false)
-    @JsonManagedReference
+
     private Paper paper;
 
     public CourseExemption() {

@@ -5,11 +5,9 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,9 +25,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "country")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c"),
-    @NamedQuery(name = "Country.findByCode", query = "SELECT c FROM Country c WHERE c.code = :code"),
-    @NamedQuery(name = "Country.findByName", query = "SELECT c FROM Country c WHERE c.name = :name"),
+    @NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c")
+    ,
+    @NamedQuery(name = "Country.findByCode", query = "SELECT c FROM Country c WHERE c.code = :code")
+    ,
+    @NamedQuery(name = "Country.findByName", query = "SELECT c FROM Country c WHERE c.name = :name")
+    ,
     @NamedQuery(name = "Country.findByNationality", query = "SELECT c FROM Country c WHERE c.nationality = :nationality")})
 public class Country implements Serializable {
 
@@ -48,12 +49,6 @@ public class Country implements Serializable {
     @Basic(optional = false)
     @Column(name = "phoneCode")
     private int phoneCode;
-    @JsonBackReference
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nationality")
-    private Collection<Student> studentCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "countryId")
-    @JsonBackReference
-    private Collection<Student> studentCollection1;
     @OneToMany(mappedBy = "countryId")
     private Collection<Contact> contacts;
 
@@ -107,14 +102,6 @@ public class Country implements Serializable {
 
     public void setPhoneCode(int phoneCode) {
         this.phoneCode = phoneCode;
-    }
-
-    public Collection<Student> getStudentCollection() {
-        return studentCollection;
-    }
-
-    public void setStudentCollection(Collection<Student> studentCollection) {
-        this.studentCollection = studentCollection;
     }
 
     @Override

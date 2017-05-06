@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.AlertType;
 import com.kasneb.entity.Communication;
 import com.kasneb.entity.CommunicationType;
@@ -23,6 +26,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -43,6 +47,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("student")
+@Stateless
 public class StudentRest {
 
     @Context
@@ -50,6 +55,8 @@ public class StudentRest {
     @Context
     HttpServletRequest request;
     Object anyResponse = new Object();
+    ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -65,20 +72,24 @@ public class StudentRest {
      * Creates a new instance of StudentRest
      */
     public StudentRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.StudentRest
      *
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         List<Student> students = studentFacade.findAll();
+        json = mapper.writeValueAsString(students);
         return Response
                 .status(Response.Status.OK)
-                .entity(students)
+                .entity(json)
                 .build();
     }
 
@@ -97,16 +108,18 @@ public class StudentRest {
      *
      * @param id
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) {
-        Student student = studentFacade.findStudent(id);
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
+        Student student = studentFacade.find(id);
+        json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
-                .entity(student)
+                .entity(json)
                 .build();
     }
 

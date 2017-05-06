@@ -20,10 +20,10 @@ import javax.persistence.OneToMany;
 public class OtherQualification extends Qualification {
 
     @OneToMany(mappedBy = "otherQualification")
-    @JsonManagedReference
+
     private Collection<OtherCourse> courses;
     @OneToMany(mappedBy = "qualification")
-    @JsonManagedReference
+
     private Collection<OtherCourseType> otherQualificationTypes;
 
     public Collection<OtherCourse> getCourses() {

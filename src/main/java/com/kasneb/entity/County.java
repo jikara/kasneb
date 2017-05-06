@@ -49,10 +49,10 @@ public class County implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
     @OneToMany(mappedBy = "countyId",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<Student> studentCollection;
     @OneToMany(mappedBy = "countyId")
-    @JsonBackReference
+
     private Collection<Contact> contacts;
 
     public County() {

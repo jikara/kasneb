@@ -40,11 +40,11 @@ public class StudentCourseSittingPaper implements Serializable {
     private PaperStatus paperStatus;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paperCode", referencedColumnName = "code", updatable = false, insertable = false, nullable = false)
-    @JsonManagedReference
+
     private Paper paper;
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false, nullable = true)
-    @JsonBackReference
+
     private StudentCourseSitting studentCourseSitting;
 
     public StudentCourseSittingPaper() {

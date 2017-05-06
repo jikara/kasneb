@@ -21,7 +21,7 @@ public class OtherCourseType extends CourseType {
 
     @ManyToOne
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
-    @JsonBackReference
+
     private OtherQualification qualification;
 
     @Override

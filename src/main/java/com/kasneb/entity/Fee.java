@@ -73,19 +73,19 @@ public class Fee implements Serializable {
     private Date effectiveDate;
     @JoinColumn(name = "feeTypeCode", referencedColumnName = "code", nullable = false)
     @ManyToOne
-    @JsonManagedReference
+
     private FeeTypeCode feeTypeCode;
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private FeeCode feeCode;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private KasnebCourse course;
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
     @ManyToOne(optional = true,fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private CourseType courseType;
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "levelId", referencedColumnName = "id") ,
@@ -98,18 +98,18 @@ public class Fee implements Serializable {
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Part part;
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "sectionId", referencedColumnName = "id"),
         @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")})
     @ManyToOne(optional = true,fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Section section;
     @JoinColumn(name = "paperCode", referencedColumnName = "code")
     @ManyToOne(optional = true,fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Paper paper;
 
     public Fee() {

@@ -22,8 +22,8 @@ public class ExemptionInvoiceDetail extends InvoiceDetail {
 
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "exemptionId", referencedColumnName = "exemptionId"),
-        @JoinColumn(name = "paperCode", referencedColumnName = "paperCode")
+        @JoinColumn(name = "exemptionId", referencedColumnName = "exemptionId")
+        ,@JoinColumn(name = "paperCode", referencedColumnName = "paperCode")
     })
     private ExemptionPaper paper;
 

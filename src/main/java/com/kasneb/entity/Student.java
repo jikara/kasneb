@@ -5,8 +5,11 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.util.DateUtil;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -75,11 +78,11 @@ public class Student implements Serializable {
     @Basic(optional = false)
     @Column(name = "gender", nullable = true)
     private String gender;
-    @Transient
-    private String dob;
+    @JsonInclude
+    private transient String dob;
     @Column(name = "dateOfBirth")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
+    @JsonFormat(shape = JsonFormat.Shape.ANY, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     private Date dateOfBirth;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
@@ -111,9 +114,10 @@ public class Student implements Serializable {
     @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     private County countyId;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "student")
-     private Login loginId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "student-login")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "student")
+    private Login loginId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.EAGER)
     private Collection<StudentCourse> studentCourses;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
     private Collection<Notification> notifications;
@@ -121,22 +125,24 @@ public class Student implements Serializable {
     private Set<KasnebStudentQualification> kasnebQualifications;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", targetEntity = StudentQualification.class, fetch = FetchType.LAZY)
     private Set<OtherStudentQualification> otherQualifications;
+    @JsonManagedReference(value = "student-current-course")
     @OneToOne
     @JoinColumn(name = "currentCourseId", referencedColumnName = "id")
     private StudentCourse currentCourse;
+    @JsonInclude
+    private transient Collection<Invoice> invoices;
+    @JsonInclude
+    private transient Collection<Invoice> pendingInvoices;
     @Transient
-    private Collection<Invoice> invoices;
-    @Transient
-    private Collection<Invoice> pendingInvoices;
-    @Transient
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String jpPin;
-    @Transient
-    private String previousCourseCode;
-    @Transient
-    private Integer previousRegistrationNo;
-    @Transient
-    private String fullName;
+    @JsonInclude
+    private transient String previousCourseCode;
+    @JsonInclude
+    private transient Integer previousRegistrationNo;
+    @JsonInclude
+    private transient String fullName;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
     private Integer studentStatus;
 

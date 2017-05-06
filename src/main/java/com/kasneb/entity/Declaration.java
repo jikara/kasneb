@@ -45,7 +45,7 @@ public class Declaration implements Serializable {
     @Column(name = "description")
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "declaration",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<StudentDeclaration> studentDeclarations;
 
     public Declaration() {

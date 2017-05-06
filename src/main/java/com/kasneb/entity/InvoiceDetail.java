@@ -62,7 +62,6 @@ public class InvoiceDetail implements Serializable {
     private String description;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
     private Invoice invoice;
     @Transient
     private BigDecimal localAmount;

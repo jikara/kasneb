@@ -33,10 +33,10 @@ public class FeeCode implements Serializable {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "feeCode",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<Fee> feeTypes;
     @OneToMany(mappedBy = "feeCode",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<Invoice> invoices;
 
     public FeeCode() {

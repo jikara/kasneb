@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Login;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
@@ -14,6 +17,7 @@ import com.kasneb.util.SecurityUtil;
 import java.io.IOException;
 import java.text.ParseException;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,22 +35,31 @@ import javax.ws.rs.core.Response.Status;
  * @author jikara
  */
 @Path("login")
+@Stateless
 public class LoginRest {
 
     @EJB
     com.kasneb.session.LoginFacade loginFacade;
+    ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Object anyResponse = new Object();
     Status httpStatus = Status.INTERNAL_SERVER_ERROR;
+    String json;
+
+    public LoginRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
+    }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) {
-        anyResponse = loginFacade.find(id);
-
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
+        Login login = loginFacade.find(id);
+        json = mapper.writeValueAsString(login);
         return Response
                 .status(Response.Status.OK)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -75,7 +88,6 @@ public class LoginRest {
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(httpStatus)
@@ -128,7 +140,7 @@ public class LoginRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(Login entity, @Context HttpHeaders headers) {
+    public Response login(Login entity, @Context HttpHeaders headers) throws JsonProcessingException {
         String token = null;
         int loginAttempts = 0;
         try {
@@ -149,14 +161,16 @@ public class LoginRest {
             httpStatus = Status.OK;
             token = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Authorization Token", 1000 * 60 * 60 * 24 * 367);
             entity.setLoginAttempts(0);
+            anyResponse = entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
         } catch (IOException | ParseException ex) {
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .header("Authorization", token)
                 .build();
     }

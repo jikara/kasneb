@@ -75,10 +75,10 @@ public class Sitting implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     private Date lateRegistrationDeadline;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sitting")
-    @JsonBackReference
+
     private Collection<StudentCourseSitting> studentCourseSittings;
     @OneToMany(mappedBy = "firstSitting")
-    @JsonBackReference
+
     private List<StudentCourse> studentCourses;
     @OneToMany(mappedBy = "sitting")
     private Collection<SittingPaper> sittingPapers;

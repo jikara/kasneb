@@ -17,7 +17,7 @@ public class ElligibleLevel {
 
     private String name;
     private Collection<Paper> papers;
-    @JsonIgnore
+    
     private Level level;
     private Boolean optional = false;
 

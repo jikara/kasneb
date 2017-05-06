@@ -5,10 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -40,8 +37,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -84,39 +79,28 @@ public class Invoice implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     private Date dateGenerated;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "invoiceStatusId", referencedColumnName = "status", nullable = false)
-    private InvoiceStatus status = new InvoiceStatus("PENDING");   
+    private InvoiceStatus status = new InvoiceStatus("PENDING");
     @OneToMany(mappedBy = "invoice", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<InvoiceDetail> invoiceDetails;
     @ManyToOne
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
-    @JsonManagedReference
     private FeeCode feeCode;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Payment payment;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference
     private StudentCourseSubscription studentCourseSubscription;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference
     private StudentCourseSitting studentCourseSitting;
     @OneToOne(mappedBy = "invoice", fetch = FetchType.LAZY)
-    @JsonBackReference
     private Exemption exemption;
     @ManyToOne
     @JoinColumn(name = "studentCourseId")
-    @JsonBackReference
     private StudentCourse studentCourse;
     @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    @JsonIgnore
     private Collection<RenewalInvoiceDetail> renewalInvoiceDetails;
     @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    @JsonIgnore
     private Collection<ExemptionInvoiceDetail> exemptionInvoiceDetails;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Column(name = "dueDate")

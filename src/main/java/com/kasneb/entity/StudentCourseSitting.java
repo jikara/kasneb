@@ -43,22 +43,22 @@ public class StudentCourseSitting implements Serializable {
     private Integer id;
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-    @JsonManagedReference
+
     private Sitting sitting;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
-    @JsonManagedReference
+
     private Invoice invoice;
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
+
     private StudentCourse studentCourse;
     @OneToOne
     @JoinColumn(name = "centreId", referencedColumnName = "code", nullable = true)
-    @JsonManagedReference
+
     private ExamCentre sittingCentre;
     @OneToMany(mappedBy = "studentCourseSitting", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Collection<StudentCourseSittingPaper> papers;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

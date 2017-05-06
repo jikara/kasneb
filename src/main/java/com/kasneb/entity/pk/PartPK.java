@@ -6,6 +6,7 @@
 package com.kasneb.entity.pk;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -53,7 +54,31 @@ public class PartPK implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "PartPK{" + "id=" + id + ", courseId=" + courseId + '}';
+    public int hashCode() {
+        int hash = 5;
+        hash = 11 * hash + Objects.hashCode(this.id);
+        hash = 11 * hash + Objects.hashCode(this.courseId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PartPK other = (PartPK) obj;
+        if (!Objects.equals(this.courseId, other.courseId)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 }

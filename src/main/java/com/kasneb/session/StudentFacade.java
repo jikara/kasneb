@@ -106,17 +106,6 @@ public class StudentFacade extends AbstractFacade<Student> {
         return query.getResultList();
     }
 
-    public Student findStudent(Integer id) {
-        TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.id =:id", Student.class);
-        query.setParameter("id", id);
-        query.setMaxResults(1);
-        try {
-            return query.getSingleResult();
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     public void verifyEmail(String verificationToken) throws CustomHttpException {
         Student student;
         Query query = getEntityManager().createQuery("SELECT s FROM Student s WHERE s.loginId.verificationToken=:verificationToken");
@@ -175,9 +164,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (login != null) {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Email already taken");
         }
-        em.getTransaction().begin();
         super.create(entity);
-        em.getTransaction().commit();
         return entity;
     }
 

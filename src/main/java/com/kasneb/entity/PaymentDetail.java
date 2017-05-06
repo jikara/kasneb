@@ -37,7 +37,7 @@ public class PaymentDetail implements Serializable {
     private FeeCode feeCode;
     @Column(name = "description")
     private String description;
-    @JsonBackReference
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "paymentId", referencedColumnName = "id")
     private Payment payment;

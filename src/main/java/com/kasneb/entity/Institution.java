@@ -39,7 +39,7 @@ public class Institution implements Serializable {
     @JoinColumn(name = "courseTypeId", referencedColumnName = "code")
     private CourseType courseType;
     @OneToMany(mappedBy = "institution",targetEntity = Course.class)
-    @JsonManagedReference
+
     private Collection<OtherCourse> courses;
 
     public Integer getId() {

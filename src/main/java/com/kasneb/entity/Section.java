@@ -45,7 +45,7 @@ public class Section implements Serializable {
     private String name;
     @Transient
     private Boolean optional = true;
-    @JsonBackReference
+
     @ManyToOne(optional = false)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
@@ -54,7 +54,7 @@ public class Section implements Serializable {
     @OneToMany(mappedBy = "section")
     private Collection<Paper> paperCollection;
     @OneToMany(mappedBy = "section")
-    @JsonBackReference
+
     private Collection<Fee> feeTypes;
 
     public Section() {

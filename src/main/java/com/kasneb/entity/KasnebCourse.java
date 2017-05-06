@@ -5,9 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -28,7 +25,6 @@ import javax.persistence.Transient;
  * @author jikara
  */
 @Entity
-@Table(name = "kasnebCourse")
 @DiscriminatorValue("KASNEB")
 @NamedQueries({
     @NamedQuery(name = "KasnebCourse.findAll", query = "SELECT c FROM KasnebCourse c")
@@ -38,21 +34,19 @@ public class KasnebCourse extends Course {
 
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private KasnebCourseType kasnebCourseType;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Collection<Level> levelCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Collection<Fee> feeTypeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Collection<StudentCourse> studentCourseCollection;
+
     @Transient
     private Integer courseTypeCode;
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
+
     private Collection<Paper> papers;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "courseRequirement",
@@ -60,15 +54,15 @@ public class KasnebCourse extends Course {
                 @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)},
             inverseJoinColumns
             = @JoinColumn(name = "requirementId", referencedColumnName = "id", nullable = false))
-    @JsonBackReference
+
     private Collection<Requirement> requirements;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<StudentCourse> studentCourses;
     @OneToMany(mappedBy = "course")
-    @JsonManagedReference
+
     private Collection<Part> parts;
-    @JsonIgnore
+
     @Transient
     private Collection kasnebCourseExemptions;
 
@@ -98,14 +92,6 @@ public class KasnebCourse extends Course {
 
     public void setFeeTypeCollection(Collection<Fee> feeTypeCollection) {
         this.feeTypeCollection = feeTypeCollection;
-    }
-
-    public Collection<StudentCourse> getStudentCourseCollection() {
-        return studentCourseCollection;
-    }
-
-    public void setStudentCourseCollection(Collection<StudentCourse> studentCourseCollection) {
-        this.studentCourseCollection = studentCourseCollection;
     }
 
     public Collection<Paper> getPapers() {

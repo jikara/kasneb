@@ -23,11 +23,11 @@ public class OtherCourse extends Course {
 
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private OtherCourseType otherCourseType;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
-    @JsonBackReference
+
     private OtherQualification otherQualification;
 
     public OtherCourse() {

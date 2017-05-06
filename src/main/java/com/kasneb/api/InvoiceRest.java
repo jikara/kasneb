@@ -7,6 +7,8 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kasneb.entity.Invoice;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -48,15 +50,10 @@ public class InvoiceRest {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() {
-        try {
-            anyResponse = invoiceFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<Invoice> invoices = invoiceFacade.findAll();
         return Response
                 .status(Response.Status.OK)
-                .entity(json)
+                .entity(invoices)
                 .build();
     }
 
@@ -68,7 +65,7 @@ public class InvoiceRest {
             anyResponse = invoiceFacade.find(id);
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(Response.Status.OK)

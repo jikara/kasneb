@@ -11,8 +11,6 @@ import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -52,7 +50,7 @@ public class ResourceRest {
     public Response getExemptionLetters(@QueryParam("studentId") Integer studentId) throws JsonProcessingException {
         StudentCourse studentCourse;
         try {
-            Student student = studentFacade.findStudent(studentId);
+            Student student = studentFacade.find(studentId);
             if (student == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist");
             }
@@ -80,7 +78,7 @@ public class ResourceRest {
     public Response getTimetables(@QueryParam("studentId") Integer studentId) throws JsonProcessingException {
         StudentCourse studentCourse;
         try {
-            Student student = studentFacade.findStudent(studentId);
+            Student student = studentFacade.find(studentId);
             if (student == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student does not exist");
             }

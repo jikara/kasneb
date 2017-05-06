@@ -32,7 +32,7 @@ public class StudentCourseDocument implements Serializable {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
-    @JsonIgnore
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     private StudentCourse studentCourse;

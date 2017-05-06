@@ -33,7 +33,7 @@ public class ExemptionPaper implements Serializable {
 
     @EmbeddedId
     private ExemptionPaperPK exemptionPaperPK;
-    @JsonBackReference
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exemptionId", referencedColumnName = "id",insertable = false, updatable = false)
     private Exemption exemption;

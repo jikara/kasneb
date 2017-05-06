@@ -50,7 +50,7 @@ public class Notification implements Serializable {
     private String details;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
+
     private Student student;
 
     public Notification() {

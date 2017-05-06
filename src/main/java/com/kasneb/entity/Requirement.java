@@ -56,10 +56,10 @@ public class Requirement implements Serializable {
     private String type;
     @ManyToOne
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
-    @JsonIgnore
+    
     private CourseType courseType;
     @ManyToMany(mappedBy = "studentRequirements")
-    @JsonBackReference
+
     private Collection<StudentCourse> studentCourses;
 
     public Requirement() {

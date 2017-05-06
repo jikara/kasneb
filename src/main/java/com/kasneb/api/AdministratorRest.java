@@ -5,18 +5,31 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Declaration;
+import com.kasneb.entity.Exemption;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Institution;
 import com.kasneb.entity.OtherCourse;
+import com.kasneb.entity.Payment;
+import com.kasneb.entity.Role;
 import com.kasneb.entity.SittingPeriod;
+import com.kasneb.entity.Student;
+import com.kasneb.entity.StudentCourse;
+import com.kasneb.entity.User;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.util.DateUtil;
 import com.kasneb.util.PredicateUtil;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Context;
@@ -38,11 +51,14 @@ import static org.apache.commons.lang.time.DateUtils.addDays;
  * @author jikara
  */
 @Path("administrator")
+@Stateless
 public class AdministratorRest {
 
     @Context
     private UriInfo context;
     Object anyResponse = new Object();
+    ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -72,14 +88,17 @@ public class AdministratorRest {
      * Creates a new instance of AdministratorRest
      */
     public AdministratorRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     @GET
     @Path("student/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudent(@PathParam("id") Integer id) {
-        anyResponse = studentFacade.find(id);
+    public Response getStudent(@PathParam("id") Integer id) throws JsonProcessingException {
+        Student student = studentFacade.find(id);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(student);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -89,21 +108,23 @@ public class AdministratorRest {
     @GET
     @Path("users")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers() {
-        anyResponse = userFacade.findAll();
+    public Response getUsers() throws JsonProcessingException {
+        List<User> users = userFacade.findAll();
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(users);
         return Response
                 .status(httpStatus)
-                .entity(json)
+                .entity(users)
                 .build();
     }
 
     @GET
     @Path("user/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("id") Integer id) {
-        anyResponse = userFacade.find(id);
+    public Response getUser(@PathParam("id") Integer id) throws JsonProcessingException {
+        User user = userFacade.find(id);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(user);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -113,9 +134,10 @@ public class AdministratorRest {
     @GET
     @Path("roles")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoles() {
-        anyResponse = roleFacade.findAll();
+    public Response getRoles() throws JsonProcessingException {
+        List<Role> roles = roleFacade.findAll();
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(roles);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -125,9 +147,10 @@ public class AdministratorRest {
     @GET
     @Path("role/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRole(@PathParam("id") Integer id) {
-        anyResponse = roleFacade.find(id);
+    public Response getRole(@PathParam("id") Integer id) throws JsonProcessingException {
+        Role role = roleFacade.find(id);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(role);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -143,9 +166,10 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse/verified")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getVerifiedStudentCourses() {
-        anyResponse = studentCourseFacade.findVerified();
+    public Response getVerifiedStudentCourses() throws JsonProcessingException {
+        List<StudentCourse> studentCourses = studentCourseFacade.findVerified();
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -155,10 +179,10 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse/pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUnverifiedStudentCourses() {
-        anyResponse = studentCourseFacade.findPending();
+    public Response getUnverifiedStudentCourses() throws JsonProcessingException {
+        List<StudentCourse> studentCourses = studentCourseFacade.findPending();
         httpStatus = Response.Status.OK;
-
+        json = mapper.writeValueAsString(studentCourses);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -168,7 +192,8 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse/verification")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourseVerifications(@QueryParam("from") String fromDate, @QueryParam("to") String toDate, @QueryParam("userId") Integer userId) {
+    public Response getStudentCourseVerifications(@QueryParam("from") String fromDate, @QueryParam("to") String toDate, @QueryParam("userId") Integer userId) throws JsonProcessingException {
+        List<StudentCourse> verifications = new ArrayList<>();
         boolean dateRange = true;
         Date startDate = null, endDate = null;
         try {
@@ -183,9 +208,9 @@ public class AdministratorRest {
                 }
             }
             if (userId == null) {
-                anyResponse = studentCourseFacade.findVerifications(userId);
+                verifications = studentCourseFacade.findVerifications(userId);
             } else {
-                anyResponse = studentCourseFacade.findVerifications(userId, startDate, endDate);
+                verifications = studentCourseFacade.findVerifications(userId, startDate, endDate);
             }
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -193,6 +218,7 @@ public class AdministratorRest {
             httpStatus = ex.getStatusCode();
             //Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(verifications);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -202,7 +228,8 @@ public class AdministratorRest {
     @GET
     @Path("exemption/verification")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExemptionVerifications(@QueryParam("from") String fromDate, @QueryParam("to") String toDate, @QueryParam("userId") Integer userId) {
+    public Response getExemptionVerifications(@QueryParam("from") String fromDate, @QueryParam("to") String toDate, @QueryParam("userId") Integer userId) throws JsonProcessingException {
+        List<Exemption> exemptions = new ArrayList<>();
         boolean dateRange = true;
         Date startDate = null, endDate = null;
         try {
@@ -217,9 +244,9 @@ public class AdministratorRest {
                 }
             }
             if (userId == null) {
-                anyResponse = exemptionFacade.findAll();
+                exemptions = exemptionFacade.findAll();
             } else {
-                anyResponse = exemptionFacade.findAll(userId, startDate, endDate);
+                exemptions = exemptionFacade.findAll(userId, startDate, endDate);
             }
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -227,6 +254,7 @@ public class AdministratorRest {
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(exemptions);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -236,7 +264,8 @@ public class AdministratorRest {
     @GET
     @Path("payment/summary")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPaymentSummary(@QueryParam("feeCode") String code, @QueryParam("startDate") String fromDate, @QueryParam("endDate") String toDate) {
+    public Response getPaymentSummary(@QueryParam("feeCode") String code, @QueryParam("startDate") String fromDate, @QueryParam("endDate") String toDate) throws JsonProcessingException {
+        Collection<Payment> payments = new ArrayList<>();
         boolean dateRange = true;
         Date startDate = null, endDate = null;
         try {
@@ -257,15 +286,15 @@ public class AdministratorRest {
                 }
             }
             if (dateRange && code == null) {
-                anyResponse = paymentFacade.getPaymentSummary(startDate, endDate);
+                payments = paymentFacade.getPaymentSummary(startDate, endDate);
             } else if (dateRange && code != null) {
                 FeeCode feeCode = new FeeCode(code);
-                anyResponse = paymentFacade.getPaymentSummary(feeCode, startDate, endDate);
+                payments = paymentFacade.getPaymentSummary(feeCode, startDate, endDate);
             } else if (code != null && !dateRange) {
                 FeeCode feeCode = new FeeCode(code);
-                anyResponse = paymentFacade.getPaymentSummary(feeCode);
+                payments = paymentFacade.getPaymentSummary(feeCode);
             } else if (code == null && !dateRange) {
-                anyResponse = paymentFacade.getPaymentSummary();
+                payments = paymentFacade.getPaymentSummary();
             }
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
@@ -273,6 +302,7 @@ public class AdministratorRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             // Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(payments);
         return Response
                 .status(httpStatus)
                 .entity(json)

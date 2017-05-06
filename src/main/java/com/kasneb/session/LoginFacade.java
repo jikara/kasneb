@@ -136,7 +136,7 @@ public class LoginFacade extends AbstractFacade<Login> {
             TypedQuery<Login> query = em.createQuery(cq);
             query.setMaxResults(1);
             return query.getSingleResult();
-        } catch (javax.persistence.NoResultException ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

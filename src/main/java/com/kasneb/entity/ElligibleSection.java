@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ElligibleSection {
 
     private String name;
-    @JsonIgnore
+    
     private Section section;
     private Boolean optional = true;
     private List<Paper> papers;

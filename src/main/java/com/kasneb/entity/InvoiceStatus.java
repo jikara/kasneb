@@ -10,7 +10,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,8 +30,6 @@ public class InvoiceStatus implements Serializable {
     private String status;
     @Column(name = "description")
     private String description;
-    @OneToOne(mappedBy = "status")
-    private Invoice invoice;
 
     public InvoiceStatus() {
     }

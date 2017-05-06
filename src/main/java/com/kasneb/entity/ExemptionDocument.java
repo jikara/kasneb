@@ -33,7 +33,7 @@ public class ExemptionDocument implements Serializable {
     private String name;
     @Column(name = "type")
     private String type;
-    @JsonBackReference
+
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "exemptionId", referencedColumnName = "id")
     private Exemption exemption;

@@ -7,7 +7,7 @@ package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -52,22 +52,20 @@ public class User implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date created;
+    @JsonBackReference(value = "user-login")
     @OneToOne(cascade = CascadeType.ALL, optional = false, mappedBy = "user")
-    @JsonBackReference
     private Login loginId;
     @ManyToOne(optional = false)
     @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false)
-    @JsonManagedReference
     private Role role;
     @OneToMany(mappedBy = "verifiedBy")
-    @JsonBackReference
     private Collection<StudentCourse> verifiedStudentCourses;
-    @Transient
-    private String email;
-    @Transient
-    private String currentPassword;
-    @Transient
-    private String newPassword;
+    @JsonInclude
+    private transient String email;
+    @JsonInclude
+    private transient String currentPassword;
+    @JsonInclude
+    private transient String newPassword;
 
     public User() {
     }
@@ -152,6 +150,7 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    @XmlTransient
     public Collection<StudentCourse> getVerifiedStudentCourses() {
         return verifiedStudentCourses;
     }

@@ -26,16 +26,16 @@ import javax.persistence.OneToMany;
 public class KasnebCourseType extends CourseType {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kasnebCourseType", fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Collection<KasnebCourse> courseCollection;
     @OneToMany(mappedBy = "courseType",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<Fee> feeTypes;
     @OneToMany(mappedBy = "courseType")
     private Collection<Requirement> courseRequirements;
     @ManyToOne
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
-    @JsonIgnore
+    
     private KasnebQualification qualification;
 
     public KasnebCourseType() {

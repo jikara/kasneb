@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -33,7 +32,6 @@ public class Permission implements Serializable {
     @Column(name = "description", unique = true, nullable = false)
     private String description;
     @ManyToMany(mappedBy = "permissions")
-    @JsonBackReference
     private Collection<Role> roles;
 
     public Permission() {

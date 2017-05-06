@@ -35,11 +35,11 @@ public class StudentQualification implements Serializable {
     private StudentQualificationPK studentQualificationPK;
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentId", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonIgnore
+    
     private Student student;
     @ManyToOne(optional = false)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonManagedReference
+
     private Course qualification;
     @Transient
     protected String type;

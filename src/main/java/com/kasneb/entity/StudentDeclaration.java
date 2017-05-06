@@ -45,11 +45,11 @@ public class StudentDeclaration implements Serializable {
     private String specification;
     @JoinColumn(name = "declarationId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Declaration declaration;
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    @JsonBackReference
+
     private StudentCourse studentCourse;
     @Transient
     private Student student;

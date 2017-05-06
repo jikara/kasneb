@@ -34,13 +34,13 @@ public class Level implements Serializable {
     private String name;
     @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private KasnebCourse course;
     @OneToMany(mappedBy = "level")
     //@JsonBackReference
     private Collection<Paper> paperCollection;
     @OneToMany(mappedBy = "level",fetch = FetchType.LAZY)
-    @JsonBackReference
+
     private Collection<Fee> feeTypes;
 
     public Level() {

@@ -51,18 +51,18 @@ public class Course implements Serializable {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "qualification")
-    @JsonIgnore
+    
     private Collection<StudentQualification> studentCourseQualifications;
     @OneToMany(mappedBy = "qualification", fetch = FetchType.LAZY)
-    @JsonIgnore
+    
     protected Collection<CourseExemption> courseExemptions;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institutionId", referencedColumnName = "id")
-    @JsonBackReference
+
     private Institution institution;
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
     @ManyToOne(optional = false)
-    @JsonBackReference
+
     private CourseType courseType;
     @ManyToMany(mappedBy = "qualifications")
     private List<Exemption> exemptions;

@@ -45,21 +45,20 @@ public class Paper implements Serializable {
     private String code;
     @Column(name = "name", nullable = false)
     private String name;
-    @JsonIgnore
+    
     @ManyToOne
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "levelId", referencedColumnName = "id"),
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
     private Level level;
-    @JsonIgnore
+    
     @ManyToOne
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Part part;
-    @JsonIgnore
+    private Part part;    
     @ManyToOne
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "sectionId", referencedColumnName = "id"),
@@ -67,18 +66,18 @@ public class Paper implements Serializable {
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
     private Section section;
+    
     @OneToOne(mappedBy = "paper")
-    @JsonBackReference
     private StudentCourseSittingPaper studentCourseSittingPaper;
+    
     @OneToMany(mappedBy = "paper")
-    @JsonBackReference
     private Collection<Fee> feeTypes;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
+
     private KasnebCourse course;
     @OneToMany(mappedBy = "paper")
-    @JsonBackReference
+
     private Collection<CourseExemption> courseExemptions;
 
     public Paper() {

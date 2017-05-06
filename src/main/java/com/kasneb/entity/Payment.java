@@ -5,10 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -76,30 +74,26 @@ public class Payment implements Serializable {
     private String kasnebRef;
     @Column(name = "phoneNumber")
     private String phoneNumber;
-    @Transient
-    @JsonIgnore
+    @Transient    
     private String pin;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "paymentTimestamp", nullable = false, updatable = false)
     private Date paymentTimestamp;
-    @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     private StudentCourse studentCourse;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id")
-    @JsonBackReference
     private Invoice invoice;
-    @JsonManagedReference
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<PaymentDetail> paymentDetails;
     @Transient
     private String feeCode;
     @Transient
     private Student student;
-    @Transient
-    private String fullRegNo;
+    @JsonInclude
+    private transient String fullRegNo;
     @Column(name = "synchronized")
     private Boolean newEntry = false;
     @Transient

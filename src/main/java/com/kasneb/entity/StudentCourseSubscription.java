@@ -36,7 +36,7 @@ public class StudentCourseSubscription implements Serializable {
     private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id",insertable=false,updatable=false)
-    @JsonBackReference
+
     private StudentCourse studentCourse;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -49,7 +49,7 @@ public class StudentCourseSubscription implements Serializable {
     private Date expiry;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id")
-    @JsonIgnore
+    
     private Invoice invoice;
     @Transient
     private Boolean current;

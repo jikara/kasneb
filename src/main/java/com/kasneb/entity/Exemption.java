@@ -8,6 +8,7 @@ package com.kasneb.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +54,7 @@ public class Exemption implements Serializable {
     @Column(name = "dateVerified")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateVerified;
-    @JsonBackReference
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     private StudentCourse studentCourse;
@@ -65,7 +66,7 @@ public class Exemption implements Serializable {
                 @JoinColumn(name = "exemptionId", referencedColumnName = "id")},
             inverseJoinColumns
             = @JoinColumn(name = "qualificationId", referencedColumnName = "id"))
-    @JsonBackReference
+
     private List<Course> qualifications;
     @Column(name = "courseName")
     private String courseName;
@@ -78,10 +79,10 @@ public class Exemption implements Serializable {
     private Institution institution;
     @Column(name = "institutionName")
     private String institutionName;
-    @JsonManagedReference
+
     @OneToMany(mappedBy = "exemption", cascade = CascadeType.ALL)
     private List<ExemptionDocument> documents;
-    @JsonManagedReference
+
     @OneToMany(mappedBy = "exemption", cascade = CascadeType.ALL)
     private List<ExemptionPaper> papers;
     @Transient

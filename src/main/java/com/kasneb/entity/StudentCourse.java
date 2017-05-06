@@ -5,9 +5,10 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kasneb.client.Stream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class StudentCourse implements Serializable {
     private Integer id;
     @Column(name = "registrationNumber")
     private Integer registrationNumber;
-    @Transient
-    private String fullRegistrationNumber;
+    @JsonInclude
+    private transient String fullRegistrationNumber;
     @Basic(optional = false)
     @Column(name = "created", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -87,7 +88,6 @@ public class StudentCourse implements Serializable {
     private Date dateVerified;
     @ManyToOne(optional = true)
     @JoinColumn(name = "verifiedBy")
-    @JsonManagedReference
     private User verifiedBy;
     @Column(name = "remarks")
     private String remarks;
@@ -99,30 +99,28 @@ public class StudentCourse implements Serializable {
     private StudentCourseStatus courseStatus = StudentCourseStatus.PENDING;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-    @JsonManagedReference
     private KasnebCourse course;
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonBackReference(value = "student-current-course")
     private Student student;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "studentCourse", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Collection<StudentDeclaration> studentCourseDeclarations;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "studentCourseRequirement", joinColumns = {
         @JoinColumn(name = "studentCourseId", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "requirementId", referencedColumnName = "id")})
-    @JsonManagedReference
+
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JsonManagedReference
+
     private Collection<StudentCourseSitting> studentCourseSittings;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JsonManagedReference
+
     private Collection<StudentCoursePaper> elligiblePapers;
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+
     private Sitting firstSitting;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
@@ -138,17 +136,14 @@ public class StudentCourse implements Serializable {
     private ElligiblePart eligiblePart;
     @Transient
     private Set<ElligibleLevel> eligibleLevels;
-    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
     private Collection<StudentCourseSubscription> subscriptions;
     @Transient
-    @JsonManagedReference
     private StudentCourseSubscription lastSubscription;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Transient
     private Date nextRenewal;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Collection<Exemption> exemptions;
     @Transient
     private List<Paper> eligibleExemptions;
@@ -159,13 +154,11 @@ public class StudentCourse implements Serializable {
     @Transient
     private KasnebStudentQualification kasnebQualification;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Collection<Invoice> invoices;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Collection<Payment> payments;
-    @Transient
-    private Student studentObj;
+    @JsonInclude
+    private transient Student studentObj;
     @Transient
     private String renewalStatus;
     @Transient
@@ -405,6 +398,8 @@ public class StudentCourse implements Serializable {
         this.studentCourseDeclarations = studentCourseDeclarations;
     }
 
+    
+    @JsonIgnore
     public Collection<StudentCourseSubscription> getSubscriptions() {
         return subscriptions;
     }
@@ -413,6 +408,7 @@ public class StudentCourse implements Serializable {
         this.subscriptions = subscriptions;
     }
 
+    @JsonIgnore
     public StudentCourseSubscription getLastSubscription() {
         Integer maximumYear = 0;
         if (getSubscriptions() != null) {

@@ -40,15 +40,11 @@ public class Contact implements Serializable {
     private String postalCode;
     @Column(name = "town")
     private String town;
-    @OneToOne(mappedBy = "contact",fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Student student;
     @ManyToOne
     @JoinColumn(name = "countryId", referencedColumnName = "code")
     private Country countryId;
     @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
-    @JsonManagedReference
     private County countyId;
 
     public Contact() {
@@ -96,14 +92,6 @@ public class Contact implements Serializable {
 
     public void setTown(String town) {
         this.town = town;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public Country getCountryId() {

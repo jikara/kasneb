@@ -40,15 +40,15 @@ public class Part implements Serializable {
     private String name;
     @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
     @ManyToOne(optional = false)
-    @JsonBackReference
+
     private KasnebCourse course;
     @OneToMany(mappedBy = "part")
-    @JsonManagedReference
+
     private Collection<Section> sectionCollection;
     @OneToMany(mappedBy = "part")
     private Collection<Paper> paperCollection;
     @OneToMany(mappedBy = "part")
-    @JsonBackReference
+
     private Collection<Fee> feeTypes;
 
     public Part() {

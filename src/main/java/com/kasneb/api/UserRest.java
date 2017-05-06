@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Login;
 import com.kasneb.entity.User;
 import com.kasneb.exception.CustomHttpException;
@@ -14,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,9 +35,13 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("user")
+@Stateless
 public class UserRest {
 
     Object anyResponse = new Object();
+    String json;
+    ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     @EJB
     com.kasneb.session.UserFacade userFacade;
@@ -42,44 +50,50 @@ public class UserRest {
      * Creates a new instance of UserRest
      */
     public UserRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.UserRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         List<User> users = userFacade.findAll();
+        json = mapper.writeValueAsString(users);
         return Response
                 .status(httpStatus)
-                .entity(users)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         User user = userFacade.find(id);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(user);
         return Response
                 .status(httpStatus)
-                .entity(user)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("verify")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVerifyUsers() {
+    public Response findVerifyUsers() throws JsonProcessingException {
         List<User> users = userFacade.findVerifyUsers();
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(users);
         return Response
                 .status(httpStatus)
-                .entity(users)
+                .entity(json)
                 .build();
     }
 
@@ -91,12 +105,13 @@ public class UserRest {
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(User entity)   {
+    public Response update(User entity) throws JsonProcessingException {
         entity = userFacade.update(entity);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(entity);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -104,7 +119,7 @@ public class UserRest {
     @Path("changepassword")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response changePassword( User entity)  {
+    public Response changePassword(User entity) throws JsonProcessingException {
         try {
             userFacade.changePassword(entity);
             anyResponse = new CustomMessage(200, "Password saved successfully");
@@ -117,25 +132,27 @@ public class UserRest {
             anyResponse = new CustomMessage(500, ex.getMessage());
             // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create( User entity )  {
+    public Response create(User entity) throws JsonProcessingException {
         Login login = new Login(entity.getEmail(), GeneratorUtil.generateRandomPassword());
         login.setEmailActivated(true);
         entity.setLoginId(login);
         entity.setCreated(new Date());
         userFacade.create(entity);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(entity);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
