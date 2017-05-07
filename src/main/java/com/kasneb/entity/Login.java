@@ -22,6 +22,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -54,14 +56,14 @@ public class Login implements Serializable {
     private String email;
     @Basic(optional = false)
     @Column(name = "phoneNumber", nullable = false)
-    private String phoneNumber;    
+    private String phoneNumber;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Basic(optional = false)
     @Column(name = "password", nullable = false)
     private String password;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "verificationToken")
-    private String verificationToken; 
+    private String verificationToken;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "smsToken")
     private String smsToken;
@@ -89,13 +91,15 @@ public class Login implements Serializable {
     private boolean banned = false;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient Date lastLogin;
-    @JsonManagedReference(value="student-login")
-    @OneToOne
-    @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = true)
-    private Student student;    
-    @JsonManagedReference(value="user-login")
-    @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = true)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonManagedReference(value = "student-login")
+    @OneToOne(optional = true)
+    @JoinColumn(name = "studentId", nullable = true)
+    private Student student;
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonManagedReference(value = "user-login")
+    @OneToOne(optional = true)
+    @JoinColumn(name = "userId", nullable = true)
     private User user;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient

@@ -5,9 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -16,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -26,16 +26,14 @@ import javax.persistence.OneToMany;
 public class KasnebCourseType extends CourseType {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kasnebCourseType", fetch = FetchType.LAZY)
-
     private Collection<KasnebCourse> courseCollection;
-    @OneToMany(mappedBy = "courseType",fetch = FetchType.LAZY)
-
+    @OneToMany(mappedBy = "courseType", fetch = FetchType.LAZY)
     private Collection<Fee> feeTypes;
     @OneToMany(mappedBy = "courseType")
     private Collection<Requirement> courseRequirements;
-    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
-    
     private KasnebQualification qualification;
 
     public KasnebCourseType() {

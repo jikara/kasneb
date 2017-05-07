@@ -17,14 +17,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author jikara
  */
 @Entity
-@Table(name = "level")
+@Table(name = "levels")
 public class Level implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,15 +31,14 @@ public class Level implements Serializable {
     private LevelPK levelPK;
     @Transient
     private String name;
-    @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-
+    @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private KasnebCourse course;
     @OneToMany(mappedBy = "level")
     //@JsonBackReference
     private Collection<Paper> paperCollection;
     @OneToMany(mappedBy = "level",fetch = FetchType.LAZY)
-
+    @JsonBackReference
     private Collection<Fee> feeTypes;
 
     public Level() {
@@ -79,13 +77,20 @@ public class Level implements Serializable {
         this.course = course;
     }
 
-    @XmlTransient
     public Collection<Paper> getPaperCollection() {
         return paperCollection;
     }
 
     public void setPaperCollection(Collection<Paper> paperCollection) {
         this.paperCollection = paperCollection;
+    }
+
+    public Collection<Fee> getFeeTypes() {
+        return feeTypes;
+    }
+
+    public void setFeeTypes(Collection<Fee> feeTypes) {
+        this.feeTypes = feeTypes;
     }
 
     @Override
@@ -112,6 +117,5 @@ public class Level implements Serializable {
         }
         return true;
     }
-
 
 }

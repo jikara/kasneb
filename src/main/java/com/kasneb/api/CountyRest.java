@@ -7,12 +7,12 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -22,10 +22,12 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("county")
+@Stateless
 public class CountyRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -35,6 +37,8 @@ public class CountyRest {
      * Creates a new instance of CountyRest
      */
     public CountyRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -49,7 +53,7 @@ public class CountyRest {
             anyResponse = countyFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CountyRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(CountyRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(Response.Status.OK)

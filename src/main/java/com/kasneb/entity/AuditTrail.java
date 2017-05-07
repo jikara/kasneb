@@ -20,6 +20,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -40,7 +42,8 @@ public class AuditTrail implements Serializable {
     private Date created;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private EventType type;
+    private EventType type;    
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;

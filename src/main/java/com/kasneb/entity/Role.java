@@ -40,7 +40,7 @@ public class Role implements Serializable {
     private String description;
     @OneToMany(mappedBy = "role")
     private Collection<User> users;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "rolePermission",
             joinColumns = {
                 @JoinColumn(

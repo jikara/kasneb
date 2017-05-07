@@ -56,7 +56,8 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         query.setParameter("alertType", AlertType.EMAIL);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        return query.getResultList();
+        List<Communication> communications= query.getResultList();
+        return communications;
     }
 
     public List<Communication> findPendingSms() {
@@ -64,7 +65,8 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         query.setParameter("alertType", AlertType.SMS);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        return query.getResultList();
+        List<Communication> communications= query.getResultList();
+        return communications;
     }
 
     @Schedule(hour = "*", minute = "*", second = "*/13", persistent = false)

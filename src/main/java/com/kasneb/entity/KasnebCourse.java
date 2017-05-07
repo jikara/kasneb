@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -17,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -34,19 +34,14 @@ public class KasnebCourse extends Course {
 
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-
     private KasnebCourseType kasnebCourseType;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-
     private Collection<Level> levelCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-
     private Collection<Fee> feeTypeCollection;
-
-    @Transient
-    private Integer courseTypeCode;
+    @JsonInclude
+    private transient Integer courseTypeCode;
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-
     private Collection<Paper> papers;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "courseRequirement",
@@ -54,18 +49,13 @@ public class KasnebCourse extends Course {
                 @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)},
             inverseJoinColumns
             = @JoinColumn(name = "requirementId", referencedColumnName = "id", nullable = false))
-
     private Collection<Requirement> requirements;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-
     private Collection<StudentCourse> studentCourses;
     @OneToMany(mappedBy = "course")
-
     private Collection<Part> parts;
-
     @Transient
     private Collection kasnebCourseExemptions;
-
     public KasnebCourse() {
         super();
     }

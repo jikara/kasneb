@@ -5,7 +5,6 @@
  */
 package com.kasneb.api;
 
-import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;

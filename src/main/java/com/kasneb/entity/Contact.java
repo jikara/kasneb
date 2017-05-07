@@ -19,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -42,7 +44,8 @@ public class Contact implements Serializable {
     private String town;
     @ManyToOne
     @JoinColumn(name = "countryId", referencedColumnName = "code")
-    private Country countryId;
+    private Country countryId;    
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     private County countyId;

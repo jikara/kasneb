@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -44,8 +45,8 @@ public class Declaration implements Serializable {
     @Basic(optional = false)
     @Column(name = "description")
     private String description;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "declaration",fetch = FetchType.LAZY)
-
     private Collection<StudentDeclaration> studentDeclarations;
 
     public Declaration() {

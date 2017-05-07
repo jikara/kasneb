@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -32,11 +33,14 @@ public class RoleRest {
     String json;
     @EJB
     com.kasneb.session.RoleFacade roleFacade;
+    Hibernate5Module hbm = new Hibernate5Module();
 
     /**
      * Creates a new instance of RoleRest
      */
     public RoleRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -46,14 +50,10 @@ public class RoleRest {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        try {
-            anyResponse = roleFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-            httpStatus = Response.Status.OK;
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findAll() throws JsonProcessingException {
+        anyResponse = roleFacade.findAll();
+        json = mapper.writeValueAsString(anyResponse);
+        httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
                 .entity(json)

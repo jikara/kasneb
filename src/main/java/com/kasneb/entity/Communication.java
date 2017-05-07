@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -32,35 +35,38 @@ public class Communication implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Column(name = "subject")
-    private String subject;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
-    private Student student;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
-    private User user;
+    private String subject;    
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
-    @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
+    @JoinColumn(name = "studentId", updatable = false, referencedColumnName = "id")
+    private Student student;    
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne
+    @JoinColumn(name = "userId", updatable = false, referencedColumnName = "id")
+    private User user;    
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne
+    @JoinColumn(name = "studentCourseId", updatable = false, referencedColumnName = "id")
     private StudentCourse studentCourse;
     @ManyToOne
-    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
+    @JoinColumn(name = "studentCourseSittingId", updatable = false, referencedColumnName = "id")
     private StudentCourseSitting sitting;
     @ManyToOne
-    @JoinColumn(name = "exemptionId", referencedColumnName = "id")
+    @JoinColumn(name = "exemptionId", updatable = false, referencedColumnName = "id")
     private Exemption exemption;
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
-    @Column(name = "communicationType", nullable = false)
+    @Column(name = "communicationType", updatable = false, nullable = false)
     private CommunicationType type;
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
-    @Column(name = "alertType", nullable = false)
+    @Column(name = "alertType", updatable = false, nullable = false)
     private AlertType alertType;
     @Basic(optional = false)
     @Column(name = "status", nullable = false)
     private Boolean status;
     @ManyToOne
-    @JoinColumn(name = "invoiceId", referencedColumnName = "id")
+    @JoinColumn(name = "invoiceId", updatable = false, referencedColumnName = "id")
     private Invoice invoice;
     @Transient
     private String pin;

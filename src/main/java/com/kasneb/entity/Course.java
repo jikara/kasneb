@@ -27,6 +27,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -50,19 +52,17 @@ public class Course implements Serializable {
     private String id;
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "qualification")
-    
+    @OneToMany(mappedBy = "qualification")    
     private Collection<StudentQualification> studentCourseQualifications;
-    @OneToMany(mappedBy = "qualification", fetch = FetchType.LAZY)
-    
-    protected Collection<CourseExemption> courseExemptions;
+    @OneToMany(mappedBy = "qualification", fetch = FetchType.LAZY)    
+    protected Collection<CourseExemption> courseExemptions;    
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institutionId", referencedColumnName = "id")
-
-    private Institution institution;
+    private Institution institution;    
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
     @ManyToOne(optional = false)
-
     private CourseType courseType;
     @ManyToMany(mappedBy = "qualifications")
     private List<Exemption> exemptions;

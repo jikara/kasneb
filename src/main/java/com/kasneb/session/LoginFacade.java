@@ -129,14 +129,11 @@ public class LoginFacade extends AbstractFacade<Login> {
 
     public Login findByEmail(String email) {
         try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery(Login.class);
-            Root<Login> login = cq.from(Login.class);
-            cq.where(cb.equal(login.get("email"), email));
-            TypedQuery<Login> query = em.createQuery(cq);
+            TypedQuery<Login> query = em.createNamedQuery("Login.findByEmail", Login.class);
+            query.setParameter("email", email);
             query.setMaxResults(1);
             return query.getSingleResult();
-        } catch (Exception ex) {
+        } catch (javax.persistence.NoResultException ex) {
             return null;
         }
     }

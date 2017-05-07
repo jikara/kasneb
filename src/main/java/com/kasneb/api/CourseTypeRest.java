@@ -7,9 +7,11 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.kasneb.entity.KasnebCourseType;
+import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,10 +25,12 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("coursetype")
+@Stateless
 public class CourseTypeRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -40,6 +44,8 @@ public class CourseTypeRest {
      * Creates a new instance of CoursetypeRest
      */
     public CourseTypeRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -51,8 +57,11 @@ public class CourseTypeRest {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() throws JsonProcessingException {
-        anyResponse = kasnebCourseTypeFacade.findAll();
-        json = mapper.writeValueAsString(anyResponse);
+        List<KasnebCourseType> courseTypes = kasnebCourseTypeFacade.findAll();
+        for (KasnebCourseType kasnebCourseType : courseTypes) {
+            kasnebCourseType.getCourseCollection();
+        }
+        json = mapper.writeValueAsString(courseTypes);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -67,7 +76,7 @@ public class CourseTypeRest {
             anyResponse = otherCourseTypeFacade.findAll();
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(Response.Status.OK)
@@ -83,7 +92,7 @@ public class CourseTypeRest {
             anyResponse = courseTypeFacade.find(code);
             json = mapper.writeValueAsString(anyResponse);
         } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(CourseTypeRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response
                 .status(Response.Status.OK)

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -20,12 +22,15 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue("EXAM_ENTRY")
 public class ExamInvoiceDetail extends InvoiceDetail {
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "paperCode", referencedColumnName = "code")
     private Paper paper;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "courseId", referencedColumnName = "id")
     private Course course;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "sectionId", referencedColumnName = "id",insertable = false, updatable = false),
@@ -33,6 +38,7 @@ public class ExamInvoiceDetail extends InvoiceDetail {
         @JoinColumn(name = "courseId", referencedColumnName = "courseId",insertable = false, updatable = false)
     })
     private Section section;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id",insertable = false, updatable = false),

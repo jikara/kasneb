@@ -5,8 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -30,8 +29,7 @@ import javax.validation.constraints.Size;
 @Table(name = "studentDeclaration")
 @NamedQueries({
     @NamedQuery(name = "StudentDeclaration.findAll", query = "SELECT s FROM StudentDeclaration s")
-    ,
-    @NamedQuery(name = "StudentDeclaration.findByResponse", query = "SELECT s FROM StudentDeclaration s WHERE s.response = :response")})
+    ,    @NamedQuery(name = "StudentDeclaration.findByResponse", query = "SELECT s FROM StudentDeclaration s WHERE s.response = :response")})
 public class StudentDeclaration implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,14 +40,12 @@ public class StudentDeclaration implements Serializable {
     @Lob
     @Size(max = 65535)
     @Column(name = "specification")
-    private String specification;
+    private String specification;    
     @JoinColumn(name = "declarationId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-
     private Declaration declaration;
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-
     private StudentCourse studentCourse;
     @Transient
     private Student student;

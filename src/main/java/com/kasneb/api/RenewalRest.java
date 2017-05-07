@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
@@ -14,9 +15,8 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,9 +30,11 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("renewal")
+@Stateless
 public class RenewalRest {
 
     ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
@@ -49,6 +51,8 @@ public class RenewalRest {
      * Creates a new instance of RenewalRest
      */
     public RenewalRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -56,11 +60,12 @@ public class RenewalRest {
      *
      * @param id
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("invoice/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRenewalInvoice(@PathParam("id") Integer id) {
+    public Response getRenewalInvoice(@PathParam("id") Integer id) throws JsonProcessingException {
         Student student = studentFacade.find(id);
         try {
             if (student == null) {
@@ -86,13 +91,9 @@ public class RenewalRest {
         } catch (ParseException ex) {
             anyResponse = new CustomMessage(500, ex.getMessage());
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
-           // Logger.getLogger(RenewalRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(RenewalRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(RenewalRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

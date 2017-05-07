@@ -65,6 +65,7 @@ public class UserRest {
     public Response findAll() throws JsonProcessingException {
         List<User> users = userFacade.findAll();
         json = mapper.writeValueAsString(users);
+        httpStatus=Response.Status.OK;
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -145,6 +146,7 @@ public class UserRest {
     public Response create(User entity) throws JsonProcessingException {
         Login login = new Login(entity.getEmail(), GeneratorUtil.generateRandomPassword());
         login.setEmailActivated(true);
+        login.setPhoneNumber(entity.getPhoneNumber());
         entity.setLoginId(login);
         entity.setCreated(new Date());
         userFacade.create(entity);

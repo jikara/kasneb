@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -26,17 +28,17 @@ public class CourseExemption implements Serializable {
 
     @EmbeddedId
     private CourseExemptionPK courseExemptionPK;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id",insertable=false,updatable=false)
-
     private Course qualification;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
-
     private KasnebCourse course;
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumn(name = "paperCode", referencedColumnName = "code",insertable=false,updatable=false)
-
     private Paper paper;
 
     public CourseExemption() {

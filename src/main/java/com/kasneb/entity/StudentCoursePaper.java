@@ -24,7 +24,6 @@ public class StudentCoursePaper implements Serializable {
 
     @EmbeddedId
     private StudentCoursePaperPK pk;
-
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id",insertable=false,updatable=false)
     private StudentCourse studentCourse;

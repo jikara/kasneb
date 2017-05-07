@@ -5,10 +5,16 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.kasneb.entity.Declaration;
 import com.kasneb.entity.StudentDeclaration;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
+import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -24,9 +30,13 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("declaration")
+@Stateless
 public class DeclarationRest {
 
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();    
+    String json;
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     @EJB
     com.kasneb.session.DeclarationFacade declarationFacade;
@@ -35,21 +45,24 @@ public class DeclarationRest {
      * Creates a new instance of StudentRest
      */
     public DeclarationRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.StudentRest
      *
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        anyResponse = declarationFacade.findAll();
-
+    public Response findAll() throws JsonProcessingException {
+        List<Declaration> declarations = declarationFacade.findAll();
+        json = mapper.writeValueAsString(declarations);
         return Response
                 .status(Response.Status.OK)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 

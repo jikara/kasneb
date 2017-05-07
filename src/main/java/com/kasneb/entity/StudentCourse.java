@@ -113,29 +113,26 @@ public class StudentCourse implements Serializable {
 
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-
-    private Collection<StudentCourseSitting> studentCourseSittings;
+    private Collection<StudentCourseSitting> studentCourseSittings;    
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-
-    private Collection<StudentCoursePaper> elligiblePapers;
+    private Collection<StudentCoursePaper> elligiblePapers;    
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-
     private Sitting firstSitting;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Part currentPart;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Level currentLevel;
-    @Transient
-    private ElligiblePart eligiblePart;
-    @Transient
-    private Set<ElligibleLevel> eligibleLevels;
+    @JsonInclude
+    private transient ElligiblePart eligiblePart;
+    @JsonInclude
+    private transient Set<ElligibleLevel> eligibleLevels;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
     private Collection<StudentCourseSubscription> subscriptions;
     @Transient
@@ -159,8 +156,8 @@ public class StudentCourse implements Serializable {
     private Collection<Payment> payments;
     @JsonInclude
     private transient Student studentObj;
-    @Transient
-    private String renewalStatus;
+    @JsonInclude
+    private transient String renewalStatus;
     @Transient
     private Integer qualificationId;
     @Transient
@@ -398,7 +395,6 @@ public class StudentCourse implements Serializable {
         this.studentCourseDeclarations = studentCourseDeclarations;
     }
 
-    
     @JsonIgnore
     public Collection<StudentCourseSubscription> getSubscriptions() {
         return subscriptions;
@@ -601,9 +597,9 @@ public class StudentCourse implements Serializable {
 
     public Set<ElligibleLevel> getEligibleLevels() {
         eligibleLevels = new HashSet<>();
-        if (getElligiblePapers() != null && getCurrentLevel() != null) {
+        if (this.elligiblePapers != null && getCurrentLevel() != null) {
             ElligibleLevel eliggibleLevel = new ElligibleLevel(getCurrentLevel().getName(), getCurrentLevel(), new ArrayList<Paper>());
-            for (StudentCoursePaper p : getElligiblePapers()) {
+            for (StudentCoursePaper p : elligiblePapers) {
                 if (p.getPaper().getLevel().equals(getCurrentLevel())) {
                     eliggibleLevel.addPaper(p.getPaper());
                 }
