@@ -5,9 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
 import java.util.Date;
@@ -34,9 +33,9 @@ public class StudentCourseSubscription implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id",insertable=false,updatable=false)
-
     private StudentCourse studentCourse;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -47,9 +46,9 @@ public class StudentCourseSubscription implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date expiry;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "invoiceId", referencedColumnName = "id")
-    
+    @JoinColumn(name = "invoiceId", referencedColumnName = "id")    
     private Invoice invoice;
     @Transient
     private Boolean current;

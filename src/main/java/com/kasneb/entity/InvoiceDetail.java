@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -60,6 +61,7 @@ public class InvoiceDetail implements Serializable {
     @Basic(optional = false)
     @Column(name = "description", nullable = false)
     private String description;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id", nullable = false)
     private Invoice invoice;

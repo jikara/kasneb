@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -95,6 +96,7 @@ public class Invoice implements Serializable {
     private StudentCourseSitting studentCourseSitting;
     @OneToOne(mappedBy = "invoice", fetch = FetchType.LAZY)
     private Exemption exemption;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @ManyToOne
     @JoinColumn(name = "studentCourseId")
     private StudentCourse studentCourse;

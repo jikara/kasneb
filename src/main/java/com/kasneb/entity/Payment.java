@@ -39,13 +39,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "payment")
 @NamedQueries({ 
     @NamedQuery(name = "Payment.getSummary", query = "SELECT p FROM Payment p WHERE p.invoice.status.status =:status ORDER BY p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findUnsynchronized", query = "SELECT p FROM Payment p WHERE p.newEntry=false GROUP BY p.id ORDER by p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student AND  p.paymentTimestamp BETWEEN :startDate AND :endDate GROUP BY p.id ORDER by p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findByFeeCode", query = "SELECT p FROM Payment p WHERE p.invoice.status.status =:status AND p.invoice.feeCode =:code GROUP BY p.receiptNo ORDER BY p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findByDateRange", query = "SELECT p FROM Payment p  WHERE p.invoice.status.status =:status AND p.paymentTimestamp BETWEEN :startDate AND :endDate GROUP BY p.receiptNo ORDER BY p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findByStudentAndCode", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode =:feeCode AND i.studentCourse.student =:student GROUP BY p.id ORDER by p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findByStudent", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student GROUP BY p.id ORDER by p.paymentTimestamp DESC"),
-    @NamedQuery(name = "Payment.findByCodeAndDate", query = "SELECT p FROM Payment p WHERE p.invoice.status.status =:status AND p.invoice.feeCode =:code AND p.paymentTimestamp BETWEEN :startDate AND :endDate GROUP BY p.receiptNo ORDER BY p.paymentTimestamp DESC")})
+    @NamedQuery(name = "Payment.findUnsynchronized", query = "SELECT p FROM Payment p WHERE p.newEntry=false ORDER by p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student AND  p.paymentTimestamp BETWEEN :startDate AND :endDate ORDER by p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findByFeeCode", query = "SELECT p FROM Payment p WHERE p.invoice.status.status =:status AND p.invoice.feeCode =:code ORDER BY p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findByDateRange", query = "SELECT p FROM Payment p  WHERE p.invoice.status.status =:status AND p.paymentTimestamp BETWEEN :startDate AND :endDate ORDER BY p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findByStudentAndCode", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.feeCode =:feeCode AND i.studentCourse.student =:student ORDER by p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findByStudent", query = "SELECT p FROM Payment p JOIN p.invoice i WHERE i.studentCourse.student =:student ORDER by p.paymentTimestamp DESC"),
+    @NamedQuery(name = "Payment.findByCodeAndDate", query = "SELECT p FROM Payment p WHERE p.invoice.status.status =:status AND p.invoice.feeCode =:code AND p.paymentTimestamp BETWEEN :startDate AND :endDate ORDER BY p.paymentTimestamp DESC")})
 @XmlRootElement
 public class Payment implements Serializable {
 

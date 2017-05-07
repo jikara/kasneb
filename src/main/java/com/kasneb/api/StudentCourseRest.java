@@ -165,17 +165,21 @@ public class StudentCourseRest {
     public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
         StudentCourse studentCourse = null;
         try {
-            studentCourse = studentCourseFacade.findActive(id);
+            studentCourse = studentCourseFacade.find(id);
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
+            if (!studentCourse.getActive()) {
+                throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
+            }
             httpStatus = Response.Status.OK;
+            anyResponse = studentCourse;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json = mapper.writeValueAsString(studentCourse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
