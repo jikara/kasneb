@@ -87,8 +87,8 @@ public class Invoice implements Serializable {
     @ManyToOne
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
     private FeeCode feeCode;
-    @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Payment payment;
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Payment> payments;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCourseSubscription studentCourseSubscription;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -257,13 +257,15 @@ public class Invoice implements Serializable {
         this.feeCode = feeCode;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public List<Payment> getPayments() {
+        return payments;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
+
+   
 
     public StudentCourseSubscription getStudentCourseSubscription() {
         return studentCourseSubscription;

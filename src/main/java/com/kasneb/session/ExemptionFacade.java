@@ -14,11 +14,9 @@ import com.kasneb.entity.ExemptionStatus;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
-import com.kasneb.entity.StudentCoursePaper;
 import com.kasneb.entity.Synchronization;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
-import com.kasneb.entity.pk.StudentCoursePaperPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.DateUtil;
@@ -28,7 +26,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -158,9 +158,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     }
 
     public Exemption createExemption(Exemption exemption) throws CustomHttpException {
-        
-        
-        
+
         StudentCourse managed = studentCourseFacade.find(exemption.getStudentCourse().getId());
         if (exemption.getQualifications() != null && exemption.getQualifications().size() > 0) {  //Combined.
             exemption.setStatus(ExemptionStatus.PENDING);
@@ -191,10 +189,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         exemption.setReference(DateUtil.getYear(new Date()) + "/" + managed.getCourse().getName() + "/" + GeneratorUtil.generateInvoiceNumber());
         super.create(exemption);
         return exemption;
-        
-        
-        
-        
+
     }
 
     public void updatePaidPapers(Invoice invoice) {
@@ -248,12 +243,12 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     }
 
     public void removeExemptedPapers(Exemption exemption) {
+        Set<Paper> papers = new HashSet<>();
         for (ExemptionPaper exemptionPaper : exemption.getPapers()) {
-            StudentCoursePaper managed = em.find(StudentCoursePaper.class, new StudentCoursePaperPK(exemption.getStudentCourse().getId(), exemptionPaper.getPaper().getCode()));
-            if (managed != null) {
-                em.remove(managed);
-            }
+            papers.add(exemptionPaper.getPaper());
         }
+        StudentCourse managed = studentCourseFacade.find(exemption.getStudentCourse().getId());
+        managed.getElligiblePapers().removeAll(papers);
     }
 
     public List<com.kasneb.dto.Exemption> findByStudentCourse(StudentCourse studentCourse) {

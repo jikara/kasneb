@@ -110,14 +110,12 @@ public class StudentCourse implements Serializable {
     @JoinTable(name = "studentCourseRequirement", joinColumns = {
         @JoinColumn(name = "studentCourseId", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "requirementId", referencedColumnName = "id")})
-
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Collection<StudentCourseSitting> studentCourseSittings;  
+    private Collection<StudentCourseSitting> studentCourseSittings;
     
-    @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    private Collection<StudentCoursePaper> elligiblePapers;    
-    
+    @ManyToMany(mappedBy = "studentCourses")
+    private Collection<Paper> elligiblePapers;
     
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
@@ -374,11 +372,11 @@ public class StudentCourse implements Serializable {
         this.studentCourseSittings = studentCourseSittings;
     }
 
-    public Collection<StudentCoursePaper> getElligiblePapers() {
+    public Collection<Paper> getElligiblePapers() {
         return elligiblePapers;
     }
 
-    public void setElligiblePapers(Collection<StudentCoursePaper> elligiblePapers) {
+    public void setElligiblePapers(Collection<Paper> elligiblePapers) {
         this.elligiblePapers = elligiblePapers;
     }
 
@@ -572,16 +570,16 @@ public class StudentCourse implements Serializable {
         boolean optional = false;
         Set<ElligibleSection> elligibleSections = new HashSet<>();
         if (getElligiblePapers() != null && this.getCurrentPart() != null) {
-            for (StudentCoursePaper p : getElligiblePapers()) {
-                if (p.getPaper().getPart().equals(getCurrentPart())) {
-                    ElligibleSection elligibleSection = new ElligibleSection(p.getPaper().getSection().getName(), p.getPaper().getSection(), new ArrayList<Paper>(), p.getPaper().getSection().isOptional());
+            for (Paper p : getElligiblePapers()) {
+                if (p.getSection().getPart().equals(getCurrentPart())) {
+                    ElligibleSection elligibleSection = new ElligibleSection(p.getSection().getName(), p.getSection(), new ArrayList<>(), p.getSection().isOptional());
                     elligibleSections.add(elligibleSection);
                 }
             }
             for (ElligibleSection elligibleSection : elligibleSections) {
-                for (StudentCoursePaper p : getElligiblePapers()) {
-                    if (p.getPaper().getSection().getSectionPK().equals(elligibleSection.getSection().getSectionPK())) {
-                        elligibleSection.addPaper(p.getPaper());
+                for (Paper p : getElligiblePapers()) {
+                    if (p.getSection().getSectionPK().equals(elligibleSection.getSection().getSectionPK())) {
+                        elligibleSection.addPaper(p);
                     }
                 }
             }
@@ -601,10 +599,10 @@ public class StudentCourse implements Serializable {
     public Set<ElligibleLevel> getEligibleLevels() {
         eligibleLevels = new HashSet<>();
         if (this.elligiblePapers != null && getCurrentLevel() != null) {
-            ElligibleLevel eliggibleLevel = new ElligibleLevel(getCurrentLevel().getName(), getCurrentLevel(), new ArrayList<Paper>());
-            for (StudentCoursePaper p : elligiblePapers) {
-                if (p.getPaper().getLevel().equals(getCurrentLevel())) {
-                    eliggibleLevel.addPaper(p.getPaper());
+            ElligibleLevel eliggibleLevel = new ElligibleLevel(getCurrentLevel().getName(), getCurrentLevel(), new ArrayList<>());
+            for (Paper p : elligiblePapers) {
+                if (p.getLevel().equals(getCurrentLevel())) {
+                    eliggibleLevel.addPaper(p);
                 }
             }
             eligibleLevels.add(eliggibleLevel);

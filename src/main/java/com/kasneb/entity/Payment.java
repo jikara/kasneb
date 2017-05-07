@@ -83,7 +83,7 @@ public class Payment implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     private StudentCourse studentCourse;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id")
     private Invoice invoice;
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

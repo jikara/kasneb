@@ -168,7 +168,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         communicationFacade.create(smsCommunication);
         Communication emailCommunication = new Communication(managed.getStudentCourse().getStudent(), managed.getStudentCourse(), managed, null, CommunicationType.EXAM_APPLICATION, AlertType.EMAIL, false);
         communicationFacade.create(emailCommunication);
-       return em.merge(managed);
+        return em.merge(managed);
     }
 
     private Map<String, Collection<Paper>> getBillingMethod(StudentCourseSitting entity) throws CustomHttpException {
@@ -196,7 +196,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             int courseType = paper.getCourse().getCourseTypeCode();
             switch (courseType) {
                 case 100:
-                    parts.add(paper.getPart());
+                    parts.add(paper.getSection().getPart());
                     sections.add(paper.getSection());
                     break;
                 case 200:
@@ -211,21 +211,17 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         partsList.addAll(parts);
         for (Part part : partsList) {
             //Check each section
-            if (sittingPapers.containsAll(part.getPaperCollection())) {
-                map.put("PER_PART", part.getPaperCollection());
-            } else {  //Bill per section
-                sectionsList.addAll(sections);
-                //two sections can be combined
-                for (Section section : sectionsList) {
-                    //Check each section
-                    if (sittingPapers.containsAll(section.getPaperCollection())) {
-                        map.put("PER_SECTION", section.getPaperCollection());
-                        //remove 
-                        sittingPapers.removeAll(section.getPaperCollection());
-                    } else {
-                        //bill per paper
-                        map.put("PER_PAPER", sittingPapers);
-                    }
+            sectionsList.addAll(sections);
+            //two sections can be combined
+            for (Section section : sectionsList) {
+                //Check each section
+                if (sittingPapers.containsAll(section.getPaperCollection())) {
+                    map.put("PER_SECTION", section.getPaperCollection());
+                    //remove 
+                    sittingPapers.removeAll(section.getPaperCollection());
+                } else {
+                    //bill per paper
+                    map.put("PER_PAPER", sittingPapers);
                 }
             }
         }
@@ -430,7 +426,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 period = 2;
                 break;
         }
-        ExamEntry examEntry = new ExamEntry(studentCourse.getRegistrationNumber(), partId, sectionId, sitting.getSittingYear(), period, new Centre(studentCourseSitting.getSittingCentre().getCode()), studentCourseSitting.getInvoice().getPayment().getReceiptNo(), "Y", 2, papers, papers, examPapers, examBookings);
+        ExamEntry examEntry = new ExamEntry(studentCourse.getRegistrationNumber(), partId, sectionId, sitting.getSittingYear(), period, new Centre(studentCourseSitting.getSittingCentre().getCode()), studentCourseSitting.getInvoice().getPayments().get(0).getReceiptNo(), "Y", 2, papers, papers, examPapers, examBookings);
         //Create receipt 
         paymentFacade.createReceipt(studentCourseSitting.getInvoice());
         //Create Exam entry

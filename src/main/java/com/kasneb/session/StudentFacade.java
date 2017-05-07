@@ -27,7 +27,6 @@ import com.kasneb.entity.PaymentDetail;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
-import com.kasneb.entity.StudentCoursePaper;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.entity.StudentCourseSittingPaper;
 import com.kasneb.entity.StudentCourseSittingStatus;
@@ -312,13 +311,13 @@ public class StudentFacade extends AbstractFacade<Student> {
         return exemptions;
     }
 
-    public List<StudentCoursePaper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<StudentCoursePaper> eligiblePapers = new ArrayList<>();
+    public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
+        List<Paper> eligiblePapers = new ArrayList<>();
         Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
         if (coreStudentPapers != null) {
             for (com.kasneb.client.StudentCoursePaper p : coreStudentPapers) {
                 if (p.getPaper() != null) {
-                    eligiblePapers.add(new StudentCoursePaper(studentCourse, new Paper(p.getPaper().getCode())));
+                    eligiblePapers.add(new Paper(p.getPaper().getCode()));
                 }
             }
         }

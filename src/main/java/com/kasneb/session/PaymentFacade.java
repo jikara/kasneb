@@ -272,7 +272,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         }
         Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
         Invoice managed = invoiceFacade.find(invoice.getId());
-        Payment payment = managed.getPayment();
+        Payment payment = managed.getPayments().get(0);
         String currency = "KSH";
         if (payment.getCurrency().equals("KES")) {
             currency = "KSH";

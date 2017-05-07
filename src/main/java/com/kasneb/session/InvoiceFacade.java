@@ -273,7 +273,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             String description = "Examination Fee";
             switch (key) {
                 case "PER_PART": {
-                    Part part = papers.get(0).getPart();
+                    Part part = papers.get(0).getSection().getPart();
                     if (isLate) {
                         description = "Late Examination Fee";
                     }

@@ -8,20 +8,21 @@ package com.kasneb.entity;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -33,8 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "paper")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Paper.findAll", query = "SELECT p FROM Paper p"),
-    @NamedQuery(name = "Paper.findByCode", query = "SELECT p FROM Paper p WHERE p.code = :code"),
+    @NamedQuery(name = "Paper.findAll", query = "SELECT p FROM Paper p")
+    ,
+    @NamedQuery(name = "Paper.findByCode", query = "SELECT p FROM Paper p WHERE p.code = :code")
+    ,
     @NamedQuery(name = "Paper.findByName", query = "SELECT p FROM Paper p WHERE p.name = :name")})
 public class Paper implements Serializable {
 
@@ -43,33 +46,29 @@ public class Paper implements Serializable {
     @Column(name = "code", nullable = false)
     private String code;
     @Column(name = "name", nullable = false)
-    private String name;     
+    private String name;
     @JoinTable(name = "studentCoursePaper", joinColumns = {
         @JoinColumn(name = "paperCode", referencedColumnName = "code")}, inverseJoinColumns = {
         @JoinColumn(name = "studentCourseId", referencedColumnName = "id")})
-    @ManyToMany(fetch=FetchType.LAZY)
-    private Collection<StudentCourse> studentCourses;   
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Collection<StudentCourse> studentCourses;
+    @MapsId("id")
     @ManyToOne
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "levelId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JoinColumns({
+        @JoinColumn(name = "sectionId", referencedColumnName = "id")
+        ,@JoinColumn(name = "partId", referencedColumnName = "partId")
+        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Level level;    
+    private Section section;
+    @MapsId("id")
     @ManyToOne
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @JoinColumns({
+        @JoinColumn(name = "levelId", referencedColumnName = "id")
+        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Part part;    
-    @ManyToOne
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "sectionId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "partId"),
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
-    })
-    private Section section;    
-    @OneToOne(mappedBy = "paper")
-    private StudentCourseSittingPaper studentCourseSittingPaper;    
+    private Level level;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paper")
+    private Collection<StudentCourseSittingPaper> studentCourseSittingPapers;
     @OneToMany(mappedBy = "paper")
     private Collection<Fee> feeTypes;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -106,22 +105,6 @@ public class Paper implements Serializable {
         this.name = name;
     }
 
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
-    public Part getPart() {
-        return part;
-    }
-
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
     public Section getSection() {
         return section;
     }
@@ -130,20 +113,20 @@ public class Paper implements Serializable {
         this.section = section;
     }
 
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
     public KasnebCourse getCourse() {
         return course;
     }
 
     public void setCourse(KasnebCourse course) {
         this.course = course;
-    }
-
-    public StudentCourseSittingPaper getStudentCourseSittingPaper() {
-        return studentCourseSittingPaper;
-    }
-
-    public void setStudentCourseSittingPaper(StudentCourseSittingPaper studentCourseSittingPaper) {
-        this.studentCourseSittingPaper = studentCourseSittingPaper;
     }
 
     @Override

@@ -15,8 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 /**
@@ -35,10 +34,11 @@ public class QualificationDocument implements Serializable {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
+    @MapsId("qualificationId")
     @ManyToOne
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "studentId", referencedColumnName = "studentId"),
-        @PrimaryKeyJoinColumn(name = "qualificationId", referencedColumnName = "qualificationId")
+    @JoinColumns({
+        @JoinColumn(name = "studentId", referencedColumnName = "studentId")
+        ,@JoinColumn(name = "qualificationId", referencedColumnName = "qualificationId")
     })
     private StudentQualification otherStudentQualification;
     @ManyToOne(optional = false)

@@ -120,7 +120,7 @@ public class ExportFacade {
             String dayPart = "9.00 A.M. - 12.00 NOON";
             String examDetails;
             if (paper.getPart() != null) {
-                examDetails = studentCourse.getCourse().getName() + " " + dbPaper.getPart().getName();
+                examDetails = studentCourse.getCourse().getName() + " " + dbPaper.getSection().getPart().getName();
             } else {
                 examDetails = studentCourse.getCourse().getName() + " " + dbPaper.getLevel().getName();
             }
@@ -155,7 +155,7 @@ public class ExportFacade {
         for (ExemptionPaper exemptionPaper : exemption.getPapers()) {
             switch (studentCourse.getCourse().getCourseTypeCode()) {
                 case 100:
-                    parts.add(exemptionPaper.getPaper().getPart());
+                    parts.add(exemptionPaper.getPaper().getSection().getPart());
                     sections.add(exemptionPaper.getPaper().getSection());
                     break;
                 case 200:

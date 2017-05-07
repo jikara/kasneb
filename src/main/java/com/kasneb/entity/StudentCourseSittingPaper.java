@@ -38,9 +38,8 @@ public class StudentCourseSittingPaper implements Serializable {
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "paperCode", referencedColumnName = "code", updatable = false, insertable = false, nullable = false)
-
     private Paper paper;
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false, nullable = true)

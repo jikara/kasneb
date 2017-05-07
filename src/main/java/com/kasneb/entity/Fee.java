@@ -5,9 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -22,10 +20,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,10 +38,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "fee")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Fee.findAll", query = "SELECT f FROM Fee f")    ,
-    @NamedQuery(name = "Fee.findById", query = "SELECT f FROM Fee f WHERE f.id = :id")    ,
-    @NamedQuery(name = "Fee.findByCode", query = "SELECT f FROM Fee f WHERE f.feeCode = :feeCode")    ,
-    @NamedQuery(name = "Fee.findByFeeCode", query = "SELECT f FROM Fee f WHERE f.feeTypeCode = :feeTypeCode")    ,
+    @NamedQuery(name = "Fee.findAll", query = "SELECT f FROM Fee f")
+    ,
+    @NamedQuery(name = "Fee.findById", query = "SELECT f FROM Fee f WHERE f.id = :id")
+    ,
+    @NamedQuery(name = "Fee.findByCode", query = "SELECT f FROM Fee f WHERE f.feeCode = :feeCode")
+    ,
+    @NamedQuery(name = "Fee.findByFeeCode", query = "SELECT f FROM Fee f WHERE f.feeTypeCode = :feeTypeCode")
+    ,
     @NamedQuery(name = "FeeType.findByName", query = "SELECT f FROM Fee f WHERE f.name = :name")})
 public class Fee implements Serializable {
 
@@ -81,34 +82,34 @@ public class Fee implements Serializable {
     private FeeCode feeCode;
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-
     private KasnebCourse course;
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
-
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private CourseType courseType;
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "levelId", referencedColumnName = "id") ,
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @MapsId("id")
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "sectionId", referencedColumnName = "id")
+        ,@JoinColumn(name = "partId", referencedColumnName = "partId")
+        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    private Section section;
+    @MapsId("id")
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "levelId", referencedColumnName = "id")
+        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
+    })
     private Level level;
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
+    @MapsId("id")
+    @JoinColumns({
+        @JoinColumn(name = "partId", referencedColumnName = "id")
+        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-
     private Part part;
-    @PrimaryKeyJoinColumns({
-        @PrimaryKeyJoinColumn(name = "sectionId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
-        @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")})
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
-
-    private Section section;
     @JoinColumn(name = "paperCode", referencedColumnName = "code")
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
 
     private Paper paper;
 
