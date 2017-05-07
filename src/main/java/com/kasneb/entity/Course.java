@@ -5,8 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -59,7 +58,8 @@ public class Course implements Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institutionId", referencedColumnName = "id")
-    private Institution institution;    
+    private Institution institution; 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
     @ManyToOne(optional = false)

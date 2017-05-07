@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -25,6 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
 @DiscriminatorValue("KASNEB")
 public class KasnebCourseType extends CourseType {
 
+    @JsonInclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kasnebCourseType", fetch = FetchType.LAZY)
     private Collection<KasnebCourse> courseCollection;
     @OneToMany(mappedBy = "courseType", fetch = FetchType.LAZY)

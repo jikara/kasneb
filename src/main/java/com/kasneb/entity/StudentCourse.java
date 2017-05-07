@@ -113,9 +113,12 @@ public class StudentCourse implements Serializable {
 
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Collection<StudentCourseSitting> studentCourseSittings;    
+    private Collection<StudentCourseSitting> studentCourseSittings;  
+    
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private Collection<StudentCoursePaper> elligiblePapers;    
+    
+    
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Sitting firstSitting;

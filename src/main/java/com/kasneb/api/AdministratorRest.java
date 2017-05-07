@@ -394,7 +394,7 @@ public class AdministratorRest {
     @GET
     @Path("studentcourse")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourses(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws ParseException {
+    public Response getStudentCourses(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws ParseException, JsonProcessingException {
         Date startDate = null, endDate = null;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
@@ -413,6 +413,7 @@ public class AdministratorRest {
             anyResponse = studentCourseFacade.findAll();
         }
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -422,7 +423,7 @@ public class AdministratorRest {
     @GET
     @Path("student")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudents(@QueryParam("from") String from, @QueryParam("to") String to) throws ParseException {
+    public Response getStudents(@QueryParam("from") String from, @QueryParam("to") String to) throws ParseException, JsonProcessingException {
         Date startDate, endDate;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
@@ -437,6 +438,7 @@ public class AdministratorRest {
             anyResponse = studentFacade.findAll();
         }
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -446,7 +448,7 @@ public class AdministratorRest {
     @GET
     @Path("exemption")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExemptions(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws ParseException {
+    public Response getExemptions(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) throws ParseException, JsonProcessingException {
         Date startDate, endDate;
         boolean dateRange = false;
         if (PredicateUtil.isSet(from) && PredicateUtil.isSet(to)) {
@@ -468,6 +470,7 @@ public class AdministratorRest {
             anyResponse = exemptionFacade.findAll();
         }
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -539,7 +542,8 @@ public class AdministratorRest {
     @GET
     @Path("audittrail")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") Integer userId) {
+    public Response findAll(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") String userId) throws JsonProcessingException {
+        Integer userId_=1;
         try {
             Date startDate, endDate;
             boolean dateRange = false;
@@ -550,14 +554,14 @@ public class AdministratorRest {
                 startDate = DateUtil.getDate(from);
                 endDate = DateUtil.getDate(to);
                 endDate = addDays(endDate, 1);
-                anyResponse = auditTrailFacade.findAll(startDate, endDate, userId);
+                anyResponse = auditTrailFacade.findAll(startDate, endDate, userId_);
             } else if (dateRange && userId == null) {
                 startDate = DateUtil.getDate(from);
                 endDate = DateUtil.getDate(to);
                 endDate = addDays(endDate, 1);
                 anyResponse = auditTrailFacade.findAll(startDate, endDate);
             } else if (!dateRange && userId != null) {
-                anyResponse = auditTrailFacade.findAll(userId);
+                anyResponse = auditTrailFacade.findAll(userId_);
             } else {
                 anyResponse = auditTrailFacade.findAll();
             }
@@ -565,6 +569,7 @@ public class AdministratorRest {
         } catch (ParseException | CustomHttpException ex) {
             // Logger.getLogger(AdministratorRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -32,6 +33,7 @@ import javax.persistence.Transient;
     ,@NamedQuery(name = "KasnebCourse.findByCourseType", query = "SELECT c FROM KasnebCourse c WHERE c.kasnebCourseType = :courseType")})
 public class KasnebCourse extends Course {
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "courseTypeCode", referencedColumnName = "code", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private KasnebCourseType kasnebCourseType;
@@ -56,6 +58,7 @@ public class KasnebCourse extends Course {
     private Collection<Part> parts;
     @Transient
     private Collection kasnebCourseExemptions;
+
     public KasnebCourse() {
         super();
     }

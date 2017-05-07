@@ -8,7 +8,9 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.KasnebCourseType;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -59,7 +61,9 @@ public class CourseTypeRest {
     public Response getAll() throws JsonProcessingException {
         List<KasnebCourseType> courseTypes = kasnebCourseTypeFacade.findAll();
         for (KasnebCourseType kasnebCourseType : courseTypes) {
-            kasnebCourseType.getCourseCollection();
+            Collection<KasnebCourse> courses=kasnebCourseType.getCourseCollection();
+            kasnebCourseType.setCourseCollection(courses);
+            
         }
         json = mapper.writeValueAsString(courseTypes);
         return Response

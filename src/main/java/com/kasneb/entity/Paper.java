@@ -5,8 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -15,7 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -44,15 +43,18 @@ public class Paper implements Serializable {
     @Column(name = "code", nullable = false)
     private String code;
     @Column(name = "name", nullable = false)
-    private String name;
-    
+    private String name;     
+    @JoinTable(name = "studentCoursePaper", joinColumns = {
+        @JoinColumn(name = "paperCode", referencedColumnName = "code")}, inverseJoinColumns = {
+        @JoinColumn(name = "studentCourseId", referencedColumnName = "id")})
+    @ManyToMany(fetch=FetchType.LAZY)
+    private Collection<StudentCourse> studentCourses;   
     @ManyToOne
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "levelId", referencedColumnName = "id"),
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Level level;
-    
+    private Level level;    
     @ManyToOne
     @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "id"),
@@ -65,19 +67,15 @@ public class Paper implements Serializable {
         @PrimaryKeyJoinColumn(name = "partId", referencedColumnName = "partId"),
         @PrimaryKeyJoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Section section;
-    
+    private Section section;    
     @OneToOne(mappedBy = "paper")
-    private StudentCourseSittingPaper studentCourseSittingPaper;
-    
+    private StudentCourseSittingPaper studentCourseSittingPaper;    
     @OneToMany(mappedBy = "paper")
     private Collection<Fee> feeTypes;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
-
     private KasnebCourse course;
     @OneToMany(mappedBy = "paper")
-
     private Collection<CourseExemption> courseExemptions;
 
     public Paper() {

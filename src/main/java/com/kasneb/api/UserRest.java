@@ -64,8 +64,8 @@ public class UserRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() throws JsonProcessingException {
         List<User> users = userFacade.findAll();
-        json = mapper.writeValueAsString(users);
         httpStatus=Response.Status.OK;
+        json = mapper.writeValueAsString(users);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -103,6 +103,7 @@ public class UserRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

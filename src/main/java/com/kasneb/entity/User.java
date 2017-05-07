@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jikara
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User implements Serializable {
 
     @Id
