@@ -166,6 +166,7 @@ public class StudentCourseRest {
         StudentCourse studentCourse = null;
         try {
             studentCourse = studentCourseFacade.find(id);
+            int x=studentCourse.getElligiblePapers().size();
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }

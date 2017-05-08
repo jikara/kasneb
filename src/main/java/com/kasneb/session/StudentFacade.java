@@ -246,10 +246,14 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (registration.getRenewals() != null && !registration.getRenewals().isEmpty()) {
             for (Renewal renewal : registration.getRenewals()) {  //Renewals
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + renewal.getEndYear());
-
-                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), DateUtil.getYear(new Date()) + 1);
-                StudentCourseSubscription subscription = new StudentCourseSubscription(pk, subscriptionExpiry);
-
+                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), renewal.getEndYear());
+                StudentCourseSubscription subscription = new StudentCourseSubscription(renewal.getEndYear(),studentCourse);
+                
+                
+                
+                
+                subscription.setExpiry(subscriptionExpiry);
+                subscription.setStudentCourse(studentCourse);
                 subscriptions.add(subscription);
             }
         } else {
@@ -258,15 +262,13 @@ public class StudentFacade extends AbstractFacade<Student> {
             Integer regYear = DateUtil.getYear(dateRegistered);
             if (dateRegistered.after(DateUtil.getDate("30-06-" + regYear))) {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear + 1));
-
-                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), DateUtil.getYear(new Date()) + 1);
-                subscription = new StudentCourseSubscription(pk, subscriptionExpiry);
-
-            } else {
+                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, studentCourse);
+                subscription.setExpiry(subscriptionExpiry);            } else {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear));
-                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), DateUtil.getYear(new Date()) + 1);
-                subscription = new StudentCourseSubscription(pk, subscriptionExpiry);
+                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1,studentCourse );
+                subscription.setExpiry(subscriptionExpiry);
             }
+            subscription.setStudentCourse(studentCourse);
             subscriptions.add(subscription);
         }
         return subscriptions;

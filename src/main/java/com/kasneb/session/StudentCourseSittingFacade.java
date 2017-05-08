@@ -101,16 +101,15 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         Sitting sitting = sittingFacade.find(entity.getSitting().getId());
         StudentCourseSitting managed = find(studentCourse, sitting);
         if (managed == null) {
-            super.create(entity);
-            return entity;
+            return super.edit(entity);
         } else {
             //Check if same sitting is booked
             if (managed.getStatus() == StudentCourseSittingStatus.PAID || managed.getStatus() == StudentCourseSittingStatus.CONFIRMED) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, managed.getSitting().getSittingDescription() + " sitting has already been paid for and details can only be updated after the release of the Examination results");
             }
+            em.detach(managed);
             super.copy(entity, managed);
-            managed = super.edit(managed);
-            return managed;
+            return super.edit(managed);
         }
     }
 

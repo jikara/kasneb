@@ -52,7 +52,8 @@ public class Course implements Serializable {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "qualification")    
-    private Collection<StudentQualification> studentCourseQualifications;
+    private Collection<StudentQualification> studentCourseQualifications;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "qualification", fetch = FetchType.LAZY)    
     protected Collection<CourseExemption> courseExemptions;    
     @NotFound(action = NotFoundAction.IGNORE)

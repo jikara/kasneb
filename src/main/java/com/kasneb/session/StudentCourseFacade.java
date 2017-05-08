@@ -45,7 +45,6 @@ import com.kasneb.entity.StudentCourse_;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.PartPK;
-import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
 import com.kasneb.util.CoreUtil;
@@ -199,8 +198,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             }
             //Create subscription 
             Invoice invoice = invoiceFacade.generateRegistrationInvoice(managed);
-            StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(managed.getId(), DateUtil.getYear(new Date()) + 1);
-            StudentCourseSubscription subscription = new StudentCourseSubscription(pk, getNextRenewalDate(managed));
+            StudentCourseSubscription subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, managed);
+            subscription.setExpiry(getNextRenewalDate(managed));
             subscription.setInvoice(invoice);
             managed.setLastSubscription(subscription);
             //Set as current 

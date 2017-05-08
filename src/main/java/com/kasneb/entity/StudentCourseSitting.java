@@ -5,9 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -47,11 +46,11 @@ public class StudentCourseSitting implements Serializable {
     private Sitting sitting;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Invoice invoice;
     @ManyToOne
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private StudentCourse studentCourse;
     @OneToOne
     @JoinColumn(name = "centreId", referencedColumnName = "code", nullable = true)

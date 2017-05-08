@@ -22,7 +22,6 @@ import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -47,10 +46,7 @@ public class Paper implements Serializable {
     private String code;
     @Column(name = "name", nullable = false)
     private String name;
-    @JoinTable(name = "studentCoursePaper", joinColumns = {
-        @JoinColumn(name = "paperCode", referencedColumnName = "code")}, inverseJoinColumns = {
-        @JoinColumn(name = "studentCourseId", referencedColumnName = "id")})
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "elligiblePapers")
     private Collection<StudentCourse> studentCourses;
     @MapsId("id")
     @ManyToOne

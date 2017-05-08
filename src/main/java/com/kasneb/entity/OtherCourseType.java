@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,9 +20,9 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue("OTHER")
 public class OtherCourseType extends CourseType {
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
     @JoinColumn(name = "qualificationId", referencedColumnName = "id")
-
     private OtherQualification qualification;
 
     @Override

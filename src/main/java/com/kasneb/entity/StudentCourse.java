@@ -113,19 +113,22 @@ public class StudentCourse implements Serializable {
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Collection<StudentCourseSitting> studentCourseSittings;
-    
-    @ManyToMany(mappedBy = "studentCourses")
+    @JoinTable(name = "studentCoursePaper", joinColumns = {
+        @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
+    }, inverseJoinColumns = {
+        @JoinColumn(name = "paperCode", referencedColumnName = "code")
+    })
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Paper> elligiblePapers;
-    
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Sitting firstSitting;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Part currentPart;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
@@ -134,7 +137,7 @@ public class StudentCourse implements Serializable {
     private transient ElligiblePart eligiblePart;
     @JsonInclude
     private transient Set<ElligibleLevel> eligibleLevels;
-    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Collection<StudentCourseSubscription> subscriptions;
     @Transient
     private StudentCourseSubscription lastSubscription;
@@ -143,8 +146,8 @@ public class StudentCourse implements Serializable {
     private Date nextRenewal;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Exemption> exemptions;
-    @Transient
-    private List<Paper> eligibleExemptions;
+    @JsonInclude
+    private transient List<Paper> eligibleExemptions;
     @Transient
     private Set<Paper> exemptedPapers;
     @Transient
@@ -410,13 +413,13 @@ public class StudentCourse implements Serializable {
         Integer maximumYear = 0;
         if (getSubscriptions() != null) {
             for (StudentCourseSubscription subscription : getSubscriptions()) {
-                Integer subscrYear = subscription.getStudentCourseSubscriptionPK().getYear();
+                Integer subscrYear = subscription.getYear();
                 if (subscrYear > maximumYear) {
                     maximumYear = subscrYear;
                 }
             }
             for (StudentCourseSubscription subscription : getSubscriptions()) {
-                if (subscription.getStudentCourseSubscriptionPK().getYear().equals(maximumYear)) {
+                if (subscription.getYear().equals(maximumYear)) {
                     lastSubscription = subscription;
                 }
             }
@@ -598,9 +601,9 @@ public class StudentCourse implements Serializable {
 
     public Set<ElligibleLevel> getEligibleLevels() {
         eligibleLevels = new HashSet<>();
-        if (this.elligiblePapers != null && getCurrentLevel() != null) {
+        if (getElligiblePapers() != null && getCurrentLevel() != null) {
             ElligibleLevel eliggibleLevel = new ElligibleLevel(getCurrentLevel().getName(), getCurrentLevel(), new ArrayList<>());
-            for (Paper p : elligiblePapers) {
+            for (Paper p : getElligiblePapers()) {
                 if (p.getLevel().equals(getCurrentLevel())) {
                     eliggibleLevel.addPaper(p);
                 }

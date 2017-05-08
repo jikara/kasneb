@@ -8,16 +8,15 @@ package com.kasneb.entity.pk;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 
 /**
  *
  * @author jikara
  */
-@Embeddable
+
 public class StudentCourseSubscriptionPK implements Serializable {
 
-    @Column(name = "studentCourseId")
+    @Column(name = "studentCourseId", insertable = false, updatable = false)
     private Integer studentCourseId;
     @Column(name = "rYear")
     private Integer year;

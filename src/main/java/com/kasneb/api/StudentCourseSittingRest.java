@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.StudentCourseSitting;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
@@ -13,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.mail.MessagingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -30,9 +34,13 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("studentcoursesitting")
+@Stateless
 public class StudentCourseSittingRest {
 
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
+    String json;
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     @EJB
     com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
@@ -43,6 +51,8 @@ public class StudentCourseSittingRest {
      * Creates a new instance of StudentsittingRest
      */
     public StudentCourseSittingRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     @GET
@@ -86,9 +96,9 @@ public class StudentCourseSittingRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(StudentCourseSitting entity) {
+    public Response create(StudentCourseSitting entity) throws JsonProcessingException {
         try {
-            entity = studentCourseSittingFacade.createStudentCourseSitting(entity);
+            anyResponse = studentCourseSittingFacade.createStudentCourseSitting(entity);
             httpStatus = Response.Status.OK;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
@@ -98,6 +108,7 @@ public class StudentCourseSittingRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(entity)
@@ -110,13 +121,14 @@ public class StudentCourseSittingRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(StudentCourseSitting entity) {
+    public Response edit(StudentCourseSitting entity) throws JsonProcessingException {
         try {
-            entity = studentCourseSittingFacade.update(entity);
+            anyResponse = studentCourseSittingFacade.update(entity);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
@@ -124,6 +136,7 @@ public class StudentCourseSittingRest {
         } catch (IllegalAccessException | InvocationTargetException | IOException | ParseException ex) {
             // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(entity)
@@ -142,7 +155,7 @@ public class StudentCourseSittingRest {
             if (entity.getId() == 0) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Id cannot be zero");
             }
-            entity = studentCourseSittingFacade.updateCentre(entity);
+            anyResponse = studentCourseSittingFacade.updateCentre(entity);
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
@@ -150,6 +163,7 @@ public class StudentCourseSittingRest {
         } catch (ParseException ex) {
             // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(entity)

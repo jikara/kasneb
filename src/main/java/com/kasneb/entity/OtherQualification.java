@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,10 +20,9 @@ import javax.persistence.OneToMany;
 public class OtherQualification extends Qualification {
 
     @OneToMany(mappedBy = "otherQualification")
-
     private Collection<OtherCourse> courses;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "qualification")
-
     private Collection<OtherCourseType> otherQualificationTypes;
 
     public Collection<OtherCourse> getCourses() {

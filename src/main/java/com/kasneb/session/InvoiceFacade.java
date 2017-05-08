@@ -168,7 +168,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         if (new Date().after(academicYearEnd)) {
             currentAcademicYear = currentYear;
         }
-        Integer lastSubscriptionYear = managed.getLastSubscription().getStudentCourseSubscriptionPK().getYear();
+        Integer lastSubscriptionYear = managed.getLastSubscription().getYear();
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         Date lastSubscriptionExpiry = DateUtil.getDate("30-06-" + (lastSubscriptionYear + 1));
         Period period = new Period(new org.joda.time.DateTime(lastSubscriptionExpiry), new org.joda.time.DateTime(new Date()));

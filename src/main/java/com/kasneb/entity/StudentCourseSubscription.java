@@ -7,14 +7,14 @@ package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -28,14 +28,19 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "studentCourseSubscription")
+@IdClass(com.kasneb.entity.pk.StudentCourseSubscriptionPK.class)
 public class StudentCourseSubscription implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    private StudentCourseSubscriptionPK studentCourseSubscriptionPK;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    @Id
+    @Column(name = "studentCourseId", insertable = false, updatable = false)
+    private Integer studentCourseId;
+    @Id
+    @Column(name = "rYear")
+    private Integer year;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
-    @JoinColumn(name = "studentCourseId", referencedColumnName = "id",insertable=false,updatable=false)
+    @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     private StudentCourse studentCourse;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -46,9 +51,9 @@ public class StudentCourseSubscription implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date expiry;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "invoiceId", referencedColumnName = "id")    
+    @JoinColumn(name = "invoiceId", referencedColumnName = "id")
     private Invoice invoice;
     @Transient
     private Boolean current;
@@ -60,23 +65,25 @@ public class StudentCourseSubscription implements Serializable {
     public StudentCourseSubscription() {
     }
 
-    public StudentCourseSubscription(StudentCourseSubscriptionPK studentCourseSubscriptionPK, Date renewalDate) {
-        this.studentCourseSubscriptionPK = studentCourseSubscriptionPK;
-        this.renewalDate = renewalDate;
+    public StudentCourseSubscription(Integer year, StudentCourse studentCourse) {
+        this.year = year;
+        this.studentCourse = studentCourse;
     }
 
-    public StudentCourseSubscription(StudentCourseSubscriptionPK studentCourseSubscriptionPK, Date expiry, Invoice invoice) {
-        this.studentCourseSubscriptionPK = studentCourseSubscriptionPK;
-        this.expiry = expiry;
-        this.invoice = invoice;
+    public Integer getStudentCourseId() {
+        return studentCourseId;
     }
 
-    public StudentCourseSubscriptionPK getStudentCourseSubscriptionPK() {
-        return studentCourseSubscriptionPK;
+    public void setStudentCourseId(Integer studentCourseId) {
+        this.studentCourseId = studentCourseId;
     }
 
-    public void setStudentCourseSubscriptionPK(StudentCourseSubscriptionPK studentCourseSubscriptionPK) {
-        this.studentCourseSubscriptionPK = studentCourseSubscriptionPK;
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public StudentCourse getStudentCourse() {
@@ -128,8 +135,8 @@ public class StudentCourseSubscription implements Serializable {
     }
 
     public Integer getEndYear() {
-        if (getStudentCourseSubscriptionPK().getYear() != null) {
-            endYear = getStudentCourseSubscriptionPK().getYear() + 1;
+        if (getYear() != null) {
+            endYear = getYear() + 1;
         }
         return endYear;
     }

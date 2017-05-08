@@ -5,8 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.CourseExemptionPK;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
@@ -28,17 +27,18 @@ public class CourseExemption implements Serializable {
 
     @EmbeddedId
     private CourseExemptionPK courseExemptionPK;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qualificationId", referencedColumnName = "id",insertable=false,updatable=false)
+    @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
     private Course qualification;
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
-    @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
+    @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
     private KasnebCourse course;
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
-    @JoinColumn(name = "paperCode", referencedColumnName = "code",insertable=false,updatable=false)
+    @JoinColumn(name = "paperCode", referencedColumnName = "code", insertable = false, updatable = false)
     private Paper paper;
 
     public CourseExemption() {
