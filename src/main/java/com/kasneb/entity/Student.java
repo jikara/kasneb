@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -113,9 +112,8 @@ public class Student implements Serializable {
     private Country countryId;
     @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
-    private County countyId;
-    @JsonBackReference(value = "student-login")
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "student")
+    private County countyId;   
+    @OneToOne(mappedBy = "student")
     private Login loginId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.EAGER)
     private Collection<StudentCourse> studentCourses;

@@ -14,6 +14,7 @@ import com.kasneb.entity.CommunicationType;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.Login;
+import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.Constants;
@@ -114,7 +115,12 @@ public class StudentRest {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
+        mapper.registerModule(hbm);
         Student student = studentFacade.find(id);
+        for(StudentCourse studentCourse:student.getStudentCourses()){
+            studentCourse.getDocuments();
+            studentCourse.getStudentRequirements();
+        }
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
         return Response

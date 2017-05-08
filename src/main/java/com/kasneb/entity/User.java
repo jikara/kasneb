@@ -8,6 +8,7 @@ package com.kasneb.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -16,6 +17,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,7 +60,8 @@ public class User implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false)
     private Role role;
-    @OneToMany(mappedBy = "verifiedBy")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "verifiedBy", fetch = FetchType.LAZY)
     private Collection<StudentCourse> verifiedStudentCourses;
     @JsonInclude
     private transient String email;

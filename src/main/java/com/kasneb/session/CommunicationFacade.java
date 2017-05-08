@@ -56,7 +56,10 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         query.setParameter("alertType", AlertType.EMAIL);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        List<Communication> communications= query.getResultList();
+        List<Communication> communications = query.getResultList();
+        for(Communication c:communications){
+            c.getStudentCourse();
+        }        
         return communications;
     }
 
@@ -65,19 +68,21 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         query.setParameter("alertType", AlertType.SMS);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        List<Communication> communications= query.getResultList();
+        List<Communication> communications = query.getResultList();
         return communications;
     }
 
     @Schedule(hour = "*", minute = "*", second = "*/13", persistent = false)
     public void sendSms() {
         for (Communication communication : findPendingSms()) {
+            communication.getStudent();
+            communication.getStudentCourse();
             try {
                 String randomPin = GeneratorUtil.generateRandomPin();
                 communication.setPin(randomPin);
                 SmsUtil.sendSMS(getSms(communication));
             } catch (IOException | CustomHttpException ex) {
-               // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+                // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 communication.setStatus(Boolean.TRUE);
                 super.edit(communication);
@@ -90,10 +95,12 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         try {
             List<Email> emails = new ArrayList<>();
             for (Communication communication : findPendingEmails()) {
+                communication.getStudent();
+                communication.getStudentCourse();
                 try {
                     emails.add(getEmail(communication));
                 } catch (IOException | CustomHttpException ex) {
-                   // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     communication.setStatus(Boolean.TRUE);
                     super.edit(communication);
@@ -103,7 +110,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
                 EmailUtil.sendEmail(emails);
             }
         } catch (MessagingException ex) {
-           // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

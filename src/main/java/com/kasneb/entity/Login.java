@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -91,15 +92,13 @@ public class Login implements Serializable {
     private boolean banned = false;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient Date lastLogin;
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JsonManagedReference(value = "student-login")
-    @OneToOne(optional = true)
-    @JoinColumn(name = "studentId", nullable = true)
+    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = true)
     private Student student;
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonManagedReference(value = "user-login")
     @OneToOne(optional = true)
-    @JoinColumn(name = "userId", nullable = true)
+    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = true)
     private User user;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient

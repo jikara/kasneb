@@ -19,8 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -36,22 +34,19 @@ public class Communication implements Serializable {
     private Integer id;
     @Column(name = "subject")
     private String subject;    
-    @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "studentId", updatable = false, referencedColumnName = "id")
     private Student student;    
-    @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "userId", updatable = false, referencedColumnName = "id")
     private User user;    
-    @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", updatable = false, referencedColumnName = "id")
     private StudentCourse studentCourse;
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "studentCourseSittingId", updatable = false, referencedColumnName = "id")
     private StudentCourseSitting sitting;
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "exemptionId", updatable = false, referencedColumnName = "id")
     private Exemption exemption;
     @Enumerated(EnumType.STRING)
@@ -65,7 +60,7 @@ public class Communication implements Serializable {
     @Basic(optional = false)
     @Column(name = "status", nullable = false)
     private Boolean status;
-    @ManyToOne
+    @ManyToOne(optional=true,fetch=FetchType.LAZY)
     @JoinColumn(name = "invoiceId", updatable = false, referencedColumnName = "id")
     private Invoice invoice;
     @Transient

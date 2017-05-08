@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -37,9 +38,11 @@ public class Role implements Serializable {
     @NotNull
     @Basic(optional = false)
     @Column(name = "description", nullable = false, unique = true)
-    private String description;
+    private String description;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "role")
-    private Collection<User> users;
+    private Collection<User> users;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "rolePermission",
             joinColumns = {
