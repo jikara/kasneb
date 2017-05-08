@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  * @author jikara
  */
 @Path("export")
+@Stateless
 public class ExportRest {
 
     @Context

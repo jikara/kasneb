@@ -112,8 +112,9 @@ public class Student implements Serializable {
     private Country countryId;
     @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
-    private County countyId;   
-    @OneToOne(mappedBy = "student")
+    private County countyId;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToOne(mappedBy = "student", optional = true)
     private Login loginId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.EAGER)
     private Collection<StudentCourse> studentCourses;

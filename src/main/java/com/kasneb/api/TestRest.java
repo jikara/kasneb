@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Paper;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("test")
+@Stateless
 public class TestRest {
 
     Object anyResponse = new Object();

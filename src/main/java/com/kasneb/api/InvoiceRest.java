@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kasneb.entity.Invoice;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("invoice")
+@Stateless
 public class InvoiceRest {
 
     @Context

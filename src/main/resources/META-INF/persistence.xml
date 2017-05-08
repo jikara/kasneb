@@ -4,7 +4,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:/jboss/datasources/kasnebDemo</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <shared-cache-mode>NONE</shared-cache-mode>
+    <shared-cache-mode>ALL</shared-cache-mode>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect"/>
     </properties>

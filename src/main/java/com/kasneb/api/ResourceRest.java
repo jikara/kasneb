@@ -12,6 +12,7 @@ import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("resources")
+@Stateless
 public class ResourceRest {
 
     ObjectMapper mapper = new ObjectMapper();

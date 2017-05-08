@@ -13,9 +13,8 @@ import com.kasneb.entity.Paper;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +28,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("fee")
+@Stateless
 public class FeeTypeRest {
 
     ObjectMapper mapper = new ObjectMapper();

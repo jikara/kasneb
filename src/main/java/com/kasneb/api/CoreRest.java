@@ -6,6 +6,7 @@
 package com.kasneb.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("core")
+@Stateless
 public class CoreRest {
 
     @Context

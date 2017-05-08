@@ -11,9 +11,8 @@ import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -29,6 +28,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("centrezone")
+@Stateless
 public class CentreZoneRest {
 
     @Context

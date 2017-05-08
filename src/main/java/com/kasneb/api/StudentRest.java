@@ -174,7 +174,6 @@ public class StudentRest {
             }
             entity.getLoginId().setPhoneNumber(entity.getPhoneNumber());
             entity = studentFacade.createStudent(entity);
-            System.out.println("Student " + entity);
             String key = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Verification Key", 1000 * 60 * 60 * 24 * 367);
             String smsToken = SecurityUtil.createSmsVerificationToken(entity.getId());
             entity.getLoginId().setVerificationToken(key);

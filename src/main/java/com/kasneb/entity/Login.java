@@ -92,10 +92,9 @@ public class Login implements Serializable {
     private boolean banned = false;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient Date lastLogin;
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @OneToOne(optional = true)
     @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = true)
     private Student student;
-    @NotFound(action = NotFoundAction.IGNORE)
     @JsonManagedReference(value = "user-login")
     @OneToOne(optional = true)
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = true)

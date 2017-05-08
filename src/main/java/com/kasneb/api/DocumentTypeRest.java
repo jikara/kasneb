@@ -8,6 +8,7 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("documenttype")
+@Stateless
 public class DocumentTypeRest {
 
     ObjectMapper mapper = new ObjectMapper();

@@ -11,6 +11,7 @@ import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Student;
 import com.kasneb.util.PredicateUtil;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("transaction")
+@Stateless
 public class TransactionRest {
 
     ObjectMapper mapper = new ObjectMapper();

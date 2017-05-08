@@ -8,6 +8,7 @@ package com.kasneb.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("qualification")
+@Stateless
 public class QualificationRest {
 
     @Context

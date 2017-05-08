@@ -11,6 +11,7 @@ import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.pk.CourseExemptionPK;
 import com.kasneb.exception.CustomMessage;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("courseexemption")
+@Stateless
 public class CourseExemptionRest {
 
     @Context
