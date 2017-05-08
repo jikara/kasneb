@@ -25,6 +25,8 @@ import com.kasneb.util.WalletUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
@@ -51,32 +53,26 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         super(Communication.class);
     }
 
-    public List<Communication> findPendingEmails() {
-        TypedQuery<Communication> query = em.createQuery("SELECT c FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Communication.class);
+    public List<Integer> findPendingEmails() {
+        TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.EMAIL);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        List<Communication> communications = query.getResultList();
-        for(Communication c:communications){
-            c.getStudentCourse();
-        }        
-        return communications;
+        return query.getResultList();
     }
 
-    public List<Communication> findPendingSms() {
-        TypedQuery<Communication> query = em.createQuery("SELECT c FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Communication.class);
+    public List<Integer> findPendingSms() {
+        TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.SMS);
         query.setParameter("status", false);
         query.setMaxResults(10);
-        List<Communication> communications = query.getResultList();
-        return communications;
+        return query.getResultList();
     }
 
-    @Schedule(hour = "*", minute = "*", second = "*/13", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*/10", persistent = false)
     public void sendSms() {
-        for (Communication communication : findPendingSms()) {
-            communication.getStudent();
-            communication.getStudentCourse();
+        for (Integer pk : findPendingSms()) {
+            Communication communication = super.find(pk);
             try {
                 String randomPin = GeneratorUtil.generateRandomPin();
                 communication.setPin(randomPin);
@@ -90,17 +86,16 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         }
     }
 
-    @Schedule(hour = "*", minute = "*", second = "*/33", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*/15", persistent = false)
     public void sendEmail() {
         try {
             List<Email> emails = new ArrayList<>();
-            for (Communication communication : findPendingEmails()) {
-                communication.getStudent();
-                communication.getStudentCourse();
+            for (Integer pk : findPendingEmails()) {
+                Communication communication = super.find(pk);
                 try {
-                    emails.add(getEmail(communication));
+                    emails.add(getEmail(pk));
                 } catch (IOException | CustomHttpException ex) {
-                    // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     communication.setStatus(Boolean.TRUE);
                     super.edit(communication);
@@ -114,7 +109,8 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         }
     }
 
-    public Email getEmail(Communication communication) throws IOException, CustomHttpException {
+    public Email getEmail(Integer pk) throws IOException, CustomHttpException {
+        Communication communication=super.find(pk);
         String address = null, body = null, subject = null;
         Login login = null;
         Student student = communication.getStudent();
