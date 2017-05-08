@@ -101,7 +101,7 @@ public class Student implements Serializable {
     private String documentNo;
     @Column(name = "documentScan")
     private String documentScan;
-    @JoinColumn(name = "contact_id", referencedColumnName = "id")
+    @JoinColumn(name = "contact_id")
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     private Contact contact;
     @JoinColumn(name = "nationality", referencedColumnName = "code")
@@ -114,7 +114,7 @@ public class Student implements Serializable {
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     private County countyId;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToOne(mappedBy = "student", optional = true)
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, optional = true)
     private Login loginId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.EAGER)
     private Collection<StudentCourse> studentCourses;

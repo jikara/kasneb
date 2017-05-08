@@ -12,7 +12,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,8 +22,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -93,11 +90,11 @@ public class Login implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient Date lastLogin;
     @OneToOne(optional = true)
-    @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "studentId")
     private Student student;
     @JsonManagedReference(value = "user-login")
     @OneToOne(optional = true)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "userId")
     private User user;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient

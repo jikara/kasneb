@@ -115,7 +115,6 @@ public class StudentRest {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        mapper.registerModule(hbm);
         Student student = studentFacade.find(id);
         for(StudentCourse studentCourse:student.getStudentCourses()){
             studentCourse.getDocuments();
