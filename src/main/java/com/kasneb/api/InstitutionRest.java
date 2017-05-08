@@ -5,13 +5,19 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Institution;
 import com.kasneb.entity.OtherCourseType;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
+import com.kasneb.util.PredicateUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.ejb.EJB;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,12 +35,14 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("institution")
+@Stateless
 public class InstitutionRest {
 
-    @Context
-    private UriInfo context;
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+    String json;
     @EJB
     com.kasneb.session.InstitutionFacade institutionFacade;
     @EJB
@@ -44,36 +52,46 @@ public class InstitutionRest {
      * Creates a new instance of InstitutionRest
      */
     public InstitutionRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.InstitutionRest
      *
-     * @param courseTypeId
+     * @param courseTypeId_
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("courseTypeId") Integer courseTypeId) {
+    public Response findAll(@QueryParam("courseTypeId") String courseTypeId_) throws JsonProcessingException {
+        Collection<Institution> institutions = new ArrayList<>();
         try {
-            if (courseTypeId == null) {
-                anyResponse = institutionFacade.findAll();
-            } else {
+            if (PredicateUtil.isSet(courseTypeId_)) {
+                Integer courseTypeId = Integer.parseInt(courseTypeId_);
                 OtherCourseType courseType = otherCourseTypeFacade.find(courseTypeId);
                 if (courseType == null) {
                     throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Other course type does not exist");
                 }
-                anyResponse = institutionFacade.findByCourseType(courseType);
+                institutions = institutionFacade.findByCourseType(courseType);
+            } else {
+                institutions = institutionFacade.findAll();
             }
             httpStatus = Response.Status.OK;
+            for (Institution institution : institutions) {
+                institution.getCourses().size();
+            }
+            anyResponse = institutions;
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 

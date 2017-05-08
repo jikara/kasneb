@@ -56,6 +56,7 @@ public class Course implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "qualification", fetch = FetchType.LAZY)    
     protected Collection<CourseExemption> courseExemptions;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institutionId", referencedColumnName = "id")

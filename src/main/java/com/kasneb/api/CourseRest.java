@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.dto.CourseExemption;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.Institution;
@@ -16,8 +19,10 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
@@ -36,10 +41,14 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("course")
+@Stateless
 public class CourseRest {
 
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+    String json;
     @EJB
     com.kasneb.session.CourseFacade courseFacade;
     @EJB
@@ -53,29 +62,36 @@ public class CourseRest {
      * Creates a new instance of CourseRest
      */
     public CourseRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.CourseRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("kasneb")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findKasneb() {
-        anyResponse = kasnebCourseFacade.findKasnebCourses();
+    public Response findKasneb() throws JsonProcessingException {
+        Collection<KasnebCourse> courses = kasnebCourseFacade.findKasnebCourses();
+        for (KasnebCourse course : courses) {
+            course.getPapers();
+        }
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(courses);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("other")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findOther(@QueryParam("institutionId") Integer institutionId) {
+    public Response findOther(@QueryParam("institutionId") Integer institutionId) throws JsonProcessingException {
         try {
             if (institutionId == null) {
                 anyResponse = otherCourseFacade.findAll();
@@ -92,9 +108,10 @@ public class CourseRest {
             httpStatus = ex.getStatusCode();
             // Logger.getLogger(CourseRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -106,12 +123,13 @@ public class CourseRest {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") String id) {
+    public Response find(@PathParam("id") String id) throws JsonProcessingException {
         anyResponse = courseFacade.find(id);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -123,24 +141,26 @@ public class CourseRest {
     @GET
     @Path("type/{code}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findByType(@PathParam("code") Integer code) {
+    public Response findByType(@PathParam("code") Integer code) throws JsonProcessingException {
         anyResponse = kasnebCourseFacade.findByType(code);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("exemption/type/{code}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findQualificationByType(@PathParam("code") Integer code, @QueryParam("student") Integer regionId) {
+    public Response findQualificationByType(@PathParam("code") Integer code, @QueryParam("student") Integer regionId) throws JsonProcessingException {
         anyResponse = kasnebCourseFacade.findByType(code);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
@@ -148,7 +168,7 @@ public class CourseRest {
     @Path("exemption/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(CourseExemption entity, @PathParam("id") String id) throws IllegalAccessException, InvocationTargetException {
+    public Response update(CourseExemption entity, @PathParam("id") String id) throws IllegalAccessException, InvocationTargetException, JsonProcessingException {
         try {
             List<com.kasneb.entity.CourseExemption> courseExemptions = new ArrayList<>();
             Course managed = courseFacade.find(id);
@@ -170,27 +190,29 @@ public class CourseRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         anyResponse = courseFacade.findAll();
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Course entity) {
+    public Response create(Course entity) throws JsonProcessingException {
         String maxId = courseFacade.getMaximun();
         OtherCourse otherCourse = new OtherCourse();
         otherCourse.setId(maxId);
@@ -200,9 +222,10 @@ public class CourseRest {
         otherCourse.setCourseType(institution.getCourseType());
         courseFacade.create(otherCourse);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(otherCourse);
         return Response
                 .status(httpStatus)
-                .entity(otherCourse)
+                .entity(json)
                 .build();
     }
 
@@ -210,14 +233,15 @@ public class CourseRest {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") String id) {
-            Course course = courseFacade.find(id);
-            courseFacade.remove(course);
-            anyResponse = new CustomMessage(200, "Record removed successfully");
-            httpStatus = Response.Status.OK;        
+    public Response delete(@PathParam("id") String id) throws JsonProcessingException {
+        Course course = courseFacade.find(id);
+        courseFacade.remove(course);
+        anyResponse = new CustomMessage(200, "Record removed successfully");
+        httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 

@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -38,8 +37,7 @@ public class Institution implements Serializable {
     @ManyToOne
     @JoinColumn(name = "courseTypeId", referencedColumnName = "code")
     private CourseType courseType;
-    @OneToMany(mappedBy = "institution",targetEntity = Course.class)
-
+    @OneToMany(mappedBy = "institution", targetEntity = Course.class)
     private Collection<OtherCourse> courses;
 
     public Integer getId() {
