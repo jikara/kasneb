@@ -117,8 +117,9 @@ public class StudentRest {
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         Student student = studentFacade.find(id);
         for(StudentCourse studentCourse:student.getStudentCourses()){
-            studentCourse.getDocuments();
-            studentCourse.getStudentRequirements();
+            studentCourse.getDocuments().size();
+            studentCourse.getStudentRequirements().size();
+            studentCourse.getElligiblePapers().size();
         }
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;

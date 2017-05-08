@@ -62,7 +62,8 @@ public class CourseTypeRest {
         List<KasnebCourseType> courseTypes = kasnebCourseTypeFacade.findAll();
         for (KasnebCourseType kasnebCourseType : courseTypes) {
             Collection<KasnebCourse> courses=kasnebCourseType.getCourseCollection();
-            kasnebCourseType.setCourseCollection(courses);            
+            kasnebCourseType.getCourseRequirements().size();
+            kasnebCourseType.setCourseCollection(courses);     
         }
         json = mapper.writeValueAsString(courseTypes);
         return Response

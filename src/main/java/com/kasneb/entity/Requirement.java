@@ -5,8 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -55,11 +54,10 @@ public class Requirement implements Serializable {
     @Column(name = "type")
     private String type;
     @ManyToOne
-    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
-    
+    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private CourseType courseType;
     @ManyToMany(mappedBy = "studentRequirements")
-
     private Collection<StudentCourse> studentCourses;
 
     public Requirement() {

@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -32,7 +32,7 @@ public class StudentCourseDocument implements Serializable {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
-    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     private StudentCourse studentCourse;
