@@ -78,10 +78,8 @@ public class Exemption implements Serializable {
     private Institution institution;
     @Column(name = "institutionName")
     private String institutionName;
-
     @OneToMany(mappedBy = "exemption", cascade = CascadeType.ALL)
     private List<ExemptionDocument> documents;
-
     @OneToMany(mappedBy = "exemption", cascade = CascadeType.ALL)
     private List<ExemptionPaper> papers;
     @Transient

@@ -162,6 +162,7 @@ public class AdministratorRest {
      * com.kasneb.api.AdministratorRest
      *
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("studentcourse/verified")

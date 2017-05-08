@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -42,13 +42,14 @@ public class StudentDeclaration implements Serializable {
     @Column(name = "specification")
     private String specification;    
     @JoinColumn(name = "declarationId", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Declaration declaration;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private StudentCourse studentCourse;
-    @Transient
-    private Student student;
+    @JsonInclude
+    private transient Student student;
 
     public StudentDeclaration() {
     }

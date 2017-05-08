@@ -5,8 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.StudentQualificationPK;
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,7 +18,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
@@ -34,15 +33,14 @@ public class StudentQualification implements Serializable {
     @EmbeddedId
     private StudentQualificationPK studentQualificationPK;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "studentId", referencedColumnName = "id", insertable = false, updatable = false)
-    
+    @JoinColumn(name = "studentId", referencedColumnName = "id", insertable = false, updatable = false)      
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Student student;
     @ManyToOne(optional = false)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
-
     private Course qualification;
-    @Transient
-    protected String type;
+    @JsonInclude
+    protected transient String type;
 
     public StudentQualification() {
     }
