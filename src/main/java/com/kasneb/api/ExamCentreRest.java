@@ -7,16 +7,15 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import com.kasneb.util.PredicateUtil;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
 import javax.ejb.EJB;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,12 +29,12 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("examcentre")
+@Stateless
 public class ExamCentreRest {
 
-    @Context
-    private UriInfo context;
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -47,21 +46,25 @@ public class ExamCentreRest {
      * Creates a new instance of ExamCentreRest
      */
     public ExamCentreRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.ExamCentreRest
      *
-     * @param studentId
+     * @param studentId_
      * @param zoneCode
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("studentId") Integer studentId, @QueryParam("zoneCode") String zoneCode) {
+    public Response findAll(@QueryParam("studentId") String studentId_, @QueryParam("zoneCode") String zoneCode) throws JsonProcessingException {
         StudentCourse currentCourse = null;
         try {
-            if (studentId != null && PredicateUtil.isSet(zoneCode)) {
+            if (PredicateUtil.isSet(studentId_) && PredicateUtil.isSet(zoneCode)) {
+                Integer studentId=Integer.parseInt(studentId_);
                 Student student = studentFacade.find(studentId);
                 if (student != null) {
                     currentCourse = student.getCurrentCourse();
@@ -74,17 +77,13 @@ public class ExamCentreRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-           // Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+            // Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | NumberFormatException ex) {
             anyResponse = new CustomMessage(500, ex.getMessage());
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
-           // Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(ExamCentreRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

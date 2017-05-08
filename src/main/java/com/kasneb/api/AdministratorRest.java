@@ -359,7 +359,7 @@ public class AdministratorRest {
     @GET
     @Path("studentcoursesitting")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentCourseSittings(@QueryParam("courseTypeCode") String scourseTypeCode, @QueryParam("courseId") String courseId, @QueryParam("year") String syear, @QueryParam("month") String smonth) {
+    public Response getStudentCourseSittings(@QueryParam("courseTypeCode") String scourseTypeCode, @QueryParam("courseId") String courseId, @QueryParam("year") String syear, @QueryParam("month") String smonth) throws JsonProcessingException {
         if (PredicateUtil.isSet(scourseTypeCode) && PredicateUtil.isSet(courseId) && PredicateUtil.isSet(syear) && PredicateUtil.isSet(smonth)) { //All set
             anyResponse = studentCourseSittingFacade.findAll(Integer.parseInt(scourseTypeCode), courseId, Integer.parseInt(syear), SittingPeriod.valueOf(smonth));
         } else if (PredicateUtil.isSet(scourseTypeCode) && !PredicateUtil.isSet(courseId) && !PredicateUtil.isSet(syear) && !PredicateUtil.isSet(smonth)) { //only courseType code set
@@ -386,6 +386,7 @@ public class AdministratorRest {
             anyResponse = studentCourseSittingFacade.findAll();
         }
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -544,7 +545,7 @@ public class AdministratorRest {
     @Path("audittrail")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("userId") String userId) throws JsonProcessingException {
-        Integer userId_=1;
+        Integer userId_ = 1;
         try {
             Date startDate, endDate;
             boolean dateRange = false;

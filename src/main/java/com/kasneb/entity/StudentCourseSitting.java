@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Collection;
@@ -42,22 +43,19 @@ public class StudentCourseSitting implements Serializable {
     private Integer id;
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-
     private Sitting sitting;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Invoice invoice;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private StudentCourse studentCourse;
     @OneToOne
     @JoinColumn(name = "centreId", referencedColumnName = "code", nullable = true)
-
     private ExamCentre sittingCentre;
     @OneToMany(mappedBy = "studentCourseSitting", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-
     private Collection<StudentCourseSittingPaper> papers;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -67,18 +65,18 @@ public class StudentCourseSitting implements Serializable {
     @OneToOne
     @JoinColumn(name = "paymentId", referencedColumnName = "id")
     private Payment payment;
-    @Transient
-    private String fullRegNo;
+    @JsonInclude
+    private transient String fullRegNo;
     @Transient
     private Boolean hasBooking = false;
-    @Transient
-    private Student student;
+    @JsonInclude
+    private transient Student student;
     @Column(name = "created", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date created = new Date();
-    @Transient
-    private String course;
+    @JsonInclude
+    private transient String course;
 
     public StudentCourseSitting() {
     }
