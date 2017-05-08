@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.ExemptionPaperPK;
 import java.io.Serializable;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class ExemptionPaper implements Serializable {
 
     @EmbeddedId
     private ExemptionPaperPK exemptionPaperPK;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exemptionId", referencedColumnName = "id",insertable = false, updatable = false)
     private Exemption exemption;

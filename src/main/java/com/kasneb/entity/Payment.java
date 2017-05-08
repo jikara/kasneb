@@ -88,10 +88,10 @@ public class Payment implements Serializable {
     private Invoice invoice;
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<PaymentDetail> paymentDetails;
-    @Transient
-    private String feeCode;
-    @Transient
-    private Student student;
+    @JsonInclude
+    private transient String feeCode;
+    @JsonInclude
+    private transient Student student;
     @JsonInclude
     private transient String fullRegNo;
     @Column(name = "synchronized")

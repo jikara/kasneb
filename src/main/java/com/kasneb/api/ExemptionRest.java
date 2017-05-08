@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Exemption;
 import com.kasneb.entity.ExemptionPaper;
 import com.kasneb.entity.Invoice;
@@ -13,6 +16,7 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.lang.reflect.InvocationTargetException;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -29,56 +33,69 @@ import javax.ws.rs.core.Response;
  * @author jikara
  */
 @Path("exemption")
+@Stateless
 public class ExemptionRest {
 
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
+    String json;
     @EJB
     com.kasneb.session.ExemptionFacade exemptionFacade;
     @EJB
     com.kasneb.session.InvoiceFacade invoiceFacade;
 
+    public ExemptionRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
+    }
+
     /**
      * Retrieves representation of an instance of com.kasneb.api.ExemptionRest
      *
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         anyResponse = exemptionFacade.findAll();
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("pending")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPending() {
+    public Response findPending() throws JsonProcessingException {
         anyResponse = exemptionFacade.findPending();
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         anyResponse = exemptionFacade.findPending(id);
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Exemption entity) {
+    public Response create(Exemption entity) throws JsonProcessingException {
         try {
             if (entity.getQualifications() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification must be defined");
@@ -102,21 +119,23 @@ public class ExemptionRest {
                 entity.setInvoice(invoice);
             }
             httpStatus = Response.Status.OK;
+            anyResponse=entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             // Logger.getLogger(ExemptionRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(Exemption entity) throws IllegalAccessException, InvocationTargetException, CustomHttpException {
+    public Response update(Exemption entity) throws IllegalAccessException, InvocationTargetException, CustomHttpException, JsonProcessingException {
         boolean all = exemptionFacade.verifyAll(entity);
         Exemption managed = exemptionFacade.find(entity.getId());
         if (all) {
@@ -124,9 +143,10 @@ public class ExemptionRest {
         }
         httpStatus = Response.Status.OK;
         anyResponse = managed;
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 }

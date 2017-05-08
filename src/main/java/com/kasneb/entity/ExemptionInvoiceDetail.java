@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue("EXEMPTION")
 public class ExemptionInvoiceDetail extends InvoiceDetail {
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "exemptionId", referencedColumnName = "exemptionId")

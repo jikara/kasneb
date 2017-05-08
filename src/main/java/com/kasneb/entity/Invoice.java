@@ -94,14 +94,17 @@ public class Invoice implements Serializable {
     private StudentCourseSubscription studentCourseSubscription;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCourseSitting studentCourseSitting;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(mappedBy = "invoice", fetch = FetchType.LAZY)
     private Exemption exemption;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
     @JoinColumn(name = "studentCourseId")
     private StudentCourse studentCourse;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<RenewalInvoiceDetail> renewalInvoiceDetails;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<ExemptionInvoiceDetail> exemptionInvoiceDetails;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
@@ -266,8 +269,6 @@ public class Invoice implements Serializable {
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
     }
-
-   
 
     public StudentCourseSubscription getStudentCourseSubscription() {
         return studentCourseSubscription;

@@ -5,9 +5,8 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,8 +57,8 @@ public class Exemption implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     private StudentCourse studentCourse;
-    @Transient
-    private Student student;
+    @JsonInclude
+    private transient Student student;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "exemptionQualification",
             joinColumns = {
@@ -87,7 +86,7 @@ public class Exemption implements Serializable {
     private List<ExemptionPaper> papers;
     @Transient
     private List<ExemptionPaper> pendingPapers;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id")
     private Invoice invoice;
     @Basic(optional = false)
@@ -99,10 +98,10 @@ public class Exemption implements Serializable {
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User verifiedBy;
-    @Transient
-    private String fullRegNo;
-    @Transient
-    private Integer studentCourseId;
+    @JsonInclude
+    private transient String fullRegNo;
+    @JsonInclude
+    private transient Integer studentCourseId;
 
     public Exemption() {
     }
