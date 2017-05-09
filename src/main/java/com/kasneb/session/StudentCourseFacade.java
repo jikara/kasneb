@@ -202,7 +202,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             StudentCourseSubscription subscription = new StudentCourseSubscription(new StudentCourseSubscriptionPK(managed.getId(), DateUtil.getYear(new Date()) + 1));
             subscription.setExpiry(getNextRenewalDate(managed));
             subscription.setInvoice(invoice);
-            managed.getSubscriptions().add(subscription);  //TO BE ADDRESSES
+            managed.getSubscriptions().add(subscription);  
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", managed.getStudent());
         }
         KasnebCourse dbCourse = em.find(KasnebCourse.class, managed.getCourse().getId());
