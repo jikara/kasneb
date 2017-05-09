@@ -105,12 +105,12 @@ public class Student implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     private Contact contact;
     @JoinColumn(name = "nationality", referencedColumnName = "code")
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Country nationality;
     @JoinColumn(name = "countryId", referencedColumnName = "code")
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Country countryId;
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true,cascade = CascadeType.ALL)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     private County countyId;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
