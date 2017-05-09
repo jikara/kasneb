@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.kasneb.entity.pk.SectionPK;
 import java.io.Serializable;
 import java.util.Collection;
@@ -53,9 +52,6 @@ public class Section implements Serializable {
     private Part part;
     @OneToMany(mappedBy = "section")
     private Collection<Paper> paperCollection;
-    @OneToMany(mappedBy = "section")
-
-    private Collection<Fee> feeTypes;
 
     public Section() {
     }

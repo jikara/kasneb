@@ -77,11 +77,10 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
                 String randomPin = GeneratorUtil.generateRandomPin();
                 communication.setPin(randomPin);
                 SmsUtil.sendSMS(getSms(communication));
-            } catch (IOException | CustomHttpException ex) {
-                // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
                 communication.setStatus(Boolean.TRUE);
                 super.edit(communication);
+            } catch (IOException | CustomHttpException ex) {
+                Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -94,23 +93,22 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
                 Communication communication = super.find(pk);
                 try {
                     emails.add(getEmail(pk));
-                } catch (IOException | CustomHttpException ex) {
-                    Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
                     communication.setStatus(Boolean.TRUE);
                     super.edit(communication);
+                } catch (IOException | CustomHttpException ex) {
+                    Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (emails.size() > 0) {
                 EmailUtil.sendEmail(emails);
             }
         } catch (MessagingException ex) {
-            // Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public Email getEmail(Integer pk) throws IOException, CustomHttpException {
-        Communication communication=super.find(pk);
+        Communication communication = super.find(pk);
         String address = null, body = null, subject = null;
         Login login = null;
         Student student = communication.getStudent();
