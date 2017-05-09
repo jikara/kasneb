@@ -19,8 +19,6 @@ import com.kasneb.entity.CommunicationType;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.Currency;
-import com.kasneb.entity.ElligiblePart;
-import com.kasneb.entity.ElligibleSection;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.InvoiceStatus;
@@ -641,36 +639,5 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             communicationFacade.create(communication);
         }
         return managed;
-    }
-
-    public ElligiblePart getElligiblePart(Integer studentCourseId) {
-        Set<ElligibleSection> elligibleSections = new HashSet<>();
-        boolean optional = false;
-        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s LEFT JOIN FETCH s.elligiblePapers WHERE s.id =:id", StudentCourse.class);
-        query.setParameter("studentCourseId", studentCourseId);
-        StudentCourse studentCourse = query.getSingleResult();
-        Collection<Paper> elligiblePapers = studentCourse.getElligiblePapers();
-        for (Paper p : elligiblePapers) {
-            if (p.getSection().getPart().equals(studentCourse.getCurrentPart())) {
-                ElligibleSection elligibleSection = new ElligibleSection(p.getSection().getName(), p.getSection(), new ArrayList<>(), p.getSection().isOptional());
-                elligibleSections.add(elligibleSection);
-            }
-        }
-        for (ElligibleSection elligibleSection : elligibleSections) {
-            for (Paper p : elligiblePapers) {
-                if (p.getSection().getSectionPK().equals(elligibleSection.getSection().getSectionPK())) {
-                    elligibleSection.addPaper(p);
-                }
-            }
-        }
-        for (ElligibleSection elligibleSection : elligibleSections) {
-            if (elligibleSection.getPapers().size() < 1) {
-                elligibleSections.remove(elligibleSection);
-            }
-            if (elligibleSections.size() < 2) {
-                elligibleSection.setOptional(false);
-            }
-        }
-        return new ElligiblePart(studentCourse.getCurrentPart().getName(), new ArrayList(elligibleSections));
     }
 }
