@@ -138,7 +138,7 @@ public class StudentCourse implements Serializable {
     private transient ElligiblePart eligiblePart;
     @JsonInclude
     private transient Set<ElligibleLevel> eligibleLevels;
-    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<StudentCourseSubscription> subscriptions;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
@@ -400,7 +400,6 @@ public class StudentCourse implements Serializable {
         this.studentCourseDeclarations = studentCourseDeclarations;
     }
 
-    @JsonIgnore
     public Collection<StudentCourseSubscription> getSubscriptions() {
         return subscriptions;
     }
