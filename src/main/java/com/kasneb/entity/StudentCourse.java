@@ -114,6 +114,7 @@ public class StudentCourse implements Serializable {
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Collection<StudentCourseSitting> studentCourseSittings;
+    
     @JoinTable(name = "studentCoursePaper", joinColumns = {
         @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     }, inverseJoinColumns = {

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
@@ -58,21 +60,23 @@ public class StudentCourseSittingRest {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         StudentCourseSitting studentCourseSitting = studentCourseSittingFacade.find(id);
+        json = mapper.writeValueAsString(studentCourseSitting);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourseSitting)
+                .entity(json)
                 .build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
+    public Response findAll() throws JsonProcessingException {
         List<StudentCourseSitting> studentCourseSittings = studentCourseSittingFacade.findAll();
+        json = mapper.writeValueAsString(studentCourseSittings);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourseSittings)
+                .entity(json)
                 .build();
     }
 
@@ -81,15 +85,17 @@ public class StudentCourseSittingRest {
      * com.kasneb.api.StudentCourseSittingRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findList() {
+    public Response findList() throws JsonProcessingException {
         List<StudentCourseSitting> studentCourseSittings = studentCourseSittingFacade.findAll();
+        json = mapper.writeValueAsString(studentCourseSittings);
         return Response
                 .status(Response.Status.OK)
-                .entity(studentCourseSittings)
+                .entity(json)
                 .build();
     }
 
@@ -102,16 +108,16 @@ public class StudentCourseSittingRest {
             httpStatus = Response.Status.OK;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
-            // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -139,7 +145,7 @@ public class StudentCourseSittingRest {
         json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
