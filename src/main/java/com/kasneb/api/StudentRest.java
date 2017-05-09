@@ -134,22 +134,25 @@ public class StudentRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(Student entity) {
+    public Response update(Student entity) throws JsonProcessingException {
         try {
             entity = studentFacade.updateStudent(entity);
             httpStatus = Response.Status.OK;
+            anyResponse=entity;
         } catch (CustomHttpException | IllegalAccessException | InvocationTargetException ex) {
             anyResponse = new CustomMessage(500, ex.getMessage());
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -162,7 +165,7 @@ public class StudentRest {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(@Context HttpHeaders headers, Student entity) {
+    public Response create(@Context HttpHeaders headers, Student entity) throws JsonProcessingException {
         try {
             if (entity.getStudentStatus() != null && entity.getStudentStatus() == 2) {
 //                if (studentCourseFacade.registrationExists(entity) ) {
@@ -209,9 +212,10 @@ public class StudentRest {
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json=mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 

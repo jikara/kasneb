@@ -105,7 +105,7 @@ public class Student implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     private Contact contact;
     @JoinColumn(name = "nationality", referencedColumnName = "code")
-    @ManyToOne(optional = true,cascade = CascadeType.ALL)
+    @ManyToOne(optional = true)
     private Country nationality;
     @JoinColumn(name = "countryId", referencedColumnName = "code")
     @ManyToOne(optional = true)
