@@ -89,8 +89,8 @@ public class PaymentRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(Payment entity) throws JsonProcessingException {
         try {
-            entity = paymentFacade.createWalletPayment(entity);
             Invoice invoice = invoiceFacade.find(entity.getInvoice().getId());
+            invoice.getInvoiceDetails().size();
             //update related entities
             switch (invoice.getFeeCode().getCode()) {
                 case Constants.EXEMPTION_FEE:
@@ -145,6 +145,7 @@ public class PaymentRest {
                 default:
                     break;
             }
+            entity = paymentFacade.createWalletPayment(entity);
             httpStatus = Response.Status.OK;
             anyResponse = entity;
         } catch (CustomHttpException ex) {
