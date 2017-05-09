@@ -272,21 +272,21 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         } else {
             managed.setCourseStatus(StudentCourseStatus.REJECTED);
             switch (managed.getRejectCode()) {
-                case REJ_1:
+                case "REJ_1":
                     //Not Qualified for course Applied For,refund
                     Communication communication = new Communication(managed.getStudent(), managed, null, null, CommunicationType.REFUND_REQUEST, AlertType.EMAIL, false);
                     communicationFacade.create(communication);//Email
                     break;
-                case REJ_2:
+                case "REJ_2":
                     //Mismatch of names on supporting Document and Identification Document,reattach
                     break;
-                case REJ_3:
+                case "REJ_3":
                     //Already an Existing KASNEB student(Allow Typing of Registration Number and Amount
                     break;
-                case REJ_4:
+                case "REJ_4":
                     //Lack of Supporting Documents( Allow type of Missing Document,reattach
                     break;
-                case REJ_5:
+                case "REJ_5":
                     //Not Qualified for course Applied For
                     communication = new Communication(managed.getStudent(), managed, null, null, CommunicationType.REFUND_REQUEST, AlertType.EMAIL, false);
                     communicationFacade.create(communication);//Email

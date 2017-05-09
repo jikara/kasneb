@@ -10,5 +10,15 @@ package com.kasneb.entity;
  * @author jikara
  */
 public enum RejectReason {
-    REJ_1, REJ_2, REJ_3,REJ_4,REJ_5
+    OK(""), REJ_1("REJ_1"), REJ_2("REJ_2"), REJ_3("REJ_3"), REJ_4("REJ_4"), REJ_5("REJ_5");
+    private final String formatted;
+
+    RejectReason(String formatted) {
+        this.formatted = formatted;
+    }
+
+    @Override
+    public String toString() {
+        return formatted;
+    }
 }

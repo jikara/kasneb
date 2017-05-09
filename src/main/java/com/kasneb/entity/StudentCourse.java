@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.client.Stream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -123,12 +124,12 @@ public class StudentCourse implements Serializable {
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Sitting firstSitting;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Part currentPart;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
@@ -139,6 +140,7 @@ public class StudentCourse implements Serializable {
     private transient Set<ElligibleLevel> eligibleLevels;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Collection<StudentCourseSubscription> subscriptions;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
     private StudentCourseSubscription lastSubscription;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
@@ -167,8 +169,7 @@ public class StudentCourse implements Serializable {
     @Transient
     private StudentDeclaration learnAbout;
     @Column(name = "rejectCode")
-    @Enumerated(EnumType.STRING)
-    private RejectReason rejectCode;
+    private String rejectCode;
 
     public StudentCourse() {
     }
@@ -408,7 +409,6 @@ public class StudentCourse implements Serializable {
         this.subscriptions = subscriptions;
     }
 
-    @JsonIgnore
     public StudentCourseSubscription getLastSubscription() {
         Integer maximumYear = 0;
         if (getSubscriptions() != null) {
@@ -669,11 +669,11 @@ public class StudentCourse implements Serializable {
         return exemptedPapers;
     }
 
-    public RejectReason getRejectCode() {
+    public String getRejectCode() {
         return rejectCode;
     }
 
-    public void setRejectCode(RejectReason rejectCode) {
+    public void setRejectCode(String rejectCode) {
         this.rejectCode = rejectCode;
     }
 
