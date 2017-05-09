@@ -91,6 +91,7 @@ public class PaymentRest {
         try {
             Invoice invoice = invoiceFacade.find(entity.getInvoice().getId());
             invoice.getInvoiceDetails().size();
+            entity = paymentFacade.createWalletPayment(entity);
             //update related entities
             switch (invoice.getFeeCode().getCode()) {
                 case Constants.EXEMPTION_FEE:
@@ -145,7 +146,6 @@ public class PaymentRest {
                 default:
                     break;
             }
-            entity = paymentFacade.createWalletPayment(entity);
             httpStatus = Response.Status.OK;
             anyResponse = entity;
         } catch (CustomHttpException ex) {
