@@ -41,9 +41,6 @@ public class Part implements Serializable {
     private KasnebCourse course;
     @OneToMany(mappedBy = "part")
     private Collection<Section> sectionCollection;
-    @OneToMany(mappedBy = "part")
-
-    private Collection<Fee> feeTypes;
 
     public Part() {
     }
@@ -91,14 +88,6 @@ public class Part implements Serializable {
 
     public void setSectionCollection(Collection<Section> sectionCollection) {
         this.sectionCollection = sectionCollection;
-    }
-
-    public Collection<Fee> getFeeTypes() {
-        return feeTypes;
-    }
-
-    public void setFeeTypes(Collection<Fee> feeTypes) {
-        this.feeTypes = feeTypes;
     }
 
     @Override

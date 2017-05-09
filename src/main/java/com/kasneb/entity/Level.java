@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -37,9 +36,6 @@ public class Level implements Serializable {
     @OneToMany(mappedBy = "level")
     //@JsonBackReference
     private Collection<Paper> paperCollection;
-    @OneToMany(mappedBy = "level",fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Collection<Fee> feeTypes;
 
     public Level() {
     }
@@ -83,14 +79,6 @@ public class Level implements Serializable {
 
     public void setPaperCollection(Collection<Paper> paperCollection) {
         this.paperCollection = paperCollection;
-    }
-
-    public Collection<Fee> getFeeTypes() {
-        return feeTypes;
-    }
-
-    public void setFeeTypes(Collection<Fee> feeTypes) {
-        this.feeTypes = feeTypes;
     }
 
     @Override

@@ -15,7 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -34,10 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Paper.findAll", query = "SELECT p FROM Paper p")
-    ,
-    @NamedQuery(name = "Paper.findByCode", query = "SELECT p FROM Paper p WHERE p.code = :code")
-    ,
-    @NamedQuery(name = "Paper.findByName", query = "SELECT p FROM Paper p WHERE p.name = :name")})
+    ,    @NamedQuery(name = "Paper.findByCode", query = "SELECT p FROM Paper p WHERE p.code = :code")
+    ,    @NamedQuery(name = "Paper.findByName", query = "SELECT p FROM Paper p WHERE p.name = :name")})
 public class Paper implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,8 +62,6 @@ public class Paper implements Serializable {
     private Level level;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "paper")
     private Collection<StudentCourseSittingPaper> studentCourseSittingPapers;
-    @OneToMany(mappedBy = "paper")
-    private Collection<Fee> feeTypes;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     private KasnebCourse course;

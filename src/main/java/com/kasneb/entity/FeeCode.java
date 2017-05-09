@@ -5,7 +5,6 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -33,10 +32,6 @@ public class FeeCode implements Serializable {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "feeCode",fetch = FetchType.LAZY)
-
-    private Collection<Fee> feeTypes;
-    @OneToMany(mappedBy = "feeCode",fetch = FetchType.LAZY)
-
     private Collection<Invoice> invoices;
 
     public FeeCode() {
@@ -62,14 +57,6 @@ public class FeeCode implements Serializable {
         this.code = code;
     }
 
-    public Collection<Fee> getFeeTypes() {
-        return feeTypes;
-    }
-
-    public void setFeeTypes(Collection<Fee> feeTypes) {
-        this.feeTypes = feeTypes;
-    }
-
     public Collection<Invoice> getInvoices() {
         return invoices;
     }
@@ -80,7 +67,7 @@ public class FeeCode implements Serializable {
 
     @Override
     public String toString() {
-        return "FeeCode{" + "code=" + code + ", feeTypes=" + feeTypes + ", invoices=" + invoices + '}';
+        return "FeeCode{" + "code=" + code + ", description=" + description + '}';
     }
 
 }

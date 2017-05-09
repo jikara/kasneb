@@ -39,8 +39,6 @@ public class KasnebCourse extends Course {
     private KasnebCourseType kasnebCourseType;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
     private Collection<Level> levelCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.LAZY)
-    private Collection<Fee> feeTypeCollection;
     @JsonInclude
     private transient Integer courseTypeCode;
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -77,14 +75,6 @@ public class KasnebCourse extends Course {
 
     public void setLevelCollection(Collection<Level> levelCollection) {
         this.levelCollection = levelCollection;
-    }
-
-    public Collection<Fee> getFeeTypeCollection() {
-        return feeTypeCollection;
-    }
-
-    public void setFeeTypeCollection(Collection<Fee> feeTypeCollection) {
-        this.feeTypeCollection = feeTypeCollection;
     }
 
     public Collection<Paper> getPapers() {
