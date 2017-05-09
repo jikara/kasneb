@@ -33,6 +33,7 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -85,12 +86,13 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         }
     }
 
+    @Transactional
     @Schedule(hour = "*", minute = "*", second = "*/15", persistent = false)
     public void sendEmail() {
         try {
             List<Email> emails = new ArrayList<>();
             for (Integer pk : findPendingEmails()) {
-                Communication communication = super.find(pk);
+                Communication communication = super.find(pk);                
                 try {
                     emails.add(getEmail(pk));
                     communication.setStatus(Boolean.TRUE);

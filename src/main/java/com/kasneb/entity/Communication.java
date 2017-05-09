@@ -34,19 +34,19 @@ public class Communication implements Serializable {
     private Integer id;
     @Column(name = "subject")
     private String subject;    
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "studentId", updatable = false, referencedColumnName = "id")
     private Student student;    
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "userId", updatable = false, referencedColumnName = "id")
     private User user;    
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "studentCourseId", updatable = false, referencedColumnName = "id")
     private StudentCourse studentCourse;
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "studentCourseSittingId", updatable = false, referencedColumnName = "id")
     private StudentCourseSitting sitting;
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "exemptionId", updatable = false, referencedColumnName = "id")
     private Exemption exemption;
     @Enumerated(EnumType.STRING)
@@ -60,7 +60,7 @@ public class Communication implements Serializable {
     @Basic(optional = false)
     @Column(name = "status", nullable = false)
     private Boolean status;
-    @ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @ManyToOne(optional=true,fetch=FetchType.EAGER)
     @JoinColumn(name = "invoiceId", updatable = false, referencedColumnName = "id")
     private Invoice invoice;
     @Transient
