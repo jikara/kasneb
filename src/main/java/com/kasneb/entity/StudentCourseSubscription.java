@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -141,6 +142,28 @@ public class StudentCourseSubscription implements Serializable {
             endYear = getYear() + 1;
         }
         return endYear;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.pk);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StudentCourseSubscription other = (StudentCourseSubscription) obj;
+        return Objects.equals(this.pk, other.pk);
     }
 
 }

@@ -69,9 +69,6 @@ public class StudentCourseSubscriptionPK implements Serializable {
             return false;
         }
         final StudentCourseSubscriptionPK other = (StudentCourseSubscriptionPK) obj;
-        if (!Objects.equals(this.studentCourseId, other.studentCourseId)) {
-            return false;
-        }
-        return Objects.equals(this.year, other.year);
+        return Objects.equals(this.studentCourseId, other.studentCourseId) && Objects.equals(this.studentCourseId, other.studentCourseId);
     }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.ExemptionPaperPK;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -160,5 +161,27 @@ public class ExemptionPaper implements Serializable {
             return getVerificationStatus().equals(VerificationStatus.APPROVED) && getPaid();
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.exemptionPaperPK);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ExemptionPaper other = (ExemptionPaper) obj;
+        return Objects.equals(this.exemptionPaperPK, other.exemptionPaperPK);
     }
 }

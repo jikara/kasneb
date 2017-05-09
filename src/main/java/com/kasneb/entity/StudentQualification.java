@@ -106,10 +106,7 @@ public class StudentQualification implements Serializable {
             return false;
         }
         final StudentQualification other = (StudentQualification) obj;
-        if (!Objects.equals(this.studentQualificationPK, other.studentQualificationPK)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.studentQualificationPK, other.studentQualificationPK);
     }
 
 }

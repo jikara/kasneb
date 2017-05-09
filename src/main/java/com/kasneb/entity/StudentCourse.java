@@ -140,9 +140,8 @@ public class StudentCourse implements Serializable {
     private transient Set<ElligibleLevel> eligibleLevels;
     @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<StudentCourseSubscription> subscriptions;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Transient
-    private StudentCourseSubscription lastSubscription;
+    @JsonIgnore
+    private transient StudentCourseSubscription lastSubscription;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Transient
     private Date nextRenewal;

@@ -8,6 +8,7 @@ package com.kasneb.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.CourseExemptionPK;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -78,5 +79,27 @@ public class CourseExemption implements Serializable {
 
     public void setPaper(Paper paper) {
         this.paper = paper;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.courseExemptionPK);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CourseExemption other = (CourseExemption) obj;
+        return Objects.equals(this.courseExemptionPK, other.courseExemptionPK);
     }
 }
