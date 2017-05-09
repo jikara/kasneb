@@ -108,9 +108,9 @@ public class Student implements Serializable {
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Country nationality;
     @JoinColumn(name = "countryId", referencedColumnName = "code")
-    @ManyToOne(optional = true,cascade = CascadeType.ALL)
+    @ManyToOne(optional = true)
     private Country countryId;
-    @ManyToOne(optional = true,cascade = CascadeType.ALL)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "countyId", referencedColumnName = "id")
     private County countyId;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
