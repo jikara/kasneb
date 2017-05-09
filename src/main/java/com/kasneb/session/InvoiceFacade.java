@@ -51,27 +51,27 @@ import org.joda.time.Period;
  */
 @Stateless
 public class InvoiceFacade extends AbstractFacade<Invoice> {
-    
+
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
-    com.kasneb.session.FeeFacade feeTypeFacade;
+    com.kasneb.session.FeeFacade feeFacade;
     @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
     @EJB
     com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
     @EJB
     com.kasneb.session.ExemptionFacade exemptionFacade;
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     public InvoiceFacade() {
         super(Invoice.class);
     }
-    
+
     public Invoice generateRegistrationInvoice(StudentCourse entity) throws CustomHttpException, IOException {
         StudentCourse managed = studentCourseFacade.find(entity.getId());
         Iterator<Invoice> iter = managed.getInvoices().iterator();
@@ -88,9 +88,9 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         BigDecimal kesTotal = new BigDecimal(0), usdTotal = new BigDecimal(0), gbpTotal = new BigDecimal(0);
         //Generate invoice
         Invoice invoice = new Invoice(GeneratorUtil.generateInvoiceNumber(), new Date());
-        Fee adminFee = feeTypeFacade.getAdministrativeFee();
+        Fee adminFee = feeFacade.find(1);
         if (new Date().after(firstSitting.getRegistrationDeadline())) { //is late
-            Fee lateFee = feeTypeFacade.getLateCourseRegistrationFee(course);
+            Fee lateFee = feeFacade.getLateCourseRegistrationFee(course);
             invoice.addInvoiceDetail(new InvoiceDetail(lateFee.getKesAmount(), lateFee.getUsdAmount(), lateFee.getGbpAmount(), "Late registration fee"));
             //Add to totals
             kesTotal = kesTotal.add(lateFee.getKesAmount());
@@ -98,7 +98,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             gbpTotal = gbpTotal.add(lateFee.getGbpAmount());
             invoice.setDueDate(firstSitting.getLateRegistrationDeadline());
         } else {
-            Fee regFee = feeTypeFacade.getCourseRegistrationFee(course);
+            Fee regFee = feeFacade.getCourseRegistrationFee(course);
             invoice.addInvoiceDetail(new InvoiceDetail(regFee.getKesAmount(), regFee.getUsdAmount(), regFee.getGbpAmount(), "Course registration fee"));
             //Add to totals
             kesTotal = kesTotal.add(regFee.getKesAmount());
@@ -112,7 +112,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         kesTotal = kesTotal.add(adminFee.getKesAmount());
         usdTotal = usdTotal.add(adminFee.getUsdAmount());
         gbpTotal = gbpTotal.add(adminFee.getGbpAmount());
-        
+
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);
         invoice.setGbpTotal(gbpTotal);
@@ -120,7 +120,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         em.persist(invoice);
         return invoice;
     }
-    
+
     public Invoice generateRenewalInvoice(StudentCourse entity) throws CustomHttpException, ParseException {
         StudentCourse managed = studentCourseFacade.find(entity.getId());
         Integer currentYear = DateUtil.getYear(new Date());
@@ -152,13 +152,13 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         invoice.setKesTotal(kesTotal);
         invoice.setUsdTotal(usdTotal);
         invoice.setGbpTotal(gbpTotal);
-        
+
         invoice.setFeeCode(new FeeCode(Constants.REGISTRATION_RENEWAL_FEE));
         invoice.setStudentCourse(managed);
         em.persist(invoice);
         return invoice;
     }
-    
+
     public List<InvoiceDetail> generateRenewalInvoiceDetails(StudentCourse entity) throws CustomHttpException, ParseException {
         List<InvoiceDetail> renewalInvoiceDetails = new ArrayList<>();
         StudentCourse managed = studentCourseFacade.find(entity.getId());
@@ -174,13 +174,13 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         Period period = new Period(new org.joda.time.DateTime(lastSubscriptionExpiry), new org.joda.time.DateTime(new Date()));
         Integer years = period.getYears() + 1;
         if (years > 3) {
-            Fee reinstatementFee = feeTypeFacade.getRegistrationReactivationFee(managed.getCourse());
+            Fee reinstatementFee = feeFacade.getRegistrationReactivationFee(managed.getCourse());
             renewalInvoiceDetails.add(new InvoiceDetail(reinstatementFee.getKesAmount(), reinstatementFee.getUsdAmount(), reinstatementFee.getGbpAmount(), "Reinstatement fee "));
             kesTotal = kesTotal.add(reinstatementFee.getKesAmount());
             usdTotal = usdTotal.add(reinstatementFee.getUsdAmount());
             gbpTotal = gbpTotal.add(reinstatementFee.getGbpAmount());
             for (int x = 0; x < 3; x++) {
-                Fee renewalFee = feeTypeFacade.getAnnualRegistrationRenewalFee(managed.getCourse(), currentAcademicYear - 1);
+                Fee renewalFee = feeFacade.getAnnualRegistrationRenewalFee(managed.getCourse(), currentAcademicYear - 1);
                 renewalInvoiceDetails.add(new RenewalInvoiceDetail(currentAcademicYear, renewalFee.getKesAmount(), renewalFee.getUsdAmount(), renewalFee.getGbpAmount(), "Annual renewal fee : " + currentAcademicYear + "-" + (currentAcademicYear + 1)));
                 kesTotal = kesTotal.add(renewalFee.getKesAmount());
                 usdTotal = usdTotal.add(renewalFee.getUsdAmount());
@@ -190,7 +190,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         } else {
             int index = lastSubscriptionYear + 1;
             for (int x = 0; x < years; x++) {
-                Fee renewalFee = feeTypeFacade.getAnnualRegistrationRenewalFee(managed.getCourse(), index);
+                Fee renewalFee = feeFacade.getAnnualRegistrationRenewalFee(managed.getCourse(), index);
                 renewalInvoiceDetails.add(new RenewalInvoiceDetail(index, renewalFee.getKesAmount(), renewalFee.getUsdAmount(), renewalFee.getGbpAmount(), "Annual renewal fee : " + index + "-" + (index + 1)));
                 kesTotal = kesTotal.add(renewalFee.getKesAmount());
                 usdTotal = usdTotal.add(renewalFee.getUsdAmount());
@@ -200,7 +200,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         }
         return renewalInvoiceDetails;
     }
-    
+
     public Invoice generateExemptionInvoice(Exemption entity) throws CustomHttpException {
         //Mark unpaid exemption invoices as null
         Exemption managed = exemptionFacade.find(entity.getId());
@@ -220,7 +220,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         for (ExemptionPaper exemptionPaper : managed.getPapers()) {
             Paper paper = em.find(Paper.class, exemptionPaper.getPaper().getCode());
             if (exemptionPaper.getVerificationStatus().equals(VerificationStatus.APPROVED) && !exemptionPaper.getPaid()) {
-                Fee exemptionFee = feeTypeFacade.getExemptionFee(paper);
+                Fee exemptionFee = feeFacade.getExemptionFee(paper);
                 invoice.addInvoiceDetail(new ExemptionInvoiceDetail(exemptionPaper, exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), new BigDecimal(0), "Exemption Fee | " + paper.getCode()));
                 //Add to totals
                 kesTotal = kesTotal.add(exemptionFee.getKesAmount());
@@ -228,7 +228,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 gbpTotal = gbpTotal.add(exemptionFee.getGbpAmount());
             }
         }
-        Fee adminFee = feeTypeFacade.getAdministrativeFee();
+        Fee adminFee = feeFacade.find(1);
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
         //Add administrative fee
         kesTotal = kesTotal.add(adminFee.getKesAmount());
@@ -243,7 +243,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         em.persist(invoice);
         return invoice;
     }
-    
+
     public Invoice generateExamEntryInvoice(StudentCourseSitting entity, Map<String, Collection<Paper>> map) throws CustomHttpException, ParseException {
         boolean isLate = false;
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());//Mark unpaid exemption invoices as null
@@ -278,7 +278,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                         description = "Late Examination Fee";
                     }
                     for (Section section : part.getSectionCollection()) {
-                        Fee fee = feeTypeFacade.getExamEntryFeePerSection(section, isLate);
+                        Fee fee = feeFacade.getExamEntryFeePerSection(section, isLate);
                         invoice.addInvoiceDetail(new ExamInvoiceDetail(null, section, null, fee.getKesAmount(), fee.getUsdAmount(), fee.getGbpAmount(), description + " | " + section.getName()));
                         kesTotal = kesTotal.add(fee.getKesAmount());
                         usdTotal = usdTotal.add(fee.getUsdAmount());
@@ -288,11 +288,11 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 break;
                 case "PER_SECTION": {
                     Section section = papers.get(0).getSection();
-                    Fee fee = feeTypeFacade.getExamEntryFeePerSection(section, isLate);
+                    Fee fee = feeFacade.getExamEntryFeePerSection(section, isLate);
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
-                    
+
                     if (isLate) {
                         description = "Late Examination Fee";
                     }
@@ -301,7 +301,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 break;
                 case "PER_LEVEL": {
                     Level level = papers.get(0).getLevel();
-                    Fee fee = feeTypeFacade.getExamEntryFeePerLevel(level, isLate);
+                    Fee fee = feeFacade.getExamEntryFeePerLevel(level, isLate);
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
@@ -313,7 +313,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 break;
                 case "PER_PAPER": {
                     for (Paper paper : papers) {
-                        Fee fee = feeTypeFacade.getExamEntryFeePerPaper(paper, isLate);
+                        Fee fee = feeFacade.getExamEntryFeePerPaper(paper, isLate);
                         kesTotal = kesTotal.add(fee.getKesAmount());
                         usdTotal = usdTotal.add(fee.getUsdAmount());
                         gbpTotal = gbpTotal.add(fee.getGbpAmount());
@@ -335,7 +335,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 gbpTotal = gbpTotal.add(invDetail.getGbpAmount());
             }
         }
-        Fee adminFee = feeTypeFacade.getAdministrativeFee();
+        Fee adminFee = feeFacade.find(1);
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
         //Add administrative fee
         kesTotal = kesTotal.add(adminFee.getKesAmount());
@@ -348,7 +348,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         invoice.setFeeCode(new FeeCode(Constants.EXAM_ENTRY_FEE));
         return invoice;
     }
-    
+
     public Invoice getRenewalInvoice(StudentCourse managed) {
         TypedQuery<Invoice> query = em.createQuery("SELECT i FROM Invoice i WHERE i.studentCourse =:studentCourse AND i.feeCode =:feeCode AND i.status =:status", Invoice.class);
         query.setParameter("studentCourse", managed);
@@ -361,7 +361,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             return null;
         }
     }
-    
+
     public Invoice getExemptionInvoice(StudentCourse managed) throws CustomHttpException {
         TypedQuery<Invoice> query = em.createQuery("SELECT i FROM Invoice i WHERE i.studentCourse =:studentCourse AND i.feeCode =:feeCode AND i.status =:status", Invoice.class);
         query.setParameter("studentCourse", managed);
@@ -374,7 +374,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invoice does not exist");
         }
     }
-    
+
     public Invoice findByReference(String reference) throws CustomHttpException {
         TypedQuery<Invoice> query = em.createQuery("SELECT i FROM Invoice i WHERE i.reference =:reference ", Invoice.class);
         query.setParameter("reference", reference);
@@ -395,5 +395,5 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invoice does not exist");
         }
     }
-    
+
 }

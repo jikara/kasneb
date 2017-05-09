@@ -13,14 +13,9 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -39,14 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Fee.findAll", query = "SELECT f FROM Fee f")
-    ,
-    @NamedQuery(name = "Fee.findById", query = "SELECT f FROM Fee f WHERE f.id = :id")
-    ,
-    @NamedQuery(name = "Fee.findByCode", query = "SELECT f FROM Fee f WHERE f.feeCode = :feeCode")
-    ,
-    @NamedQuery(name = "Fee.findByFeeCode", query = "SELECT f FROM Fee f WHERE f.feeTypeCode = :feeTypeCode")
-    ,
-    @NamedQuery(name = "FeeType.findByName", query = "SELECT f FROM Fee f WHERE f.name = :name")})
+    ,    @NamedQuery(name = "Fee.findById", query = "SELECT f FROM Fee f WHERE f.id = :id")
+    ,    @NamedQuery(name = "Fee.findByCode", query = "SELECT f FROM Fee f WHERE f.feeCode = :feeCode")
+    ,    @NamedQuery(name = "Fee.findByFeeCode", query = "SELECT f FROM Fee f WHERE f.feeTypeCode = :feeTypeCode")
+    ,    @NamedQuery(name = "FeeType.findByName", query = "SELECT f FROM Fee f WHERE f.name = :name")})
 public class Fee implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,46 +63,6 @@ public class Fee implements Serializable {
     @Column(name = "effectiveDate")
     @Temporal(TemporalType.DATE)
     private Date effectiveDate;
-    @JoinColumn(name = "feeTypeCode", referencedColumnName = "code", nullable = false)
-    @ManyToOne
-
-    private FeeTypeCode feeTypeCode;
-    @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-
-    private FeeCode feeCode;
-    @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = true)
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    private KasnebCourse course;
-    @JoinColumn(name = "courseTypeCode", referencedColumnName = "code")
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    private CourseType courseType;
-    @MapsId("id")
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "sectionId", referencedColumnName = "id")
-        ,@JoinColumn(name = "partId", referencedColumnName = "partId")
-        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
-    })
-    private Section section;
-    @MapsId("id")
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "levelId", referencedColumnName = "id")
-        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
-    })
-    private Level level;
-    @MapsId("id")
-    @JoinColumns({
-        @JoinColumn(name = "partId", referencedColumnName = "id")
-        ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
-    })
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    private Part part;
-    @JoinColumn(name = "paperCode", referencedColumnName = "code")
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-
-    private Paper paper;
 
     public Fee() {
     }
@@ -123,14 +74,6 @@ public class Fee implements Serializable {
         this.kesAmount = kesAmount;
         this.usdAmount = usdAmount;
         this.effectiveDate = effectiveDate;
-        this.feeTypeCode = feeTypeCode;
-        this.feeCode = feeCode;
-        this.course = course;
-        this.courseType = courseType;
-        this.level = level;
-        this.part = part;
-        this.section = section;
-        this.paper = paper;
     }
 
     public Integer getId() {
@@ -179,70 +122,6 @@ public class Fee implements Serializable {
 
     public void setEffectiveDate(Date effectiveDate) {
         this.effectiveDate = effectiveDate;
-    }
-
-    public FeeTypeCode getFeeTypeCode() {
-        return feeTypeCode;
-    }
-
-    public void setFeeTypeCode(FeeTypeCode feeTypeCode) {
-        this.feeTypeCode = feeTypeCode;
-    }
-
-    public FeeCode getFeeCode() {
-        return feeCode;
-    }
-
-    public void setFeeCode(FeeCode feeCode) {
-        this.feeCode = feeCode;
-    }
-
-    public KasnebCourse getCourse() {
-        return course;
-    }
-
-    public void setCourse(KasnebCourse course) {
-        this.course = course;
-    }
-
-    public CourseType getCourseType() {
-        return courseType;
-    }
-
-    public void setCourseType(CourseType courseType) {
-        this.courseType = courseType;
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
-    public Part getPart() {
-        return part;
-    }
-
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
-
-    public Paper getPaper() {
-        return paper;
-    }
-
-    public void setPaper(Paper paper) {
-        this.paper = paper;
     }
 
     @Override
