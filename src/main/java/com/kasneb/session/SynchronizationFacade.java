@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -54,15 +56,16 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return super.findAll();
     }
 
-    @Schedule(hour = "*", minute = "*/30", second = "*", persistent = false)
+    @Schedule(hour = "*", minute = "*/10", second = "*", persistent = false)
     public void synchronize() {
         List<Synchronization> synchronizations = getSynchronizations();
         for (Synchronization synchronization : synchronizations) {
-            doSynch(synchronization);
+            doSynch(synchronization.getId());
         }
     }
 
-    public void doSynch(Synchronization synchronization) {
+    public void doSynch(Integer synchronizationId) {
+        Synchronization synchronization = super.find(synchronizationId);
         try {
             Student managed = synchronization.getStudent();
             Collection<StudentCourse> studentCourses = new ArrayList<>();
@@ -114,7 +117,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             managed.setStudentCourses(studentCourses);
             em.merge(managed);
         } catch (CustomHttpException | IOException | ParseException ex) {
-            // Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             synchronization.setSynched(true);
             super.edit(synchronization);
