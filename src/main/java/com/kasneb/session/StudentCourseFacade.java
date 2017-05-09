@@ -438,13 +438,9 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public StudentCourse findActive(Integer id) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(StudentCourse.class);
-        Root<StudentCourse> studentCourse = cq.from(StudentCourse.class);
-        cq.where(cb.equal(studentCourse.get(StudentCourse_.id), id), cb.and(cb.equal(studentCourse.get(StudentCourse_.active), true)));
-        TypedQuery<StudentCourse> query = em.createQuery(cq);
-        query.setMaxResults(1);
         try {
+            TypedQuery<StudentCourse> query = em.createQuery("select s from StudentCourse s left join fetch s.elligiblePapers WHERE s.id =:id", StudentCourse.class);
+            query.setParameter("id", id);
             return query.getSingleResult();
         } catch (javax.persistence.NoResultException ex) {
             return null;

@@ -167,8 +167,7 @@ public class StudentCourseRest {
     public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
         StudentCourse studentCourse = null;
         try {
-            studentCourse = studentCourseFacade.find(id);
-            int x = studentCourse.getElligiblePapers().size();
+            studentCourse = studentCourseFacade.findActive(id);
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
