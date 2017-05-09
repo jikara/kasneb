@@ -45,6 +45,7 @@ import com.kasneb.entity.StudentCourse_;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.PartPK;
+import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
 import com.kasneb.util.CoreUtil;
@@ -198,10 +199,10 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             }
             //Create subscription 
             Invoice invoice = invoiceFacade.generateRegistrationInvoice(managed);
-            StudentCourseSubscription subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, managed);
+            StudentCourseSubscription subscription = new StudentCourseSubscription(new StudentCourseSubscriptionPK(managed.getId(), DateUtil.getYear(new Date()) + 1));
             subscription.setExpiry(getNextRenewalDate(managed));
             subscription.setInvoice(invoice);
-            //managed.getSubscriptions().add(subscription);  //TO BE ADDRESSES
+            managed.getSubscriptions().add(subscription);  //TO BE ADDRESSES
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", managed.getStudent());
         }
         KasnebCourse dbCourse = em.find(KasnebCourse.class, managed.getCourse().getId());

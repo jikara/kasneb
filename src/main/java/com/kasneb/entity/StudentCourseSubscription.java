@@ -7,14 +7,14 @@ package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -28,19 +28,17 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "studentCourseSubscription")
-@IdClass(com.kasneb.entity.pk.StudentCourseSubscriptionPK.class)
 public class StudentCourseSubscription implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @Column(name = "studentCourseId", insertable = false, updatable = false)
-    private Integer studentCourseId;
-    @Id
-    @Column(name = "rYear")
+    @EmbeddedId
+    private StudentCourseSubscriptionPK pk;
+    @Basic(optional = false)
+    @Column(name = "rYear", insertable = false, updatable = false)
     private Integer year;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
-    @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
+    @JoinColumn(name = "studentCourseId", referencedColumnName = "id", insertable = false, updatable = false)
     private StudentCourse studentCourse;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -65,25 +63,21 @@ public class StudentCourseSubscription implements Serializable {
     public StudentCourseSubscription() {
     }
 
+    public StudentCourseSubscription(StudentCourseSubscriptionPK pk) {
+        this.pk = pk;
+    }
+
     public StudentCourseSubscription(Integer year, StudentCourse studentCourse) {
         this.year = year;
         this.studentCourse = studentCourse;
     }
 
-    public Integer getStudentCourseId() {
-        return studentCourseId;
+    public StudentCourseSubscriptionPK getPk() {
+        return pk;
     }
 
-    public void setStudentCourseId(Integer studentCourseId) {
-        this.studentCourseId = studentCourseId;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setPk(StudentCourseSubscriptionPK pk) {
+        this.pk = pk;
     }
 
     public StudentCourse getStudentCourse() {
@@ -92,6 +86,14 @@ public class StudentCourseSubscription implements Serializable {
 
     public void setStudentCourse(StudentCourse studentCourse) {
         this.studentCourse = studentCourse;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public Date getCreated() {

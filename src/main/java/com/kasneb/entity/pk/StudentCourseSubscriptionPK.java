@@ -7,14 +7,22 @@ package com.kasneb.entity.pk;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author jikara
  */
+@Embeddable
 public class StudentCourseSubscriptionPK implements Serializable {
 
+    @Basic
+    @Column(name = "studentCourseId")
     private Integer studentCourseId;
+    @Basic
+    @Column(name = "rYear")
     private Integer year;
 
     public StudentCourseSubscriptionPK() {

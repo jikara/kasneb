@@ -29,7 +29,7 @@ public class CourseExemption implements Serializable {
     private CourseExemptionPK courseExemptionPK;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "qualificationId", referencedColumnName = "id", insertable = false, updatable = false)
     private Course qualification;
     @NotFound(action = NotFoundAction.IGNORE)
