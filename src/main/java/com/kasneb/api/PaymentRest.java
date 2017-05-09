@@ -7,6 +7,8 @@
 package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.AlertType;
 import com.kasneb.entity.Communication;
 import com.kasneb.entity.CommunicationType;
@@ -26,6 +28,8 @@ import com.kasneb.util.PredicateUtil;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -48,7 +52,10 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class PaymentRest {
 
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
+    String json;
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     @EJB
     com.kasneb.session.PaymentFacade paymentFacade;
@@ -73,12 +80,14 @@ public class PaymentRest {
      * Creates a new instance of PaymentRest
      */
     public PaymentRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(Payment entity) {
+    public Response create(Payment entity) throws JsonProcessingException {
         try {
             entity = paymentFacade.createWalletPayment(entity);
             Invoice invoice = invoiceFacade.find(entity.getInvoice().getId());
@@ -137,16 +146,18 @@ public class PaymentRest {
                     break;
             }
             httpStatus = Response.Status.OK;
+            anyResponse = entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            // Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException ex) {
-            // Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
@@ -162,14 +173,16 @@ public class PaymentRest {
                 invoice.setExamCentres(examCentres);
             }
             httpStatus = Response.Status.OK;
+            anyResponse = invoice;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
-            // Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(invoice)
+                .entity(json)
                 .build();
     }
 
@@ -257,16 +270,18 @@ public class PaymentRest {
                     break;
             }
             httpStatus = Response.Status.OK;
+            anyResponse=entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            // Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException ex) {
-            // Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 }
