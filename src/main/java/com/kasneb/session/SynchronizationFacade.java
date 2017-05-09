@@ -29,6 +29,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
 /**
@@ -56,6 +57,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return super.findAll();
     }
 
+    @Transactional
     @Schedule(hour = "*", minute = "*/10", second = "*", persistent = false)
     public void synchronize() {
         List<Synchronization> synchronizations = getSynchronizations();

@@ -70,6 +70,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         return query.getResultList();
     }
 
+    @Transactional
     @Schedule(hour = "*", minute = "*", second = "*/10", persistent = false)
     public void sendSms() {
         for (Integer pk : findPendingSms()) {
@@ -92,7 +93,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         try {
             List<Email> emails = new ArrayList<>();
             for (Integer pk : findPendingEmails()) {
-                Communication communication = super.find(pk);                
+                Communication communication = super.find(pk);
                 try {
                     emails.add(getEmail(pk));
                     communication.setStatus(Boolean.TRUE);
