@@ -122,7 +122,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             synchronization.setSynched(true);
-            super.edit(synchronization);
+            super.remove(synchronization);
         }
     }
 

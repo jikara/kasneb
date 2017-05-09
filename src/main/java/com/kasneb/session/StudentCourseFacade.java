@@ -201,9 +201,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             StudentCourseSubscription subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, managed);
             subscription.setExpiry(getNextRenewalDate(managed));
             subscription.setInvoice(invoice);
-            managed.setLastSubscription(subscription);
-            //Set as current 
-            managed.getSubscriptions().add(subscription);
+            //managed.getSubscriptions().add(subscription);  //TO BE ADDRESSES
             Notification notification = new Notification(NotificationStatus.UNREAD, NotificationType.DUEDATE, "Your registration has expired.", managed.getStudent());
         }
         KasnebCourse dbCourse = em.find(KasnebCourse.class, managed.getCourse().getId());
@@ -217,8 +215,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 managed.setCurrentLevel(level);
                 break;
         }
-        managed = super.edit(managed);
-        return managed;
+        return super.edit(managed);
     }
 
     public StudentCourse updateStudentCourseDocuments(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException {

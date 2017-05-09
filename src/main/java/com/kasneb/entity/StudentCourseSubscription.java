@@ -44,7 +44,7 @@ public class StudentCourseSubscription implements Serializable {
     private StudentCourse studentCourse;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Column(name = "created", nullable = false)
+    @Column(name = "created", nullable = false, updatable = false)
     private Date created = new Date();
     @Basic(optional = false)
     @Column(name = "expiry", nullable = false)

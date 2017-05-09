@@ -22,6 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
@@ -166,7 +168,7 @@ public class StudentCourseRest {
         StudentCourse studentCourse = null;
         try {
             studentCourse = studentCourseFacade.find(id);
-            int x=studentCourse.getElligiblePapers().size();
+            int x = studentCourse.getElligiblePapers().size();
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
@@ -298,9 +300,9 @@ public class StudentCourseRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException | InstantiationException | IOException | InvocationTargetException ex) {
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

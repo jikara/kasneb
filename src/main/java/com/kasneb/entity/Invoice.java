@@ -6,6 +6,7 @@
 package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -111,10 +112,10 @@ public class Invoice implements Serializable {
     @Column(name = "dueDate")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dueDate;
-    @Transient
-    private BigDecimal localAmount;
-    @Transient
-    private Currency localCurrency;
+    @JsonInclude
+    private transient BigDecimal localAmount;
+    @JsonInclude
+    private transient Currency localCurrency;
     @Transient
     private List<ExamCentre> examCentres;
     @Transient
