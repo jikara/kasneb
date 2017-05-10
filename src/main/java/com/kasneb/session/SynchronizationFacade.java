@@ -79,17 +79,16 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return super.findAll();
     }
 
-    @Transactional
     @Schedule(hour = "*", minute = "*/10", second = "*", persistent = false)
     public void synchronize() {
         List<Synchronization> synchronizations = getSynchronizations();
         for (Synchronization synchronization : synchronizations) {
-            doSynch(synchronization.getId());
+            doSynch(synchronization);
         }
     }
 
-    public void doSynch(Integer synchronizationId) {
-        Synchronization synchronization = super.find(synchronizationId);
+    @Transactional
+    public void doSynch(Synchronization synchronization) {
         try {
             Student managed = synchronization.getStudent();
             Collection<StudentCourse> studentCourses = new ArrayList<>();
@@ -140,11 +139,10 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             studentCourses.add(currentCourse);//Add to collection
             managed.setStudentCourses(studentCourses);
             em.merge(managed);
-        } catch (CustomHttpException | IOException | ParseException ex) {
-            Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
             synchronization.setSynched(true);
             super.remove(synchronization);
+        } catch (CustomHttpException | IOException | ParseException ex) {
+            Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -161,7 +159,6 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return eligiblePapers;
     }
 
-    //HELPER METHODS
     public List<StudentCourseSitting> getStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
         List<StudentCourseSitting> studentCourseSittings = new ArrayList<>(); //Sittings array 
         if (registration.getExamEntry() != null) {
