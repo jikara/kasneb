@@ -123,11 +123,11 @@ public class StudentRest {
             studentCourse.getElligiblePapers().size();
         }
         if (student.getCurrentCourse() != null) {
-            currentCourse = studentCourseFacade.findActive(student.getCurrentCourse().getId());
-            currentCourse.getElligiblePapers().size();
+            Integer currentCourseId = student.getCurrentCourse().getId();
+            currentCourse = studentCourseFacade.findActive(currentCourseId);
+            student.setCurrentCourse(currentCourse);
         }
-        student.setCurrentCourse(currentCourse);
-        json = mapper.writeValueAsString(student);
+        json = mapper.writeValueAsString(currentCourse);
         httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)

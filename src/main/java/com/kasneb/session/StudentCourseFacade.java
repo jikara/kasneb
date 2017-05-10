@@ -441,7 +441,8 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         try {
             TypedQuery<StudentCourse> query = em.createQuery("select s from StudentCourse s left join fetch s.elligiblePapers WHERE s.id =:id", StudentCourse.class);
             query.setParameter("id", id);
-            return query.getSingleResult();
+            StudentCourse studentCourse = query.getSingleResult();
+            return studentCourse;
         } catch (javax.persistence.NoResultException ex) {
             return null;
         }
