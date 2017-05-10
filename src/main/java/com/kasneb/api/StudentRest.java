@@ -115,19 +115,17 @@ public class StudentRest {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
-        StudentCourse currentCourse = null;
         Student student = studentFacade.find(id);
-        for (StudentCourse studentCourse : student.getStudentCourses()) {
-            studentCourse.getDocuments().size();
-            studentCourse.getStudentRequirements().size();
-            studentCourse.getElligiblePapers().size();
-        }
         if (student.getCurrentCourse() != null) {
-            Integer currentCourseId = student.getCurrentCourse().getId();
-            currentCourse = studentCourseFacade.findActive(currentCourseId);
+            StudentCourse currentCourse = studentCourseFacade.findActive(student.getCurrentCourse().getId());
             student.setCurrentCourse(currentCourse);
         }
-        json = mapper.writeValueAsString(currentCourse);
+//        for (StudentCourse studentCourse : student.getStudentCourses()) {
+//            studentCourse.getDocuments().size();
+//            studentCourse.getStudentRequirements().size();
+//            studentCourse.getElligiblePapers().size();
+//        }
+        json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
