@@ -46,7 +46,6 @@ public class StudentCourseSitting implements Serializable {
     private Sitting sitting;
     @OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Invoice invoice;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)

@@ -93,6 +93,7 @@ public class Invoice implements Serializable {
     private List<Payment> payments;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCourseSubscription studentCourseSubscription;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCourseSitting studentCourseSitting;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

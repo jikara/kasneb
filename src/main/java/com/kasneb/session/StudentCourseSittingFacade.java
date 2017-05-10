@@ -76,6 +76,12 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
     @EJB
     com.kasneb.session.CommunicationFacade communicationFacade;
+    @EJB
+    com.kasneb.session.SectionFacade sectionFacade;
+    @EJB
+    com.kasneb.session.LevelFacade levelFacade;
+    @EJB
+    com.kasneb.session.PaperFacade paperFacade;
     @Resource
     private SessionContext ctx;
 
@@ -107,7 +113,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             if (managed.getStatus() == StudentCourseSittingStatus.PAID || managed.getStatus() == StudentCourseSittingStatus.CONFIRMED) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, managed.getSitting().getSittingDescription() + " sitting has already been paid for and details can only be updated after the release of the Examination results");
             }
-            em.detach(managed);
+            // em.detach(managed);
             super.copy(entity, managed);
             return super.edit(managed);
         }
@@ -115,7 +121,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
 
     public StudentCourseSitting update(StudentCourseSitting entity) throws CustomHttpException, IllegalAccessException, InvocationTargetException, IOException, ParseException {
         StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
-        StudentCourse studentCourse = managed.getStudentCourse();
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting is not defined");
         }
@@ -127,19 +132,19 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         super.copy(entity, managed);
         managed.setSittingCentre(null);
         Map<String, Collection<Paper>> map;
-        List<StudentCourseSittingPaper> sittingPapers = new ArrayList<>();
+        Set<StudentCourseSittingPaper> papers = new HashSet<>();
         if (entity.getPapers() != null && entity.getPapers().size() > 0) {
             entity.getPapers().stream().forEach((sittingPaper) -> {
+                StudentCourseSittingPaperPK pk = new StudentCourseSittingPaperPK(sittingPaper.getPaperCode(), managed.getId());
+                sittingPaper.setPk(pk);
                 sittingPaper.setPaperStatus(PaperStatus.PENDING);
-                Paper paper = em.find(Paper.class, sittingPaper.getPaper().getCode());
-                sittingPaper.setPaper(paper);
-                sittingPaper.setStudentCourseSittingPaperPK(new StudentCourseSittingPaperPK(paper.getCode(), managed.getId()));
-                sittingPapers.add(sittingPaper);
+                sittingPaper = em.merge(sittingPaper);
+                papers.add(sittingPaper);
             });
-            map = getBillingMethod(managed);
-            managed.setPapers(sittingPapers);
+            map = getBillingMethod(papers);
             Invoice invoice = invoiceFacade.generateExamEntryInvoice(managed, map);
             managed.setInvoice(invoice);
+            managed.setPapers(papers);
         }
         return em.merge(managed);
     }
@@ -170,7 +175,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         return em.merge(managed);
     }
 
-    private Map<String, Collection<Paper>> getBillingMethod(StudentCourseSitting entity) throws CustomHttpException {
+    private Map<String, Collection<Paper>> getBillingMethod(Set<StudentCourseSittingPaper> papers) throws CustomHttpException {
         Map<String, Collection<Paper>> map = new HashMap<>();
         Set<Part> parts = new HashSet<>();
         Set<Section> sections = new HashSet<>();
@@ -185,8 +190,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         Collection<Paper> levelPapers = new ArrayList<>();
         Collection<Paper> sittingPapers = new ArrayList<>();
 
-        for (StudentCourseSittingPaper studentCourseSittingPaper : entity.getPapers()) {
-            Paper paper = em.find(Paper.class, studentCourseSittingPaper.getPaper().getCode());
+        for (StudentCourseSittingPaper studentCourseSittingPaper : papers) {
+            Paper paper = paperFacade.find(studentCourseSittingPaper.getPk().getPaperCode());
             if (paper == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Paper code '" + studentCourseSittingPaper.getPaper() + "' does not exist");
             }
@@ -207,30 +212,29 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (parts.size() > 1) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Two parts cannot be combined");
         }
-        partsList.addAll(parts);
-        for (Part part : partsList) {
+        //Check each section
+        sectionsList.addAll(sections);
+        //two sections can be combined
+        for (Section section : sectionsList) {
+            Section managed = sectionFacade.find(section.getSectionPK());
             //Check each section
-            sectionsList.addAll(sections);
-            //two sections can be combined
-            for (Section section : sectionsList) {
-                //Check each section
-                if (sittingPapers.containsAll(section.getPaperCollection())) {
-                    map.put("PER_SECTION", section.getPaperCollection());
-                    //remove 
-                    sittingPapers.removeAll(section.getPaperCollection());
-                } else {
-                    //bill per paper
-                    map.put("PER_PAPER", sittingPapers);
-                }
+            if (sittingPapers.containsAll(managed.getPaperCollection())) {
+                map.put("PER_SECTION", managed.getPaperCollection());
+                //remove 
+                sittingPapers.removeAll(managed.getPaperCollection());
+            } else {
+                //bill per paper
+                map.put("PER_PAPER", sittingPapers);
             }
         }
         levelsList.addAll(levels);
         for (Level level : levelsList) {
+            Level managed = levelFacade.find(level.getLevelPK());
             //Check each level
-            if (sittingPapers.containsAll(level.getPaperCollection())) {
-                map.put("PER_LEVEL", level.getPaperCollection());
+            if (sittingPapers.containsAll(managed.getPaperCollection())) {
+                map.put("PER_LEVEL", managed.getPaperCollection());
                 //remove 
-                sittingPapers.removeAll(level.getPaperCollection());
+                sittingPapers.removeAll(managed.getPaperCollection());
             } else {
                 //bill per paper
                 map.put("PER_PAPER", sittingPapers);

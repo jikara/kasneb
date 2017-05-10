@@ -6,9 +6,12 @@
 package com.kasneb.session;
 
 import com.kasneb.entity.Level;
+import com.kasneb.entity.Paper;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,6 +30,22 @@ public class LevelFacade extends AbstractFacade<Level> {
 
     public LevelFacade() {
         super(Level.class);
+    }
+
+    @Override
+    public Level find(Object pk) {
+        try {
+            TypedQuery<Level> query = em.createQuery("select l from Level l left join fetch l.paperCollection WHERE l.levelPK =:pk", Level.class);
+            TypedQuery<Paper> query2 = em.createQuery("select p from Paper p WHERE p.level.levelPK =:pk", Paper.class);
+            query.setParameter("pk", pk);
+            query2.setParameter("pk", pk);
+            Level level = query.getSingleResult();
+            List<Paper> papers = query2.getResultList();
+            level.setPaperCollection(papers);
+            return level;
+        } catch (javax.persistence.NoResultException ex) {
+            return null;
+        }
     }
 
 }

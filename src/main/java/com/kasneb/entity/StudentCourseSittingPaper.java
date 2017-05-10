@@ -15,10 +15,13 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -30,16 +33,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StudentCourseSittingPaper implements Serializable {
 
     @EmbeddedId
-    private StudentCourseSittingPaperPK studentCourseSittingPaperPK;
+    private StudentCourseSittingPaperPK pk;
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "paperCode", referencedColumnName = "code", updatable = false, insertable = false, nullable = false)
+    @JoinColumn(name = "paperCode", referencedColumnName = "code", updatable = false, insertable = false)
     private Paper paper;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false, nullable = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotFound(action = NotFoundAction.IGNORE)    
+    @ManyToOne(optional = false,fetch=FetchType.EAGER)
+    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false)
     private StudentCourseSitting studentCourseSitting;     
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
     private transient String paperCode;
@@ -53,12 +58,12 @@ public class StudentCourseSittingPaper implements Serializable {
         this.studentCourseSitting = studentCourseSitting;
     }
 
-    public StudentCourseSittingPaperPK getStudentCourseSittingPaperPK() {
-        return studentCourseSittingPaperPK;
+    public StudentCourseSittingPaperPK getPk() {
+        return pk;
     }
 
-    public void setStudentCourseSittingPaperPK(StudentCourseSittingPaperPK studentCourseSittingPaperPK) {
-        this.studentCourseSittingPaperPK = studentCourseSittingPaperPK;
+    public void setPk(StudentCourseSittingPaperPK pk) {
+        this.pk = pk;
     }
 
     public PaperStatus getPaperStatus() {
@@ -95,8 +100,8 @@ public class StudentCourseSittingPaper implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.studentCourseSittingPaperPK);
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.pk);
         return hash;
     }
 
@@ -112,10 +117,12 @@ public class StudentCourseSittingPaper implements Serializable {
             return false;
         }
         final StudentCourseSittingPaper other = (StudentCourseSittingPaper) obj;
-        if (!Objects.equals(this.studentCourseSittingPaperPK, other.studentCourseSittingPaperPK)) {
+        if (!Objects.equals(this.pk, other.pk)) {
             return false;
         }
         return true;
     }
+
+    
 
 }

@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.SectionPK;
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -44,12 +44,12 @@ public class Section implements Serializable {
     private String name;
     @Transient
     private Boolean optional = true;
-
     @ManyToOne(optional = false)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         , @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
-    private Part part;
+    private Part part;    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "section")
     private Collection<Paper> paperCollection;
 
@@ -95,8 +95,7 @@ public class Section implements Serializable {
     public void setPart(Part part) {
         this.part = part;
     }
-
-    @XmlTransient
+    
     public Collection<Paper> getPaperCollection() {
         return paperCollection;
     }

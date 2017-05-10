@@ -6,21 +6,17 @@
 package com.kasneb.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -43,8 +39,6 @@ public class Paper implements Serializable {
     private String code;
     @Column(name = "name", nullable = false)
     private String name;
-    @ManyToMany(mappedBy = "elligiblePapers")
-    private Collection<StudentCourse> studentCourses;
     @MapsId("id")
     @ManyToOne
     @JoinColumns({
@@ -60,13 +54,9 @@ public class Paper implements Serializable {
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
     private Level level;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paper")
-    private Collection<StudentCourseSittingPaper> studentCourseSittingPapers;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
     private KasnebCourse course;
-    @OneToMany(mappedBy = "paper")
-    private Collection<CourseExemption> courseExemptions;
 
     public Paper() {
     }
