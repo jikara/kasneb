@@ -5,42 +5,22 @@
  */
 package com.kasneb.session;
 
-import com.kasneb.client.ExamPaper;
-import com.kasneb.client.Receipt;
-import com.kasneb.client.ReceiptDetail;
 import com.kasneb.client.Registration;
-import com.kasneb.client.Renewal;
 import com.kasneb.entity.Contact;
 import com.kasneb.entity.Country;
-import com.kasneb.entity.ExamCentre;
-import com.kasneb.entity.Exemption;
-import com.kasneb.entity.ExemptionPaper;
-import com.kasneb.entity.ExemptionStatus;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.KasnebCourse;
-import com.kasneb.entity.KasnebStudentQualification;
 import com.kasneb.entity.Login;
-import com.kasneb.entity.Paper;
-import com.kasneb.entity.PaperStatus;
-import com.kasneb.entity.Payment;
-import com.kasneb.entity.PaymentDetail;
 import com.kasneb.entity.Sitting;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
-import com.kasneb.entity.StudentCourseSitting;
-import com.kasneb.entity.StudentCourseSittingPaper;
-import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.entity.StudentCourseStatus;
-import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
-import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
-import com.kasneb.entity.pk.StudentQualificationPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.LoginResponse;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.DateUtil;
-import com.kasneb.util.DigitUtil;
 import com.kasneb.util.SecurityUtil;
 import com.kasneb.util.WalletUtil;
 import java.io.IOException;
@@ -50,9 +30,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -190,139 +168,6 @@ public class StudentFacade extends AbstractFacade<Student> {
         super.copy(entity, managed);
         return super.edit(managed);
     }
-
-    //HELPER METHODS
-    public List<StudentCourseSitting> getStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
-        List<StudentCourseSitting> studentCourseSittings = new ArrayList<>(); //Sittings array 
-        if (registration.getExamEntry() != null) {
-            Set<StudentCourseSittingPaper> papers = new HashSet<>(); //Sitting papers array 
-            Sitting sitting = sittingFacade.findSitting(registration.getExamEntry().getSittingId(), registration.getExamEntry().getYear());
-            if (sitting != null) {
-                StudentCourseSitting managed = studentCourseSittingFacade.find(studentCourse, sitting);
-                if (managed == null) {
-                    StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
-                    for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
-                        Paper paper = em.find(Paper.class, examPaper.getPaper().getCode());
-                        papers.add(new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting));
-                        studentCourseSitting.setPapers(papers);
-                    }
-                    studentCourseSittings.add(studentCourseSitting);
-                }
-            }
-        } else {//Has no exam entry 
-            //if (studentCourse != null && studentCourse.getStudentCourseSittings() != null) {
-            for (StudentCourseSitting studentCourseSitting : studentCourse.getStudentCourseSittings()) {
-                //Get managed
-                StudentCourseSitting managed = studentCourseSittingFacade.find(studentCourseSitting.getId());
-                if (managed != null) {
-                    managed.setStatus(StudentCourseSittingStatus.PAST);
-                    studentCourseSittingFacade.edit(managed);
-                }
-            }
-            // }
-        }
-        return studentCourseSittings;
-    }
-
-    public List<Payment> getPayments(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<Payment> payments = new ArrayList<>(); //Receipts array  
-        for (Receipt receipt : registration.getReceipts()) {
-            List<PaymentDetail> paymentDetails = new ArrayList<>();
-            for (ReceiptDetail recDet : receipt.getReceiptDetails()) {
-                paymentDetails.add(new PaymentDetail(recDet.getAmount(), recDet.getCategory().getFeeCode(), recDet.getDescription()));
-            }
-            Payment payment = new Payment(receipt.getReceiptNo(), receipt.getAmount(), receipt.getCurrency().getCode(), receipt.getReferenceNumber(), DateUtil.getDate(receipt.getMdate()));
-            payment.setPaymentDetails(paymentDetails);
-            payment.setTotalAmount(receipt.getAmount());
-            payments.add(payment);
-        }
-        return payments;
-    }
-
-    public List<StudentCourseSubscription> getSubscriptions(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<StudentCourseSubscription> subscriptions = new ArrayList<>(); //Subscriptions array
-        Integer currentYear = DateUtil.getYear(new Date());
-        if (registration.getRenewals() != null && !registration.getRenewals().isEmpty()) {
-            for (Renewal renewal : registration.getRenewals()) {  //Renewals
-                Date subscriptionExpiry = DateUtil.getDate("30-06-" + renewal.getEndYear());
-                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), renewal.getEndYear());
-                StudentCourseSubscription subscription = new StudentCourseSubscription(renewal.getEndYear(), studentCourse);
-
-                subscription.setExpiry(subscriptionExpiry);
-                subscription.setStudentCourse(studentCourse);
-                subscriptions.add(subscription);
-            }
-        } else {
-            StudentCourseSubscription subscription;
-            Date dateRegistered = DateUtil.getDate(registration.getRegistered());
-            Integer regYear = DateUtil.getYear(dateRegistered);
-            if (dateRegistered.after(DateUtil.getDate("30-06-" + regYear))) {
-                Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear + 1));
-                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, studentCourse);
-                subscription.setExpiry(subscriptionExpiry);
-            } else {
-                Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear));
-                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, studentCourse);
-                subscription.setExpiry(subscriptionExpiry);
-            }
-            subscription.setStudentCourse(studentCourse);
-            subscriptions.add(subscription);
-        }
-        return subscriptions;
-    }
-
-    public List<Exemption> getExemptions1(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<Exemption> exemptions = new ArrayList<>(); //Exemptions array
-        List<ExemptionPaper> exemptionPapers = new ArrayList<>();
-        Exemption exemption = new Exemption();
-        for (com.kasneb.client.Exemption coreExemption : registration.getExemptions()) {
-            Paper managed = paperFacade.find(coreExemption.getPaperCode());
-            if (managed == null) {
-                if (coreExemption.getSection() > 6) { //more than one section
-                    List<Integer> sectionIds = DigitUtil.split(coreExemption.getSection());
-                    for (Integer sectionId : sectionIds) {
-                        List<Paper> sectionPapers = paperFacade.findBySection(sectionId, studentCourse.getCourse());
-                        for (Paper sectionPaper : sectionPapers) {
-                            ExemptionPaper entity = new ExemptionPaper(sectionPaper, new Date(), true, true, VerificationStatus.APPROVED);
-                            exemptionPapers.add(entity);
-                        }
-                    }
-                } else {
-                    List<Paper> sectionPapers = paperFacade.findBySection(coreExemption.getSection(), studentCourse.getCourse());
-                    for (Paper sectionPaper : sectionPapers) {
-                        ExemptionPaper entity = new ExemptionPaper(sectionPaper, new Date(), true, true, VerificationStatus.APPROVED);
-                        exemptionPapers.add(entity);
-                    }
-                }
-            } else {
-                ExemptionPaper entity = new ExemptionPaper(managed, new Date(), true, true, VerificationStatus.APPROVED);
-                exemptionPapers.add(entity);
-            }
-
-            //exemption.setPapers(exemptionPapers);
-            exemption.setStudentCourse(studentCourse);
-            exemption.setCreated(new Date());
-            exemption.setDateVerified(DateUtil.getDate(coreExemption.getDate()));
-            exemption.setStatus(ExemptionStatus.COMPLETED);
-            exemption.setReference(coreExemption.getReference());
-            exemptions.add(exemption);
-        }
-        return exemptions;
-    }
-
-    public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<Paper> eligiblePapers = new ArrayList<>();
-        Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
-        if (coreStudentPapers != null) {
-            for (com.kasneb.client.StudentCoursePaper p : coreStudentPapers) {
-                if (p.getPaper() != null) {
-                    eligiblePapers.add(new Paper(p.getPaper().getCode()));
-                }
-            }
-        }
-        return eligiblePapers;
-    }
-
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException, ParseException {
         Collection<StudentCourse> studentCourses = new ArrayList<>();
         String courseCode = entity.getPreviousCourseCode();
@@ -360,16 +205,6 @@ public class StudentFacade extends AbstractFacade<Student> {
         StudentCourse studentCourse = new StudentCourse(registration.getRegNo(), true, new Date(), new User(1), "Existing at Kasneb", VerificationStatus.APPROVED, new KasnebCourse(courseCode), firstSitting, true);
         StudentCourseStatus courseStatus = StudentCourseStatus.ACTIVE;
         existing.setCurrentCourse(studentCourse);
-        if (registration.getEligiblePapers().isEmpty()) {
-            Set<KasnebStudentQualification> qs = new HashSet<>();
-            courseStatus = StudentCourseStatus.COMPLETED;
-            studentCourse.setActive(false);
-            //Set as qualification
-            StudentQualificationPK pk = new StudentQualificationPK(existing.getId(), courseCode);
-            qs.add(new KasnebStudentQualification(pk));
-            existing.setKasnebQualifications(qs);
-            existing.setCurrentCourse(null);
-        }
         if (entity.getDocumentNo() != null && registration.getIdNumber() != null) {
             if (!entity.getDocumentNo().trim().equals(registration.getIdNumber().trim())) {
                 studentCourse.setVerificationStatus(VerificationStatus.PENDING);
@@ -387,34 +222,6 @@ public class StudentFacade extends AbstractFacade<Student> {
                 studentCourse.setVerifiedBy(null);
             }
         }
-        List<Payment> payments = new ArrayList<>(); //Receipts array  
-        for (Receipt receipt : registration.getReceipts()) {
-            List<PaymentDetail> paymentDetails = new ArrayList<>();
-            for (ReceiptDetail recDet : receipt.getReceiptDetails()) {
-                paymentDetails.add(new PaymentDetail(recDet.getAmount(), recDet.getCategory().getFeeCode(), recDet.getDescription()));
-            }
-            Payment payment = new Payment(receipt.getReceiptNo(), receipt.getAmount(), receipt.getCurrency().getCode(), receipt.getReferenceNumber(), DateUtil.getDate(receipt.getMdate()));
-            payment.setPaymentDetails(paymentDetails);
-            payment.setTotalAmount(receipt.getAmount());
-            payments.add(payment);
-        }
-        List<StudentCourseSitting> studentCourseSittings = new ArrayList<>(); //Sittings array 
-        if (registration.getExamEntry() != null) {
-            Set<StudentCourseSittingPaper> papers = new HashSet<>(); //Sitting papers array 
-            Sitting sitting = sittingFacade.findSitting(registration.getExamEntry().getSittingId(), registration.getExamEntry().getYear());
-            StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
-            for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
-                StudentCourseSittingPaper studentCourseSittingPaper = new StudentCourseSittingPaper(new Paper(examPaper.getPk().getPaperCode()), PaperStatus.PENDING, studentCourseSitting);
-               // studentCourseSittingPaper.setPaperStatus(PaperStatus.PENDING);
-                papers.add(studentCourseSittingPaper);
-                studentCourseSitting.setPapers(papers);
-            }
-            studentCourseSittings.add(studentCourseSitting);
-        }
-       // studentCourse.setStudentCourseSittings(studentCourseSittings);//Add sittings
-       // studentCourse.setSubscriptions(getSubscriptions(studentCourse, registration));  //Add subscriptions
-      //  studentCourse.setPayments(payments);  //Add payments
-       // studentCourse.setElligiblePapers(getElligiblePapers(studentCourse, registration));
         studentCourse.setCourseStatus(courseStatus);//Set status
         studentCourses.add(studentCourse);//Add to collection
         existing.setStudentCourses(studentCourses);
