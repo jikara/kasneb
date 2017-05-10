@@ -20,10 +20,10 @@ public class StudentCourseSittingPaperPK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "paperCode")
-    private String paperCode;
+    protected String paperCode;
     @Basic(optional = false)
     @Column(name = "studentCourseSittingId")
-    private Integer studentCourseSittingId;
+    protected Integer studentCourseSittingId;
 
     public StudentCourseSittingPaperPK() {
     }

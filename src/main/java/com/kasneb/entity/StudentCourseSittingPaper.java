@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.StudentCourseSittingPaperPK;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -33,20 +35,23 @@ import org.hibernate.annotations.NotFoundAction;
 public class StudentCourseSittingPaper implements Serializable {
 
     @EmbeddedId
+    @AttributeOverrides({
+        @AttributeOverride(name = "paperCode", column = @Column(name = "paperCodePK"))
+        ,      @AttributeOverride(name = "studentCourseSittingId", column = @Column(name = "studentCourseSittingIdPK"))})
     private StudentCourseSittingPaperPK pk;
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "paperCode", referencedColumnName = "code", updatable = false, insertable = false)
+    @JoinColumn(name = "paperCode", referencedColumnName = "code")
     private Paper paper;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotFound(action = NotFoundAction.IGNORE)    
-    @ManyToOne(optional = false,fetch=FetchType.EAGER)
-    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false)
-    private StudentCourseSitting studentCourseSitting;     
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
+    private StudentCourseSitting studentCourseSitting;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient String paperCode;
 
     public StudentCourseSittingPaper() {
@@ -122,7 +127,5 @@ public class StudentCourseSittingPaper implements Serializable {
         }
         return true;
     }
-
-    
 
 }

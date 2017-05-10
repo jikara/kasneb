@@ -165,6 +165,7 @@ public class StudentRest {
      * @param headers
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})

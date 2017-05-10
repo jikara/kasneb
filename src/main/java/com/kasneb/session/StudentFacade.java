@@ -405,6 +405,7 @@ public class StudentFacade extends AbstractFacade<Student> {
             StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
             for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
                 Paper paper = em.find(Paper.class, examPaper.getPaper().getCode());
+                
                 papers.add(new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting));
                 studentCourseSitting.setPapers(papers);
             }
