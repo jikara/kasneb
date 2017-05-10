@@ -131,35 +131,35 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             currentCourse.setCurrentPart(registration.getCurrentPart());
             currentCourse.setCurrentLevel(registration.getCurrentLevel());
             currentCourse.setCourseStatus(courseStatus);
-            currentCourse.setStudentCourseSittings(getStudentCourseSittings(currentCourse, registration));//Add sittings        
+
+            this.updateStudentCourseSittings(currentCourse, registration);//Add sittings        
             //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
-            currentCourse.setSubscriptions(getSubscriptions(currentCourse, registration));  //Add subscriptions
-            currentCourse.setPayments(getPayments(currentCourse, registration));  //Add payments
-            currentCourse.setElligiblePapers(getElligiblePapers(currentCourse, registration));
+            this.updateSubscriptions(currentCourse, registration);  //Add subscriptions
+            this.updatePayments(currentCourse, registration);  //Add payments            
+            this.updateElligiblePapers(currentCourse, registration); //Elligible Papers
             studentCourses.add(currentCourse);//Add to collection
             managed.setStudentCourses(studentCourses);
             em.merge(managed);
-            synchronization.setSynched(true);
             super.remove(synchronization);
         } catch (CustomHttpException | IOException | ParseException ex) {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            synchronization.setSynched(true);
+            super.edit(synchronization);
         }
     }
 
-    public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<Paper> eligiblePapers = new ArrayList<>();
+    public void updateElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
         Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
         if (coreStudentPapers != null) {
             for (com.kasneb.client.StudentCoursePaper p : coreStudentPapers) {
                 if (p.getPaper() != null) {
-                    eligiblePapers.add(new Paper(p.getPaper().getCode()));
+                    em.merge(new Paper(p.getPaper().getCode()));
                 }
             }
         }
-        return eligiblePapers;
     }
 
-    public List<StudentCourseSitting> getStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
+    public void updateStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
         List<StudentCourseSitting> studentCourseSittings = new ArrayList<>(); //Sittings array 
         if (registration.getExamEntry() != null) {
             Set<StudentCourseSittingPaper> papers = new HashSet<>(); //Sitting papers array 
@@ -173,7 +173,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                         papers.add(new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting));
                         studentCourseSitting.setPapers(papers);
                     }
-                    studentCourseSittings.add(studentCourseSitting);
+                    em.merge(studentCourseSitting);
                 }
             }
         } else {//Has no exam entry 
@@ -188,11 +188,9 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             }
             // }
         }
-        return studentCourseSittings;
     }
 
-    public List<Payment> getPayments(StudentCourse studentCourse, Registration registration) throws ParseException {
-        List<Payment> payments = new ArrayList<>(); //Receipts array  
+    public void updatePayments(StudentCourse studentCourse, Registration registration) throws ParseException {
         for (Receipt receipt : registration.getReceipts()) {
             List<PaymentDetail> paymentDetails = new ArrayList<>();
             for (ReceiptDetail recDet : receipt.getReceiptDetails()) {
@@ -201,12 +199,11 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             Payment payment = new Payment(receipt.getReceiptNo(), receipt.getAmount(), receipt.getCurrency().getCode(), receipt.getReferenceNumber(), DateUtil.getDate(receipt.getMdate()));
             payment.setPaymentDetails(paymentDetails);
             payment.setTotalAmount(receipt.getAmount());
-            payments.add(payment);
+            em.merge(payment);
         }
-        return payments;
     }
 
-    public List<StudentCourseSubscription> getSubscriptions(StudentCourse studentCourse, Registration registration) throws ParseException {
+    public void updateSubscriptions(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<StudentCourseSubscription> subscriptions = new ArrayList<>(); //Subscriptions array
         Integer currentYear = DateUtil.getYear(new Date());
         if (registration.getRenewals() != null && !registration.getRenewals().isEmpty()) {
@@ -217,7 +214,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
 
                 subscription.setExpiry(subscriptionExpiry);
                 subscription.setStudentCourse(studentCourse);
-                subscriptions.add(subscription);
+                em.merge(subscription);
             }
         } else {
             StudentCourseSubscription subscription;
@@ -233,9 +230,8 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 subscription.setExpiry(subscriptionExpiry);
             }
             subscription.setStudentCourse(studentCourse);
-            subscriptions.add(subscription);
+            em.merge(subscription);
         }
-        return subscriptions;
     }
 
 }
