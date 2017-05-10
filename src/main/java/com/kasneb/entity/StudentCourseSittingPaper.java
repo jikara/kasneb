@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kasneb.entity.pk.StudentCourseSittingPaperPK;
 import java.io.Serializable;
 import java.util.Objects;
@@ -39,8 +40,9 @@ public class StudentCourseSittingPaper implements Serializable {
     private Paper paper;
     @ManyToOne(optional = false)
     @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", updatable = false, insertable = false, nullable = true)
-
-    private StudentCourseSitting studentCourseSitting;
+    private StudentCourseSitting studentCourseSitting;     
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    private transient String paperCode;
 
     public StudentCourseSittingPaper() {
     }
@@ -81,6 +83,14 @@ public class StudentCourseSittingPaper implements Serializable {
 
     public void setStudentCourseSitting(StudentCourseSitting studentCourseSitting) {
         this.studentCourseSitting = studentCourseSitting;
+    }
+
+    public String getPaperCode() {
+        return paperCode;
+    }
+
+    public void setPaperCode(String paperCode) {
+        this.paperCode = paperCode;
     }
 
     @Override

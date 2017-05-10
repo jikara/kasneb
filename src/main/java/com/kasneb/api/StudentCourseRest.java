@@ -165,9 +165,10 @@ public class StudentCourseRest {
     @Path("active/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response findActive(@PathParam("id") Integer id) throws JsonProcessingException {
-        StudentCourse studentCourse = null;
+        StudentCourse studentCourse;
         try {
             studentCourse = studentCourseFacade.findActive(id);
+            studentCourse.getStudentCourseSittings().size();
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");
             }
@@ -179,7 +180,7 @@ public class StudentCourseRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
@@ -203,9 +204,9 @@ public class StudentCourseRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
@@ -261,6 +262,7 @@ public class StudentCourseRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

@@ -115,12 +115,18 @@ public class StudentRest {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
+        StudentCourse currentCourse = null;
         Student student = studentFacade.find(id);
-        for(StudentCourse studentCourse:student.getStudentCourses()){
+        for (StudentCourse studentCourse : student.getStudentCourses()) {
             studentCourse.getDocuments().size();
             studentCourse.getStudentRequirements().size();
             studentCourse.getElligiblePapers().size();
         }
+        if (student.getCurrentCourse() != null) {
+            currentCourse = studentCourseFacade.findActive(student.getCurrentCourse().getId());
+            currentCourse.getElligiblePapers().size();
+        }
+        student.setCurrentCourse(currentCourse);
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
         return Response
@@ -143,13 +149,13 @@ public class StudentRest {
         try {
             entity = studentFacade.updateStudent(entity);
             httpStatus = Response.Status.OK;
-            anyResponse=entity;
+            anyResponse = entity;
         } catch (CustomHttpException | IllegalAccessException | InvocationTargetException ex) {
             anyResponse = new CustomMessage(500, ex.getMessage());
             httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -212,7 +218,7 @@ public class StudentRest {
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
