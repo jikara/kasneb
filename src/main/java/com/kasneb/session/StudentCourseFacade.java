@@ -456,7 +456,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     public List<StudentCourse> findPendingIdentification() {
-        TypedQuery<StudentCourse> query = em.createQuery("SELECT DISTINCT s FROM StudentCourse s WHERE s.courseStatus =:courseStatus", StudentCourse.class);
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.courseStatus =:courseStatus ORDER BY s.id DESC", StudentCourse.class);
         query.setParameter("courseStatus", StudentCourseStatus.PENDING_IDENTIFICATION);
         query.setMaxResults(100);
         return query.getResultList();

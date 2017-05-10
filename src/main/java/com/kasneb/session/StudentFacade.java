@@ -69,7 +69,7 @@ import javax.ws.rs.core.Response.Status;
  */
 @Stateless
 public class StudentFacade extends AbstractFacade<Student> {
-    
+
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
@@ -80,23 +80,23 @@ public class StudentFacade extends AbstractFacade<Student> {
     com.kasneb.session.PaperFacade paperFacade;
     @EJB
     com.kasneb.session.LoginFacade loginFacade;
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     public StudentFacade() {
         super(Student.class);
     }
-    
+
     @Override
     public List<Student> findAll() {
         TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s ORDER BY s.id DESC", Student.class);
         query.setMaxResults(500);
         return query.getResultList();
     }
-    
+
     public List<Student> findAll(Date startDate, Date endDate) {
         TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.created BETWEEN :startDate AND :endDate ORDER BY s.id DESC", Student.class);
         query.setParameter("startDate", startDate);
@@ -104,7 +104,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         query.setMaxResults(500);
         return query.getResultList();
     }
-    
+
     public void verifyEmail(String verificationToken) throws CustomHttpException {
         Student student;
         Query query = getEntityManager().createQuery("SELECT s FROM Student s WHERE s.loginId.verificationToken=:verificationToken");
@@ -120,7 +120,7 @@ public class StudentFacade extends AbstractFacade<Student> {
             student.getLoginId().setEmailActivated(true); //Mark as activated
             student.getLoginId().setVerificationToken(null);//Set verification key to null
             getEntityManager().merge(student);
-            
+
         } catch (io.jsonwebtoken.ExpiredJwtException ex) {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Expired token");
         } catch (NoResultException e) {
@@ -129,7 +129,7 @@ public class StudentFacade extends AbstractFacade<Student> {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Invalid token");
         }
     }
-    
+
     public void verifyPhoneNumber(String smsToken) throws CustomHttpException {
         Student student;
         Query query = getEntityManager().createQuery("SELECT s FROM Student s WHERE s.loginId.smsToken =:smsToken");
@@ -151,13 +151,13 @@ public class StudentFacade extends AbstractFacade<Student> {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
-    
+
     public List<Invoice> findInvoices(Integer id) {
         TypedQuery<Invoice> query = getEntityManager().createQuery("SELECT i FROM Invoice i WHERE i.studentCourse.student =:student", Invoice.class);
         query.setParameter("student", new Student(id));
         return query.getResultList();
     }
-    
+
     public Student createStudent(Student entity) throws CustomHttpException {
         Login login = loginFacade.findByEmail(entity.getLoginId().getEmail());
         if (login != null) {
@@ -166,7 +166,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         super.create(entity);
         return entity;
     }
-    
+
     public BigDecimal getBalance(Student student) throws CustomHttpException {
         BigDecimal balance = new BigDecimal("0");
         try {
@@ -177,7 +177,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return balance;
     }
-    
+
     public Student updateStudent(Student entity) throws CustomHttpException, IllegalAccessException, InvocationTargetException {
         //Check if student is registered and confirmed  
         if (entity.getId() == null) {
@@ -223,7 +223,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return studentCourseSittings;
     }
-    
+
     public List<Payment> getPayments(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<Payment> payments = new ArrayList<>(); //Receipts array  
         for (Receipt receipt : registration.getReceipts()) {
@@ -238,7 +238,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return payments;
     }
-    
+
     public List<StudentCourseSubscription> getSubscriptions(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<StudentCourseSubscription> subscriptions = new ArrayList<>(); //Subscriptions array
         Integer currentYear = DateUtil.getYear(new Date());
@@ -247,7 +247,7 @@ public class StudentFacade extends AbstractFacade<Student> {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + renewal.getEndYear());
                 StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), renewal.getEndYear());
                 StudentCourseSubscription subscription = new StudentCourseSubscription(renewal.getEndYear(), studentCourse);
-                
+
                 subscription.setExpiry(subscriptionExpiry);
                 subscription.setStudentCourse(studentCourse);
                 subscriptions.add(subscription);
@@ -270,7 +270,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return subscriptions;
     }
-    
+
     public List<Exemption> getExemptions1(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<Exemption> exemptions = new ArrayList<>(); //Exemptions array
         List<ExemptionPaper> exemptionPapers = new ArrayList<>();
@@ -309,7 +309,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return exemptions;
     }
-    
+
     public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<Paper> eligiblePapers = new ArrayList<>();
         Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
@@ -322,7 +322,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         }
         return eligiblePapers;
     }
-    
+
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException, ParseException {
         Collection<StudentCourse> studentCourses = new ArrayList<>();
         String courseCode = entity.getPreviousCourseCode();
@@ -331,7 +331,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         if (registration == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
         }
-        
+
         if (registration.getSex() != null) {
             switch (registration.getSex().getCode()) {
                 case "M":
@@ -404,17 +404,17 @@ public class StudentFacade extends AbstractFacade<Student> {
             Sitting sitting = sittingFacade.findSitting(registration.getExamEntry().getSittingId(), registration.getExamEntry().getYear());
             StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
             for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
-                Paper paper = em.find(Paper.class, examPaper.getPaper().getCode());
-                
-                papers.add(new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting));
+                StudentCourseSittingPaper studentCourseSittingPaper = new StudentCourseSittingPaper(new Paper(examPaper.getPk().getPaperCode()), PaperStatus.PENDING, studentCourseSitting);
+               // studentCourseSittingPaper.setPaperStatus(PaperStatus.PENDING);
+                papers.add(studentCourseSittingPaper);
                 studentCourseSitting.setPapers(papers);
             }
             studentCourseSittings.add(studentCourseSitting);
         }
-        studentCourse.setStudentCourseSittings(studentCourseSittings);//Add sittings
-        studentCourse.setSubscriptions(getSubscriptions(studentCourse, registration));  //Add subscriptions
-        studentCourse.setPayments(payments);  //Add payments
-        studentCourse.setElligiblePapers(getElligiblePapers(studentCourse, registration));
+       // studentCourse.setStudentCourseSittings(studentCourseSittings);//Add sittings
+       // studentCourse.setSubscriptions(getSubscriptions(studentCourse, registration));  //Add subscriptions
+      //  studentCourse.setPayments(payments);  //Add payments
+       // studentCourse.setElligiblePapers(getElligiblePapers(studentCourse, registration));
         studentCourse.setCourseStatus(courseStatus);//Set status
         studentCourses.add(studentCourse);//Add to collection
         existing.setStudentCourses(studentCourses);
