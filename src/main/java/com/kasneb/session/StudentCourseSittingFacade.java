@@ -128,23 +128,22 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (managed.getStatus() == StudentCourseSittingStatus.PAID || managed.getStatus() == StudentCourseSittingStatus.CONFIRMED) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, managed.getSitting().getSittingDescription() + " sitting has already been paid for and details can only be updated after the release of the Examination results");
         }
-        super.copy(entity, managed);
-        managed.setSittingCentre(null);
         Map<String, Collection<Paper>> map;
-        Set<StudentCourseSittingPaper> papers = new HashSet<>();
         if (entity.getPapers() != null && entity.getPapers().size() > 0) {
             entity.getPapers().stream().forEach((sittingPaper) -> {
+                Paper paper = paperFacade.findPaper(sittingPaper.getPaperCode());
                 StudentCourseSittingPaperPK pk = new StudentCourseSittingPaperPK(sittingPaper.getPaperCode(), managed.getId());
                 sittingPaper.setPk(pk);
+                sittingPaper.setPaper(paper);
                 sittingPaper.setPaperStatus(PaperStatus.PENDING);
-                sittingPaper = em.merge(sittingPaper);
-                papers.add(sittingPaper);
+                managed.addPaper(sittingPaper);
             });
-            map = getBillingMethod(papers);
+            map = getBillingMethod(managed.getPapers());
             Invoice invoice = invoiceFacade.generateExamEntryInvoice(managed, map);
             managed.setInvoice(invoice);
-            managed.setPapers(papers);
         }
+        super.copy(entity, managed);
+        managed.setSittingCentre(null);
         return em.merge(managed);
     }
 
@@ -174,7 +173,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         return em.merge(managed);
     }
 
-    private Map<String, Collection<Paper>> getBillingMethod(Set<StudentCourseSittingPaper> papers) throws CustomHttpException {
+    private Map<String, Collection<Paper>> getBillingMethod(Collection<StudentCourseSittingPaper> papers) throws CustomHttpException {
         Map<String, Collection<Paper>> map = new HashMap<>();
         Set<Part> parts = new HashSet<>();
         Set<Section> sections = new HashSet<>();

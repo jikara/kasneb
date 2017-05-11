@@ -16,8 +16,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.NotFound;
@@ -38,13 +39,14 @@ public class StudentCourseSittingPaper implements Serializable {
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
+    @Id
     @ManyToOne(optional = false)
-    @PrimaryKeyJoinColumn(name = "paperCode", referencedColumnName = "code")
+    @JoinColumn(name = "paperCode", referencedColumnName = "code")
     private Paper paper;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
+    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
     private StudentCourseSitting studentCourseSitting;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient String paperCode;
@@ -109,7 +111,7 @@ public class StudentCourseSittingPaper implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.pk);
+        hash = 59 * hash + Objects.hashCode(this.pk);
         return hash;
     }
 

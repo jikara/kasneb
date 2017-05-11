@@ -6,7 +6,6 @@
 package com.kasneb.entity.pk;
 
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,7 +21,7 @@ public class StudentCourseSittingPaperPK implements Serializable {
     @Column(name = "paperCode")
     private String paperCode;
     @Basic(optional = false)
-    @Column(name = "studentCourseSittingId")
+    @Column(name = "studentCourseSittingId", insertable = false, updatable = false)
     private Integer studentCourseSittingId;
 
     public StudentCourseSittingPaperPK() {
@@ -47,25 +46,5 @@ public class StudentCourseSittingPaperPK implements Serializable {
 
     public void setStudentCourseSittingId(Integer studentCourseSittingId) {
         this.studentCourseSittingId = studentCourseSittingId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.paperCode);
-        hash = 83 * hash + Objects.hashCode(this.studentCourseSittingId);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof StudentCourseSittingPaperPK)) {
-            return false;
-        }
-        StudentCourseSittingPaperPK pk = (StudentCourseSittingPaperPK) obj;
-        return Objects.equals(this.studentCourseSittingId, pk.studentCourseSittingId) && pk.paperCode.equals(this.paperCode);
     }
 }
