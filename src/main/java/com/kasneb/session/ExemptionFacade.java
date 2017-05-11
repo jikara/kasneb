@@ -207,8 +207,9 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         query.setMaxResults(1);
         try {
             Exemption e = query.getSingleResult();
-            List<ExemptionPaper> papers = exemptionPaperFacade.findPending(e.getId());
+            List<ExemptionPaper> papers = exemptionPaperFacade.find(e.getId());
             e.setPapers(papers);
+            e.getDocuments().size();
             return e;
         } catch (NoResultException ex) {
             return null;

@@ -39,4 +39,10 @@ public class ExemptionPaperFacade extends AbstractFacade<ExemptionPaper> {
         return query.getResultList();
     }
 
+    public List<ExemptionPaper> find(Integer id) {
+        TypedQuery<ExemptionPaper> query = em.createQuery("SELECT e FROM ExemptionPaper e left join fetch e.paper WHERE e.exemptionPaperPK.exemptionId =:id ", ExemptionPaper.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
 }

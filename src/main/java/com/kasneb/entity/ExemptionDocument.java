@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +33,7 @@ public class ExemptionDocument implements Serializable {
     private String name;
     @Column(name = "type")
     private String type;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "exemptionId", referencedColumnName = "id")
     private Exemption exemption;
