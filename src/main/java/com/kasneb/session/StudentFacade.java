@@ -71,7 +71,7 @@ public class StudentFacade extends AbstractFacade<Student> {
     @Override
     public List<Student> findAll() {
         TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s ORDER BY s.id DESC", Student.class);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -79,7 +79,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.created BETWEEN :startDate AND :endDate ORDER BY s.id DESC", Student.class);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 

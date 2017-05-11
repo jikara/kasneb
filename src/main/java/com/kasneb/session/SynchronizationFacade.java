@@ -14,6 +14,7 @@ import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.KasnebStudentQualification;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.PaperStatus;
+import com.kasneb.entity.Part;
 import com.kasneb.entity.Payment;
 import com.kasneb.entity.PaymentDetail;
 import com.kasneb.entity.Sitting;
@@ -25,6 +26,7 @@ import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.entity.StudentCourseStatus;
 import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.Synchronization;
+import com.kasneb.entity.pk.PartPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.entity.pk.StudentQualificationPK;
 import com.kasneb.exception.CustomHttpException;
@@ -45,6 +47,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
@@ -76,13 +79,17 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
     }
 
     public List<Synchronization> getSynchronizations() {
-        return super.findAll();
+        TypedQuery<Synchronization> query = em.createQuery("SELECT s FROM Synchronization s WHERE s.synched =:synched", Synchronization.class);
+        query.setParameter("synched", false);
+        query.setMaxResults(1);
+        return query.getResultList();
     }
 
-    @Schedule(hour = "*", minute = "*/10", second = "*", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*/10", persistent = false)
     public void synchronize() {
         List<Synchronization> synchronizations = getSynchronizations();
         for (Synchronization synchronization : synchronizations) {
+
             doSynch(synchronization);
         }
     }
@@ -128,15 +135,18 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 currentCourse.setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
             }
-            currentCourse.setCurrentPart(registration.getCurrentPart());
-            currentCourse.setCurrentLevel(registration.getCurrentLevel());
+            PartPK partPK = new PartPK(registration.getCurrentPart().getId(), registration.getCurrentPart().getCourse().getId());
+            Part part = em.find(Part.class, partPK);
+            currentCourse.setCurrentPart(part);
             currentCourse.setCourseStatus(courseStatus);
-
             this.updateStudentCourseSittings(currentCourse, registration);//Add sittings        
             //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
             this.updateSubscriptions(currentCourse, registration);  //Add subscriptions
-            this.updatePayments(currentCourse, registration);  //Add payments            
-            this.updateElligiblePapers(currentCourse, registration); //Elligible Papers
+            this.updatePayments(currentCourse, registration);  //Add payments  
+            currentCourse.setElligiblePapers(new ArrayList<>());
+            List<Paper> papers = getElligiblePapers(currentCourse, registration); //Elligible Papers
+            currentCourse.setElligiblePapers(papers);
+            currentCourse = em.merge(currentCourse);
             studentCourses.add(currentCourse);//Add to collection
             managed.setStudentCourses(studentCourses);
             em.merge(managed);
@@ -148,15 +158,18 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         }
     }
 
-    public void updateElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
+    public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
         Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
+        List<Paper> papers = new ArrayList<>();
         if (coreStudentPapers != null) {
             for (com.kasneb.client.StudentCoursePaper p : coreStudentPapers) {
                 if (p.getPaper() != null) {
-                    em.merge(new Paper(p.getPaper().getCode()));
+                    Paper paper = paperFacade.findPaper(p.getPaper().getCode());
+                    papers.add(paper);
                 }
             }
         }
+        return papers;
     }
 
     public void updateStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
@@ -169,16 +182,17 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 if (managed == null) {
                     StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
                     for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
-                        Paper paper = em.find(Paper.class, examPaper.getPaper().getCode());
-                        papers.add(new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting));
-                        studentCourseSitting.setPapers(papers);
+                        Paper paper = paperFacade.findPaper(examPaper.getPaper().getCode());
+                        StudentCourseSittingPaper StudentCourseSittingPaper = new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting);
+                        papers.add(StudentCourseSittingPaper);
+                        // studentCourseSitting.setPapers(papers);
                     }
                     em.merge(studentCourseSitting);
                 }
             }
         } else {//Has no exam entry 
-            //if (studentCourse != null && studentCourse.getStudentCourseSittings() != null) {
-            for (StudentCourseSitting studentCourseSitting : studentCourse.getStudentCourseSittings()) {
+            List<StudentCourseSitting> sittings = studentCourseSittingFacade.findSittings(studentCourse);
+            for (StudentCourseSitting studentCourseSitting : sittings) {
                 //Get managed
                 StudentCourseSitting managed = studentCourseSittingFacade.find(studentCourseSitting.getId());
                 if (managed != null) {
@@ -186,7 +200,6 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                     studentCourseSittingFacade.edit(managed);
                 }
             }
-            // }
         }
     }
 
@@ -211,7 +224,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + renewal.getEndYear());
                 StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), renewal.getEndYear());
                 StudentCourseSubscription subscription = new StudentCourseSubscription(renewal.getEndYear(), studentCourse);
-
+                subscription.setPk(pk);
                 subscription.setExpiry(subscriptionExpiry);
                 subscription.setStudentCourse(studentCourse);
                 em.merge(subscription);
@@ -224,10 +237,14 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear + 1));
                 subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, studentCourse);
                 subscription.setExpiry(subscriptionExpiry);
+                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), DateUtil.getYear(new Date()) + 1);
+                subscription.setPk(pk);
             } else {
                 Date subscriptionExpiry = DateUtil.getDate("30-06-" + (regYear));
-                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()) + 1, studentCourse);
+                subscription = new StudentCourseSubscription(DateUtil.getYear(new Date()), studentCourse);
                 subscription.setExpiry(subscriptionExpiry);
+                StudentCourseSubscriptionPK pk = new StudentCourseSubscriptionPK(studentCourse.getId(), DateUtil.getYear(new Date()));
+                subscription.setPk(pk);
             }
             subscription.setStudentCourse(studentCourse);
             em.merge(subscription);

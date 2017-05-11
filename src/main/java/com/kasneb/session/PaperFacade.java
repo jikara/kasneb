@@ -32,6 +32,19 @@ public class PaperFacade extends AbstractFacade<Paper> {
         super(Paper.class);
     }
 
+    @Override
+    public Paper find(Object id) {
+        TypedQuery<Paper> query = em.createQuery("SELECT p FROM Paper p WHERE p.code =:code", Paper.class);
+        query.setParameter("code", id);
+        return query.getSingleResult();
+    }
+
+    public Paper findPaper(Object id) {
+        TypedQuery<Paper> query = em.createQuery("SELECT p FROM Paper p WHERE p.code =:code", Paper.class);
+        query.setParameter("code", id);
+        return query.getSingleResult();
+    }
+
     public List<Paper> findBySection(Integer sectionId, KasnebCourse course) {
         TypedQuery<Paper> query = em.createQuery("SELECT p FROM Paper p WHERE p.course =:course AND p.section.id =:sectionId", Paper.class);
         query.setParameter("course", course);

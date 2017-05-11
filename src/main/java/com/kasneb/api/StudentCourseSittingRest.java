@@ -140,7 +140,7 @@ public class StudentCourseSittingRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
         } catch (IllegalAccessException | InvocationTargetException | IOException | ParseException ex) {
-            // Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentCourseSittingRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

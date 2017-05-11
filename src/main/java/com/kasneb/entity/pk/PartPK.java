@@ -73,12 +73,6 @@ public class PartPK implements Serializable {
             return false;
         }
         final PartPK other = (PartPK) obj;
-        if (!Objects.equals(this.courseId, other.courseId)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return (Objects.equals(this.courseId, other.courseId) && Objects.equals(this.id, other.id));
     }
 }

@@ -259,7 +259,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     public List<StudentCourseSitting> findAll() {
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -270,7 +270,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("year", year);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -278,7 +278,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ty.code =:courseTypeCode AND s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("courseTypeCode", courseTypeCode);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -286,7 +286,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE  c.id =:courseId AND s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("courseId", courseId);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -294,7 +294,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ss.sittingYear =:year AND s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("year", year);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -302,7 +302,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s JOIN s.studentCourse sc JOIN sc.course c JOIN c.kasnebCourseType ty JOIN s.sitting ss WHERE ss.sittingPeriod =:month AND s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -311,7 +311,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("courseTypeCode", courseTypeCode);
         query.setParameter("year", year);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -320,7 +320,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("courseTypeCode", courseTypeCode);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -329,7 +329,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("courseId", courseId);
         query.setParameter("year", year);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -338,7 +338,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("courseId", courseId);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -348,7 +348,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("year", year);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -358,7 +358,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("year", year);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -367,7 +367,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         query.setParameter("year", year);
         query.setParameter("month", month);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 
@@ -375,7 +375,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s WHERE s.sitting =:sitting AND s.status =:status ORDER BY s.created DESC", StudentCourseSitting.class);
         query.setParameter("sitting", sitting);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         query.setMaxResults(1);
         return query.getSingleResult();
     }
@@ -440,6 +440,12 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         TypedQuery<com.kasneb.dto.StudentCourseSitting> query = em.createQuery("SELECT new com.kasneb.dto.StudentCourseSitting(s.id,s.sitting) FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse AND s.status =:status", com.kasneb.dto.StudentCourseSitting.class);
         query.setParameter("studentCourse", studentCourse);
         query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findSittings(StudentCourse studentCourse) {
+        TypedQuery<StudentCourseSitting> query = getEntityManager().createQuery("SELECT s FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse", StudentCourseSitting.class);
+        query.setParameter("studentCourse", studentCourse);
         return query.getResultList();
     }
 

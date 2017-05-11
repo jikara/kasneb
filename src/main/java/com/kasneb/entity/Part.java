@@ -36,6 +36,8 @@ public class Part implements Serializable {
     private PartPK partPK;
     @Transient
     private String name;
+    @Transient
+    private Integer id;
     @JoinColumn(name = "courseId", referencedColumnName = "id",insertable=false,updatable=false)
     @ManyToOne(optional = false)
     private KasnebCourse course;
@@ -80,6 +82,14 @@ public class Part implements Serializable {
 
     public void setCourse(KasnebCourse course) {
         this.course = course;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Collection<Section> getSectionCollection() {

@@ -113,13 +113,12 @@ public class StudentCourse implements Serializable {
     private Collection<Requirement> studentRequirements;
     @OneToMany(mappedBy = "studentCourse", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Collection<StudentCourseSitting> studentCourseSittings;
-    
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "studentCoursePaper", joinColumns = {
         @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     }, inverseJoinColumns = {
         @JoinColumn(name = "paperCode", referencedColumnName = "code")
     })
-    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Paper> elligiblePapers;
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)

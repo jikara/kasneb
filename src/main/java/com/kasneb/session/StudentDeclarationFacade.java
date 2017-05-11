@@ -35,21 +35,21 @@ public class StudentDeclarationFacade extends AbstractFacade<StudentDeclaration>
         TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.declaration.id =:id AND sd.response=:response", StudentDeclaration.class);
         query.setParameter("response", response);
         query.setParameter("id", id);
-       query.setMaxResults(500);
+       query.setMaxResults(100);
         return query.getResultList();
     }
 
     public List<StudentDeclaration> findAll(Integer id) {
         TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.declaration.id =:id", StudentDeclaration.class);
         query.setParameter("id", id);
-         query.setMaxResults(500);
+         query.setMaxResults(100);
         return query.getResultList();
     }
 
     public List<StudentDeclaration> findAll(Boolean response) {
         TypedQuery<StudentDeclaration> query = em.createQuery("SELECT sd FROM StudentDeclaration sd WHERE sd.response=:response", StudentDeclaration.class);
         query.setParameter("response", response);
-        query.setMaxResults(500);
+        query.setMaxResults(100);
         return query.getResultList();
     }
 

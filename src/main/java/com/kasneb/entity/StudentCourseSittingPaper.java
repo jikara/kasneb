@@ -42,11 +42,11 @@ public class StudentCourseSittingPaper implements Serializable {
     @PrimaryKeyJoinColumn(name = "paperCode", referencedColumnName = "code")
     private Paper paper;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotFound(action = NotFoundAction.IGNORE)    
-    @ManyToOne(optional = false,fetch=FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
-    private StudentCourseSitting studentCourseSitting;     
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  
+    private StudentCourseSitting studentCourseSitting;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient String paperCode;
 
     public StudentCourseSittingPaper() {
@@ -67,6 +67,10 @@ public class StudentCourseSittingPaper implements Serializable {
     }
 
     public void setPk(StudentCourseSittingPaperPK pk) {
+        if (pk == null) {
+            this.pk = new StudentCourseSittingPaperPK(getPaper().getCode(), getStudentCourseSitting().getId());
+            return;
+        }
         this.pk = pk;
     }
 
@@ -126,7 +130,5 @@ public class StudentCourseSittingPaper implements Serializable {
         }
         return true;
     }
-
-    
 
 }
