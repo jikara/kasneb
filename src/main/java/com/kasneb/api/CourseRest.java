@@ -74,12 +74,9 @@ public class CourseRest {
      */
     @GET
     @Path("kasneb")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON) 
     public Response findKasneb() throws JsonProcessingException {
         Collection<KasnebCourse> courses = kasnebCourseFacade.findKasnebCourses();
-        for (KasnebCourse course : courses) {
-            course.getPapers();
-        }
         httpStatus = Response.Status.OK;
         json = mapper.writeValueAsString(courses);
         return Response

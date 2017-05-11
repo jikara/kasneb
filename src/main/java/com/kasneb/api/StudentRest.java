@@ -120,11 +120,11 @@ public class StudentRest {
             StudentCourse currentCourse = studentCourseFacade.findActive(student.getCurrentCourse().getId());
             student.setCurrentCourse(currentCourse);
         }
-//        for (StudentCourse studentCourse : student.getStudentCourses()) {
-//            studentCourse.getDocuments().size();
-//            studentCourse.getStudentRequirements().size();
-//            studentCourse.getElligiblePapers().size();
-//        }
+        for (StudentCourse studentCourse : student.getStudentCourses()) {
+            studentCourse.getDocuments().size();
+            studentCourse.getStudentRequirements().size();
+            studentCourse.getElligiblePapers().size();
+        }
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
         return Response

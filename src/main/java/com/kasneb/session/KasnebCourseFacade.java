@@ -51,4 +51,10 @@ public class KasnebCourseFacade extends AbstractFacade<KasnebCourse> {
         cq.multiselect(root.get(Course_.id), root.get(Course_.name));  //using metamodel
         return em.createQuery(cq).getResultList();
     }
+    
+     public Collection<KasnebCourse> findKasnebCourses1() {
+        TypedQuery<KasnebCourse> query = em.createQuery("SELECT c FROM KasnebCourse c left join fetch c.papers", KasnebCourse.class);
+        Collection<KasnebCourse> courses =query.getResultList();
+        return courses;
+    }
 }
