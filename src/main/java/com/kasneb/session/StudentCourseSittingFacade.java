@@ -128,7 +128,6 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (managed.getStatus() == StudentCourseSittingStatus.PAID || managed.getStatus() == StudentCourseSittingStatus.CONFIRMED) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, managed.getSitting().getSittingDescription() + " sitting has already been paid for and details can only be updated after the release of the Examination results");
         }
-        em.detach(managed);
         super.copy(entity, managed);
         managed.setSittingCentre(null);
         Map<String, Collection<Paper>> map;
