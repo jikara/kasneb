@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -39,14 +38,13 @@ public class StudentCourseSittingPaper implements Serializable {
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
-    @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = "paperCode", referencedColumnName = "code")
+    @JoinColumn(name = "paperCode", referencedColumnName = "code", insertable = false, updatable = false)
     private Paper paper;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
+    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", insertable = false, updatable = false)
     private StudentCourseSitting studentCourseSitting;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient String paperCode;

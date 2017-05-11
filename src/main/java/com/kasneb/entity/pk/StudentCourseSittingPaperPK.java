@@ -21,7 +21,7 @@ public class StudentCourseSittingPaperPK implements Serializable {
     @Column(name = "paperCode")
     private String paperCode;
     @Basic(optional = false)
-    @Column(name = "studentCourseSittingId", insertable = false, updatable = false)
+    @Column(name = "studentCourseSittingId")
     private Integer studentCourseSittingId;
 
     public StudentCourseSittingPaperPK() {

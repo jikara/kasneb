@@ -136,15 +136,15 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 sittingPaper.setPk(pk);
                 sittingPaper.setPaper(paper);
                 sittingPaper.setPaperStatus(PaperStatus.PENDING);
-                managed.addPaper(sittingPaper);
+                sittingPaper=em.merge(sittingPaper);
+                managed.getPapers().add(sittingPaper);
             });
             map = getBillingMethod(managed.getPapers());
             Invoice invoice = invoiceFacade.generateExamEntryInvoice(managed, map);
             managed.setInvoice(invoice);
         }
-        super.copy(entity, managed);
         managed.setSittingCentre(null);
-        return em.merge(managed);
+        return managed;
     }
 
     public StudentCourseSitting updateCentre(StudentCourseSitting entity) throws CustomHttpException, MessagingException, IOException, JsonProcessingException, ParseException {

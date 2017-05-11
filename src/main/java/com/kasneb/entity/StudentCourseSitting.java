@@ -44,10 +44,10 @@ public class StudentCourseSitting implements Serializable {
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Sitting sitting;
-    @OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
     private Invoice invoice;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private StudentCourse studentCourse;
@@ -234,8 +234,8 @@ public class StudentCourseSitting implements Serializable {
     }
 
     public void addPaper(StudentCourseSittingPaper sittingPaper) {
-        if (this.getPapers() != null) {
-            this.getPapers().add(sittingPaper);
+        if (this.papers != null) {
+            this.papers.add(sittingPaper);
         }
     }
 
