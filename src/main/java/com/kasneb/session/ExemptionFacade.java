@@ -17,6 +17,7 @@ import com.kasneb.entity.StudentCourse;
 import com.kasneb.entity.Synchronization;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
+import com.kasneb.entity.pk.ExemptionPaperPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.CoreUtil;
 import com.kasneb.util.DateUtil;
@@ -140,6 +141,8 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
 
     public boolean verifyAll(Exemption entity) throws IllegalAccessException, InvocationTargetException {
         for (ExemptionPaper exemptionPaper : entity.getPapers()) {
+            ExemptionPaperPK pk = new ExemptionPaperPK(exemptionPaper.getPaper().getCode(), entity.getId());
+            exemptionPaper.setExemptionPaperPK(pk);
             exemptionPaper.setVerified(Boolean.TRUE);
             exemptionPaper.setDateVerified(new Date());
         }
