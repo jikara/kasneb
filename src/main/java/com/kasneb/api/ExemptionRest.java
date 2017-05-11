@@ -135,7 +135,7 @@ public class ExemptionRest {
                 invoice = invoiceFacade.find(invoice.getId());
                 entity.setInvoice(invoice);
             }
-            anyResponse=exemptionFacade.edit(entity);
+            anyResponse=exemptionFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
