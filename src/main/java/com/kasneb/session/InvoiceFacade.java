@@ -56,6 +56,8 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
     @EJB
     com.kasneb.session.FeeFacade feeFacade;
     @EJB
+    com.kasneb.session.PaperFacade paperFacade;
+    @EJB
     com.kasneb.session.StudentCourseFacade studentCourseFacade;
     @EJB
     com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
@@ -217,7 +219,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         //Generate invoice 
         Invoice invoice = new Invoice(GeneratorUtil.generateInvoiceNumber(), new Date());
         for (ExemptionPaper exemptionPaper : managed.getPapers()) {
-            Paper paper = em.find(Paper.class, exemptionPaper.getPaper().getCode());
+            Paper paper = paperFacade.findPaper(exemptionPaper.getPaper().getCode());//    em.find(Paper.class, exemptionPaper.getPaper().getCode());
             if (exemptionPaper.getVerificationStatus().equals(VerificationStatus.APPROVED) && !exemptionPaper.getPaid()) {
                 Fee exemptionFee = feeFacade.getExemptionFee(paper);
                 invoice.addInvoiceDetail(new ExemptionInvoiceDetail(exemptionPaper, exemptionFee.getKesAmount(), exemptionFee.getUsdAmount(), new BigDecimal(0), "Exemption Fee | " + paper.getCode()));

@@ -513,19 +513,16 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         Set<Paper> papers = new HashSet<>();
         StudentCourse studentCourse = super.find(studentCourseId);
         Course course = em.find(Course.class, qualificationId);
-        if (studentCourse == null) {
+        if (studentCourse == null) { 
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course does not exist");
         }
         if (course == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification course does not exist");
         }
-        TypedQuery<CourseExemption> query = em.createQuery("SELECT c FROM CourseExemption c WHERE c.qualification =:qualification AND c.course =:course", CourseExemption.class);
+        TypedQuery<CourseExemption> query = em.createQuery("SELECT c FROM CourseExemption c LEFT JOIN FETCH c.paper WHERE c.qualification =:qualification AND c.course =:course", CourseExemption.class);
         query.setParameter("qualification", course);
         query.setParameter("course", studentCourse.getCourse());
-        for (CourseExemption c : query.getResultList()) {
-            papers.add(c.getPaper());
-        }
-        papers.removeAll(studentCourse.getExemptedPapers());
+        papers.removeAll(studentCourse.getExemptedPapers()); 
         return papers;
     }
 

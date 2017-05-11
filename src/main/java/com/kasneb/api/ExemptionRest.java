@@ -11,10 +11,14 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Exemption;
 import com.kasneb.entity.ExemptionPaper;
 import com.kasneb.entity.Invoice;
+import com.kasneb.entity.Paper;
 import com.kasneb.entity.VerificationStatus;
+import com.kasneb.entity.pk.ExemptionPaperPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.exception.CustomMessage;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
@@ -45,6 +49,8 @@ public class ExemptionRest {
     com.kasneb.session.ExemptionFacade exemptionFacade;
     @EJB
     com.kasneb.session.InvoiceFacade invoiceFacade;
+    @EJB
+    com.kasneb.session.PaperFacade paperFacade;
 
     public ExemptionRest() {
         hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
@@ -61,7 +67,7 @@ public class ExemptionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() throws JsonProcessingException {
         anyResponse = exemptionFacade.findAll();
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -73,7 +79,7 @@ public class ExemptionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findPending() throws JsonProcessingException {
         anyResponse = exemptionFacade.findPending();
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -85,7 +91,7 @@ public class ExemptionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         anyResponse = exemptionFacade.findPending(id);
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
@@ -96,6 +102,9 @@ public class ExemptionRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(Exemption entity) throws JsonProcessingException {
+        List<ExemptionPaper> papers = entity.getPapers();
+        List<ExemptionPaper> exemptionPapers = new ArrayList<>();
+        entity.setPapers(new ArrayList<>());
         try {
             if (entity.getQualifications() == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification must be defined");
@@ -103,29 +112,37 @@ public class ExemptionRest {
             if (entity.getQualifications().size() < 1) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "At least one qualification must be specified");
             }
+            exemptionFacade.create(entity);
             //Combined.
             if (entity.getQualifications().get(0).getId().equals("1000")) {
                 entity = exemptionFacade.createExemption(entity);
                 //Do nothing
             } else {
-                for (ExemptionPaper exemptionPaper : entity.getPapers()) {
+                for (ExemptionPaper exemptionPaper : papers) {
+                    Paper paper = paperFacade.findPaper(exemptionPaper.getPaper().getCode());
+                    ExemptionPaperPK pk = new ExemptionPaperPK(exemptionPaper.getPaper().getCode(), entity.getId());
+                    exemptionPaper.setExemptionPaperPK(pk);
                     exemptionPaper.setVerified(Boolean.TRUE);
+                    exemptionPaper.setPaper(paper);
                     exemptionPaper.setVerificationStatus(VerificationStatus.APPROVED);
+                    exemptionPapers.add(exemptionPaper);
+                    exemptionFacade.createExemptionPaper(exemptionPaper);
                 }
+                entity.setPapers(exemptionPapers);
                 entity = exemptionFacade.createExemption(entity);
                 //Generate invoice
                 Invoice invoice = invoiceFacade.generateExemptionInvoice(entity);
                 invoice = invoiceFacade.find(invoice.getId());
                 entity.setInvoice(invoice);
             }
+            anyResponse=exemptionFacade.edit(entity);
             httpStatus = Response.Status.OK;
-            anyResponse=entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             // Logger.getLogger(ExemptionRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -143,7 +160,7 @@ public class ExemptionRest {
         }
         httpStatus = Response.Status.OK;
         anyResponse = managed;
-        json=mapper.writeValueAsString(anyResponse);
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

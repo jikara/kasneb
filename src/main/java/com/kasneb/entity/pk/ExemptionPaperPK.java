@@ -19,10 +19,14 @@ public class ExemptionPaperPK implements Serializable {
 
     @Column(name = "paperCode")
     private String paperCode;
-    @Column(name = "exemptionId")
+    @Column(name = "exemptionId",insertable = false)
     private Integer exemptionId;
 
     public ExemptionPaperPK() {
+    }
+
+    public ExemptionPaperPK(String paperCode) {
+        this.paperCode = paperCode;
     }
 
     public ExemptionPaperPK(String paperCode, Integer exemptionId) {

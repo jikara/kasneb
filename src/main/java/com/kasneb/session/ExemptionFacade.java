@@ -161,7 +161,6 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     }
 
     public Exemption createExemption(Exemption exemption) throws CustomHttpException {
-
         StudentCourse managed = studentCourseFacade.find(exemption.getStudentCourse().getId());
         if (exemption.getQualifications() != null && exemption.getQualifications().size() > 0) {  //Combined.
             exemption.setStatus(ExemptionStatus.PENDING);
@@ -190,8 +189,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         }
         exemption.setCreated(new Date());
         exemption.setReference(DateUtil.getYear(new Date()) + "/" + managed.getCourse().getName() + "/" + GeneratorUtil.generateInvoiceNumber());
-        super.create(exemption);
-        return exemption;
+        return super.edit(exemption);
 
     }
 
@@ -260,6 +258,10 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         query.setParameter("studentCourse", studentCourse);
         query.setParameter("status", ExemptionStatus.COMPLETED);
         return query.getResultList();
+    }
+
+    public void createExemptionPaper(ExemptionPaper exemptionPaper) {
+        em.merge(exemptionPaper);
     }
 
 }
