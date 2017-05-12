@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.ServletContext;
@@ -86,14 +88,14 @@ public class ExportRest {
             }
             Map<String, Object> parameters = new HashMap<>();
             String realPath = servletContext.getRealPath("/");
-            parameters.put("SUBREPORT_DIR", realPath);
+            parameters.put("SUBREPORT_DIR", realPath+"/");
             outputStream = httpServletResponse.getOutputStream();
             JasperRunManager.runReportToPdfStream(inputStream, outputStream, parameters, new JRBeanCollectionDataSource(receipts));
             httpServletResponse.setContentType("application/pdf");
             outputStream.flush();
             outputStream.close();
         } catch (JRException | IOException | CustomHttpException | ParseException ex) {
-           // Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -108,16 +110,16 @@ public class ExportRest {
             invoices.add(invoice);
             Map<String, Object> parameters = new HashMap<>();
             String realPath = servletContext.getRealPath("/");
-            parameters.put("SUBREPORT_DIR", realPath);
+            parameters.put("SUBREPORT_DIR", realPath+"/");
             System.out.println(parameters);
             InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/invoice.jasper");
             outputStream = httpServletResponse.getOutputStream();
             JasperRunManager.runReportToPdfStream(inputStream, outputStream, parameters, new JRBeanCollectionDataSource(invoices));
             httpServletResponse.setContentType("application/pdf");
-            outputStream.flush();
+            outputStream.flush(); 
             outputStream.close();
         } catch (JRException | ParseException | IOException | CustomHttpException ex) {
-           // Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -132,7 +134,7 @@ public class ExportRest {
             timetables.add(timetable);
             Map<String, Object> parameters = new HashMap<>();
             String realPath = servletContext.getRealPath("/");
-            parameters.put("SUBREPORT_DIR", realPath);
+            parameters.put("SUBREPORT_DIR", realPath+"/");
             InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/jasper/timetable.jasper");
             outputStream = httpServletResponse.getOutputStream();
             JasperRunManager.runReportToPdfStream(inputStream, outputStream, parameters, new JRBeanCollectionDataSource(timetables));
@@ -140,7 +142,7 @@ public class ExportRest {
             outputStream.flush();
             outputStream.close();
         } catch (JRException | IOException | CustomHttpException | ParseException ex) {
-           // Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -156,7 +158,7 @@ public class ExportRest {
             documents.add(exemptionLetter);
             Map<String, Object> parameters = new HashMap<>();
             String realPath = servletContext.getRealPath("/");
-            parameters.put("SUBREPORT_DIR", realPath);
+            parameters.put("SUBREPORT_DIR", realPath+"/");
             InputStream inputStream = null;
             switch (managed.getStudentCourse().getCourse().getCourseTypeCode()) {
                 case 100:
@@ -172,7 +174,7 @@ public class ExportRest {
             outputStream.flush();
             outputStream.close();
         } catch (JRException | IOException | CustomHttpException | ParseException ex) {
-           // Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(ExportRest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
