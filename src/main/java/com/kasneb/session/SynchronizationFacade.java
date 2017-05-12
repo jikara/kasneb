@@ -135,7 +135,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 currentCourse.setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
             }
-            PartPK partPK = new PartPK(registration.getCurrentPart().getId(), registration.getCurrentPart().getCourse().getId());
+            PartPK partPK = new PartPK(registration.getCurrentPart().getId(), currentCourse.getCourse().getId());
             Part part = em.find(Part.class, partPK);
             currentCourse.setCurrentPart(part);
             currentCourse.setCourseStatus(courseStatus);

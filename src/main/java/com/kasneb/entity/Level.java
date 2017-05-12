@@ -22,7 +22,7 @@ import javax.persistence.Transient;
  * @author jikara
  */
 @Entity
-@Table(name = "levels")
+@Table(name = "level")
 public class Level implements Serializable {
 
     private static final long serialVersionUID = 1L;
