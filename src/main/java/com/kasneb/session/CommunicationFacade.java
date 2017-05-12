@@ -58,7 +58,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.EMAIL);
         query.setParameter("status", false);
-        query.setMaxResults(10);
+        query.setMaxResults(4);
         return query.getResultList();
     }
 
@@ -66,12 +66,12 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.SMS);
         query.setParameter("status", false);
-        query.setMaxResults(10);
+        query.setMaxResults(2);
         return query.getResultList();
     }
 
     @Transactional
-    @Schedule(hour = "*", minute = "*", second = "*/3", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*", persistent = false)
     public void sendSms() {
         for (Integer pk : findPendingSms()) {
             Communication communication = super.find(pk);
@@ -88,7 +88,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
     }
 
     @Transactional
-    @Schedule(hour = "*", minute = "*", second = "*/5", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*/2", persistent = false)
     public void sendEmail() {
         try {
             List<Email> emails = new ArrayList<>();

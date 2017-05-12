@@ -30,6 +30,8 @@ public class Level implements Serializable {
     private LevelPK levelPK;
     @Transient
     private String name;
+    @Transient
+    private Integer id;
     @JoinColumn(name = "courseId", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private KasnebCourse course;
@@ -71,6 +73,14 @@ public class Level implements Serializable {
 
     public void setCourse(KasnebCourse course) {
         this.course = course;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Collection<Paper> getPaperCollection() {

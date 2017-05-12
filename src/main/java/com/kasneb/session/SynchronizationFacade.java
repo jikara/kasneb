@@ -12,6 +12,8 @@ import com.kasneb.client.Registration;
 import com.kasneb.client.Renewal;
 import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.KasnebStudentQualification;
+import com.kasneb.entity.Level;
+import com.kasneb.entity.LevelPK;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.PaperStatus;
 import com.kasneb.entity.Part;
@@ -40,8 +42,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -63,6 +63,8 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
     @EJB
     com.kasneb.session.StudentFacade studentFacade;
     @EJB
+    com.kasneb.session.StudentCourseFacade studentCourseFacade;
+    @EJB
     com.kasneb.session.SittingFacade sittingFacade;
     @EJB
     com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
@@ -81,15 +83,14 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
     public List<Synchronization> getSynchronizations() {
         TypedQuery<Synchronization> query = em.createQuery("SELECT s FROM Synchronization s WHERE s.synched =:synched", Synchronization.class);
         query.setParameter("synched", false);
-        query.setMaxResults(1);
+        query.setMaxResults(5);
         return query.getResultList();
     }
 
-    @Schedule(hour = "*", minute = "*", second = "*/10", persistent = false)
+    @Schedule(hour = "*", minute = "*", second = "*/5", persistent = false)
     public void synchronize() {
         List<Synchronization> synchronizations = getSynchronizations();
         for (Synchronization synchronization : synchronizations) {
-
             doSynch(synchronization);
         }
     }
@@ -99,7 +100,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         try {
             Student managed = synchronization.getStudent();
             Collection<StudentCourse> studentCourses = new ArrayList<>();
-            StudentCourse currentCourse = managed.getCurrentCourse();
+            StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());
             String sexCode = "1";
             Registration registration = CoreUtil.getStudentCourse(currentCourse.getRegistrationNumber(), currentCourse.getCourse());
             if (registration == null) {
@@ -135,9 +136,17 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 currentCourse.setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
             }
-            PartPK partPK = new PartPK(registration.getCurrentPart().getId(), currentCourse.getCourse().getId());
-            Part part = em.find(Part.class, partPK);
-            currentCourse.setCurrentPart(part);
+            if (registration.getCurrentPart() != null) {
+                PartPK partPK = new PartPK(registration.getCurrentPart().getId(), currentCourse.getCourse().getId());
+                Part part = em.find(Part.class, partPK);
+                currentCourse.setCurrentPart(part);
+            }
+            if (registration.getCurrentLevel() != null) {
+                LevelPK levelPK = new LevelPK(registration.getCurrentLevel().getId(), currentCourse.getCourse().getId());
+                Level level = em.find(Level.class, levelPK);
+                currentCourse.setCurrentLevel(level);
+            }
+
             currentCourse.setCourseStatus(courseStatus);
             this.updateStudentCourseSittings(currentCourse, registration);//Add sittings        
             //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
@@ -152,7 +161,9 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             em.merge(managed);
             super.remove(synchronization);
         } catch (CustomHttpException | IOException | ParseException ex) {
-            Logger.getLogger(SynchronizationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            synchronization.setSynched(true);
+            super.edit(synchronization);
+        } catch (Exception ex) {
             synchronization.setSynched(true);
             super.edit(synchronization);
         }

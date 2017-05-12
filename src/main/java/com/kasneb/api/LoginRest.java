@@ -16,6 +16,8 @@ import com.kasneb.util.PredicateUtil;
 import com.kasneb.util.SecurityUtil;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -67,7 +69,7 @@ public class LoginRest {
     @Path("send_token")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendResetToken(@Context HttpHeaders headers, Login entity) {
+    public Response sendResetToken(@Context HttpHeaders headers, Login entity) throws JsonProcessingException {
         String token = null;
         int loginAttempts = 0;
         try {
@@ -89,9 +91,10 @@ public class LoginRest {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
         }
+        json = mapper.writeValueAsString(entity);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .header("Authorization", token)
                 .build();
     }
@@ -100,7 +103,7 @@ public class LoginRest {
     @Path("reset_password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response resetPassword(@Context HttpHeaders headers, Login entity) {
+    public Response resetPassword(@Context HttpHeaders headers, Login entity) throws JsonProcessingException {
         String token = null;
         int loginAttempts = 0;
         try {
@@ -128,11 +131,12 @@ public class LoginRest {
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(entity);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .header("Authorization", token)
                 .build();
     }
