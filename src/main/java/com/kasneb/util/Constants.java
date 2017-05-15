@@ -45,6 +45,6 @@ public class Constants {
 
     public static String BASE_URL = "http://localhost:8080/kasneb/";
 
-    public static String CORE_BASE_URL = "http://localhost:8081/core/";
+    public static String CORE_BASE_URL = "http://192.168.11.15:8081/core/";
 
 }

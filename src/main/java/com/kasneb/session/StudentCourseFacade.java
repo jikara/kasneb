@@ -452,13 +452,14 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT DISTINCT s FROM StudentCourse s JOIN s.invoices i WHERE i.studentCourse=s AND s.verified =:verified AND i.status = :status", StudentCourse.class);
         query.setParameter("status", new InvoiceStatus("PAID"));
         query.setParameter("verified", false);
+        query.setMaxResults(20);
         return query.getResultList();
     }
 
     public List<StudentCourse> findPendingIdentification() {
-        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.courseStatus =:courseStatus ORDER BY s.id DESC", StudentCourse.class);
+        TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s LEFT JOIN fetch s.student WHERE s.courseStatus =:courseStatus ORDER BY s.id DESC", StudentCourse.class);
         query.setParameter("courseStatus", StudentCourseStatus.PENDING_IDENTIFICATION);
-        query.setMaxResults(100);
+        query.setMaxResults(20);
         return query.getResultList();
     }
 
@@ -598,6 +599,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.dateVerified BETWEEN :startDate AND :endDate ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
+        query.setMaxResults(20);
         return query.getResultList();
     }
 

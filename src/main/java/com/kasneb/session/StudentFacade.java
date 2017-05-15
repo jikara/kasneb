@@ -137,7 +137,7 @@ public class StudentFacade extends AbstractFacade<Student> {
     }
 
     public Student createStudent(Student entity) throws CustomHttpException {
-        Login login = loginFacade.findByEmail(entity.getLoginId().getEmail());
+        Login login = loginFacade.findStudentByEmail(entity.getLoginId().getEmail());
         if (login != null) {
             throw new CustomHttpException(Status.INTERNAL_SERVER_ERROR, "Email already taken");
         }

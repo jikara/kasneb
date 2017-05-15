@@ -66,7 +66,7 @@ public class LoginFacade extends AbstractFacade<Login> {
         if (!PredicateUtil.isSet(password)) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Password is required");
         }
-        login = findByEmail(email);
+        login = findStudentByEmail(email);
         if (login == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Email does not exist");
         }
@@ -84,7 +84,7 @@ public class LoginFacade extends AbstractFacade<Login> {
         }
         if (login.getStudent() != null && login.getStudent().getCurrentCourse() != null) {
             if (login.getStudent().getCurrentCourse().getCourseStatus().equals(StudentCourseStatus.ACTIVE)) {
-               synchronizationFacade.doSynch(login.getStudent());
+                synchronizationFacade.doSynch(login.getStudent());
             }
         }
         return login;
@@ -123,22 +123,20 @@ public class LoginFacade extends AbstractFacade<Login> {
         }
         return login;
     }
-    
 
-    public Login findByEmail(String email) {
+    public Login findStudentByEmail(String email) {
         try {
-            TypedQuery<Integer> query = em.createQuery("SELECT l.id FROM Login l WHERE l.email =:email", Integer.class);
+            TypedQuery<Login> query = em.createQuery("SELECT l FROM Login l LEFT JOIN FETCH l.student WHERE l.email =:email", Login.class);
             query.setParameter("email", email);
             query.setMaxResults(1);
-            Integer loginId = query.getSingleResult();
-            return super.find(loginId);
+            return query.getSingleResult();
         } catch (javax.persistence.NoResultException ex) {
             return null;
         }
     }
 
     public void sendStudentEmailResetToken(Login login) throws CustomHttpException {
-        login = findByEmail(login.getEmail());
+        login = findStudentByEmail(login.getEmail());
         if (login == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Email does not exist");
         }
