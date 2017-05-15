@@ -214,10 +214,10 @@ public class StudentRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException | IllegalAccessException | InvocationTargetException ex) {
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

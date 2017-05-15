@@ -101,8 +101,7 @@ public class LoginFacade extends AbstractFacade<Login> {
             if (password == null || password.equals("")) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Password is required");
             }
-            Query query = getEntityManager().
-                    createQuery("SELECT l FROM Login l WHERE l.email=:email AND l.user IS NOT NULL");
+            Query query = getEntityManager().createQuery("SELECT l FROM Login l WHERE l.email=:email AND l.user IS NOT NULL");
             query.setParameter("email", email);
             query.setMaxResults(1);
             login = (Login) query.getSingleResult();

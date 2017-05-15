@@ -88,14 +88,6 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return query.getResultList();
     }
 
-//    @Schedule(hour = "*", minute = "*", second = "*/5", persistent = false)
-//    public void synchronize() {
-//        List<Synchronization> synchronizations = getSynchronizations();
-//        for (Synchronization synchronization : synchronizations) {
-//            doSynch(synchronization);
-//        }
-//    }
-
     public void doSynch(Student managed) {
         try {
             Collection<StudentCourse> studentCourses = new ArrayList<>();
