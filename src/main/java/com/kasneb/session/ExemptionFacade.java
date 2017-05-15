@@ -87,6 +87,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     public List<Exemption> findPending() {
         TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e WHERE e.status =:status ORDER BY e.dateVerified DESC", Exemption.class);
         query.setParameter("status", ExemptionStatus.PENDING);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -95,6 +96,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         query.setParameter("verifiedStatus", verified);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
