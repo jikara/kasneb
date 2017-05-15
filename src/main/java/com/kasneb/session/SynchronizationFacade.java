@@ -88,7 +88,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
 
     public void doSynch(Student managed) {
         try {
-            StudentCourse currentCourse = managed.getCurrentCourse();
+            StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());//   managed.getCurrentCourse();
             String sexCode = "1";
             Registration registration = CoreUtil.getStudentCourse(currentCourse.getRegistrationNumber(), currentCourse.getCourse());
             if (registration == null) {
