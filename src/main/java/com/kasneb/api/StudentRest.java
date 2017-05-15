@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.ServletContext;
@@ -239,7 +241,7 @@ public class StudentRest {
     @Path("verify")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response verify(@Context HttpHeaders headers, Login entity) {
+    public Response verify(@Context HttpHeaders headers, Login entity) throws JsonProcessingException {
         try {
             if (headers.getRequestHeader(Constants.DEVICE_HEADER_NAME) != null && !headers.getRequestHeader(Constants.DEVICE_HEADER_NAME).get(0).isEmpty()) {
                 String appKey = headers.getRequestHeader(Constants.DEVICE_HEADER_NAME).get(0);
@@ -258,11 +260,12 @@ public class StudentRest {
         } catch (CustomHttpException e) {
             httpStatus = e.getStatusCode();
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
+             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 
