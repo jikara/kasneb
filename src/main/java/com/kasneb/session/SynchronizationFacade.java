@@ -88,9 +88,8 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
 
     public void doSynch(Student managed) {
         try {
-            StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());//   managed.getCurrentCourse();
             String sexCode = "1";
-            Registration registration = CoreUtil.getStudentCourse(currentCourse.getRegistrationNumber(), currentCourse.getCourse());
+            Registration registration = CoreUtil.getStudentCourse(managed.getCurrentCourse().getRegistrationNumber(), managed.getCurrentCourse().getCourse());
             if (registration == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
             }
@@ -118,32 +117,32 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 courseStatus = StudentCourseStatus.COMPLETED;
                 managed.getCurrentCourse().setActive(false);
                 //Set as qualification
-                StudentQualificationPK pk = new StudentQualificationPK(managed.getId(), currentCourse.getCourse().getId());
+                StudentQualificationPK pk = new StudentQualificationPK(managed.getId(), managed.getCurrentCourse().getCourse().getId());
                 qs.add(new KasnebStudentQualification(pk));
                 managed.setKasnebQualifications(qs);
-                currentCourse.setCourseStatus(courseStatus);
+                managed.getCurrentCourse().setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
             }
             if (registration.getCurrentPart() != null) {
-                PartPK partPK = new PartPK(registration.getCurrentPart().getId(), currentCourse.getCourse().getId());
+                PartPK partPK = new PartPK(registration.getCurrentPart().getId(), managed.getCurrentCourse().getCourse().getId());
                 Part part = em.find(Part.class, partPK);
-                currentCourse.setCurrentPart(part);
+                managed.getCurrentCourse().setCurrentPart(part);
             }
             if (registration.getCurrentLevel() != null) {
-                LevelPK levelPK = new LevelPK(registration.getCurrentLevel().getId(), currentCourse.getCourse().getId());
+                LevelPK levelPK = new LevelPK(registration.getCurrentLevel().getId(), managed.getCurrentCourse().getCourse().getId());
                 Level level = em.find(Level.class, levelPK);
-                currentCourse.setCurrentLevel(level);
+                managed.getCurrentCourse().setCurrentLevel(level);
             }
 
-            currentCourse.setCourseStatus(courseStatus);
-            this.updateStudentCourseSittings(currentCourse, registration);//Add sittings        
+            managed.getCurrentCourse().setCourseStatus(courseStatus);
+            this.updateStudentCourseSittings(managed.getCurrentCourse(), registration);//Add sittings        
             //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
-            this.updateSubscriptions(currentCourse, registration);  //Add subscriptions
-            this.updatePayments(currentCourse, registration);  //Add payments  
-            currentCourse.setElligiblePapers(new ArrayList<>());
-            List<Paper> papers = getElligiblePapers(currentCourse, registration); //Elligible Papers
-            currentCourse.setElligiblePapers(papers);
-            em.merge(currentCourse);
+            this.updateSubscriptions(managed.getCurrentCourse(), registration);  //Add subscriptions
+            this.updatePayments(managed.getCurrentCourse(), registration);  //Add payments  
+            managed.getCurrentCourse().setElligiblePapers(new ArrayList<>());
+            List<Paper> papers = getElligiblePapers(managed.getCurrentCourse(), registration); //Elligible Papers
+            managed.getCurrentCourse().setElligiblePapers(papers);
+            em.merge(managed.getCurrentCourse());
         } catch (ParseException | CustomHttpException | IOException ex) {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
