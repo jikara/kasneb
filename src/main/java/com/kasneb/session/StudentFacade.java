@@ -168,6 +168,7 @@ public class StudentFacade extends AbstractFacade<Student> {
         super.copy(entity, managed);
         return super.edit(managed);
     }
+
     public Student verifyPreviousStudentCourse(Student entity) throws CustomHttpException, IOException, ParseException {
         Collection<StudentCourse> studentCourses = new ArrayList<>();
         String courseCode = entity.getPreviousCourseCode();
