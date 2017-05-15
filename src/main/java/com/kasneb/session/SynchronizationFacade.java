@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -87,18 +88,16 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         return query.getResultList();
     }
 
-    @Schedule(hour = "*", minute = "*", second = "*/5", persistent = false)
-    public void synchronize() {
-        List<Synchronization> synchronizations = getSynchronizations();
-        for (Synchronization synchronization : synchronizations) {
-            doSynch(synchronization);
-        }
-    }
+//    @Schedule(hour = "*", minute = "*", second = "*/5", persistent = false)
+//    public void synchronize() {
+//        List<Synchronization> synchronizations = getSynchronizations();
+//        for (Synchronization synchronization : synchronizations) {
+//            doSynch(synchronization);
+//        }
+//    }
 
-    @Transactional
-    public void doSynch(Synchronization synchronization) {
+    public void doSynch(Student managed) {
         try {
-            Student managed = synchronization.getStudent();
             Collection<StudentCourse> studentCourses = new ArrayList<>();
             StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());
             String sexCode = "1";
@@ -159,14 +158,9 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             studentCourses.add(currentCourse);//Add to collection
             managed.setStudentCourses(studentCourses);
             em.merge(managed);
-            super.remove(synchronization);
-        } catch (CustomHttpException | IOException | ParseException ex) {
-            synchronization.setSynched(true);
-            super.edit(synchronization);
-        } catch (Exception ex) {
-            synchronization.setSynched(true);
-            super.edit(synchronization);
-        }
+        } catch (ParseException | CustomHttpException | IOException ex) {
+            Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
     }
 
     public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {

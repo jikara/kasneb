@@ -85,7 +85,7 @@ public class LoginRest {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid app key");
             }
             httpStatus = Status.OK;
-            token = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Authorization Token", 1000000);
+            token = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Authorization Token", 1000 * 60 * 60 * 24 * 367);
             entity.setLoginAttempts(0);
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
@@ -126,7 +126,7 @@ public class LoginRest {
                     throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Invalid app key");
             }
             httpStatus = Status.OK;
-            token = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Authorization Token", 1000000);
+            token = SecurityUtil.createJWT(entity.getId(), "Kasneb", "Authorization Token",  1000 * 60 * 60 * 24 * 367);
             entity.setLoginAttempts(0);
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();

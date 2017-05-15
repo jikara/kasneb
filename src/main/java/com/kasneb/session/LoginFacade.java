@@ -85,8 +85,7 @@ public class LoginFacade extends AbstractFacade<Login> {
         }
         if (login.getStudent() != null && login.getStudent().getCurrentCourse() != null) {
             if (login.getStudent().getCurrentCourse().getCourseStatus().equals(StudentCourseStatus.ACTIVE)) {
-                Synchronization synchronization = new Synchronization(login.getStudent(), false);
-                synchronizationFacade.create(synchronization);
+               synchronizationFacade.doSynch(login.getStudent());
             }
         }
         return login;

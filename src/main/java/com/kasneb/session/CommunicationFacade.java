@@ -17,23 +17,14 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.Email;
 import com.kasneb.model.Sms;
 import com.kasneb.util.Constants;
-import com.kasneb.util.EmailUtil;
-import com.kasneb.util.GeneratorUtil;
 import com.kasneb.util.RestUtil;
-import com.kasneb.util.SmsUtil;
 import com.kasneb.util.WalletUtil;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 
 /**
  *
@@ -58,7 +49,7 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.EMAIL);
         query.setParameter("status", false);
-        query.setMaxResults(4);
+        query.setMaxResults(15);
         return query.getResultList();
     }
 
@@ -66,49 +57,49 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         TypedQuery<Integer> query = em.createQuery("SELECT c.id FROM Communication c WHERE c.alertType =:alertType AND c.status =:status ORDER BY c.id ASC", Integer.class);
         query.setParameter("alertType", AlertType.SMS);
         query.setParameter("status", false);
-        query.setMaxResults(2);
+        query.setMaxResults(20);
         return query.getResultList();
     }
-
-    @Transactional
-    @Schedule(hour = "*", minute = "*", second = "*/29", persistent = false)
-    public void sendSms() {
-        for (Integer pk : findPendingSms()) {
-            Communication communication = super.find(pk);
-            try {
-                String randomPin = GeneratorUtil.generateRandomPin();
-                communication.setPin(randomPin);
-                SmsUtil.sendSMS(getSms(communication));
-                communication.setStatus(Boolean.TRUE);
-                super.edit(communication);
-            } catch (IOException | CustomHttpException ex) {
-                Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    @Transactional
-    @Schedule(hour = "*", minute = "*", second = "*/39", persistent = false)
-    public void sendEmail() {
-        try {
-            List<Email> emails = new ArrayList<>();
-            for (Integer pk : findPendingEmails()) {
-                Communication communication = super.find(pk);
-                try {
-                    emails.add(getEmail(pk));
-                    communication.setStatus(Boolean.TRUE);
-                    super.edit(communication);
-                } catch (IOException | CustomHttpException ex) {
-                    Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if (emails.size() > 0) {
-                EmailUtil.sendEmail(emails);
-            }
-        } catch (MessagingException ex) {
-            Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//
+//    @Transactional
+//    @Schedule(hour = "*", minute = "*", second = "*/39", persistent = false)
+//    public void sendSms() {
+//        for (Integer pk : findPendingSms()) {
+//            Communication communication = super.find(pk);
+//            try {
+//                String randomPin = GeneratorUtil.generateRandomPin();
+//                communication.setPin(randomPin);
+//                SmsUtil.sendSMS(getSms(communication));
+//                communication.setStatus(Boolean.TRUE);
+//                super.edit(communication);
+//            } catch (IOException | CustomHttpException ex) {
+//                Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
+//
+//    @Transactional
+//    @Schedule(hour = "*", minute = "*", second = "*/59", persistent = false)
+//    public void sendEmail() {
+//        try {
+//            List<Email> emails = new ArrayList<>();
+//            for (Integer pk : findPendingEmails()) {
+//                Communication communication = super.find(pk);
+//                try {
+//                    emails.add(getEmail(pk));
+//                    communication.setStatus(Boolean.TRUE);
+//                    super.edit(communication);
+//                } catch (IOException | CustomHttpException ex) {
+//                    Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if (emails.size() > 0) {
+//                EmailUtil.sendEmail(emails);
+//            }
+//        } catch (MessagingException ex) {
+//            Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     public Email getEmail(Integer pk) throws IOException, CustomHttpException {
         Communication communication = super.find(pk);
