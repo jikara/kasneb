@@ -73,14 +73,14 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     @Override
     public List<Exemption> findAll() {
         TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e ORDER BY e.dateVerified DESC", Exemption.class);
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
     public List<Exemption> findAll(Integer userId, Date startDate, Date endDate) {
         TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e WHERE e.status =:status ORDER BY e.dateVerified DESC", Exemption.class);
         query.setParameter("status", ExemptionStatus.PENDING);
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -104,14 +104,14 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         query.setParameter("user", new User(userId));
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
     public List<Exemption> findSummary(Integer userId) {
         TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e WHERE e.verifiedBy =:user ORDER BY e.dateVerified DESC", Exemption.class);
         query.setParameter("user", new User(userId));
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -119,6 +119,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e WHERE e.created BETWEEN :startDate AND :endDate ORDER BY e.dateVerified DESC", Exemption.class);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -127,6 +128,7 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         query.setParameter("user", new User(userId));
+        query.setMaxResults(40);
         return query.getResultList();
     }
 

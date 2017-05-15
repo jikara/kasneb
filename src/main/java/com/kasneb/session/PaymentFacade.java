@@ -193,6 +193,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
     public Collection<Payment> findUnsynchronized() {
         TypedQuery<Payment> query
                 = em.createNamedQuery("Payment.findUnsynchronized", Payment.class);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -200,6 +201,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         TypedQuery<Payment> query
                 = em.createNamedQuery("Payment.findByStudent", Payment.class);
         query.setParameter("student", student);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -208,6 +210,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 = em.createNamedQuery("Payment.findByStudentAndCode", Payment.class);
         query.setParameter("feeCode", feeCode);
         query.setParameter("student", student);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -217,13 +220,14 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         query.setParameter("student", student);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
     public Collection<Payment> getPaymentSummary() {
         TypedQuery<Payment> query = em.createNamedQuery("Payment.getSummary", Payment.class);
         query.setParameter("status", "PAID");
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -231,7 +235,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         TypedQuery<Payment> query = em.createNamedQuery("Payment.findByFeeCode", Payment.class);
         query.setParameter("code", code);
         query.setParameter("status", "PAID");
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -240,7 +244,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
         query.setParameter("status", "PAID");
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 
@@ -250,7 +254,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         query.setParameter("endDate", endDate);
         query.setParameter("code", code);
         query.setParameter("status", "PAID");
-        query.setMaxResults(100);
+        query.setMaxResults(40);
         return query.getResultList();
     }
 

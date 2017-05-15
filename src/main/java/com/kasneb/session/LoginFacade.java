@@ -10,7 +10,6 @@ import com.kasneb.entity.Communication;
 import com.kasneb.entity.CommunicationType;
 import com.kasneb.entity.Login;
 import com.kasneb.entity.StudentCourseStatus;
-import com.kasneb.entity.Synchronization;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.util.PredicateUtil;
 import com.kasneb.util.SecurityUtil;
