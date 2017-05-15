@@ -75,6 +75,24 @@ public class StudentCourseRest {
     }
 
     @GET
+    @Path("eligible_exemptions/{studentCourseId}/{qualification_id}/{code_type}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") String qualificationId, @PathParam("code_type") Integer codeType) throws JsonProcessingException {
+        try {
+            StudentCourse studentCourse = studentCourseFacade.find(studentCourseId);
+            anyResponse = studentCourseFacade.getEligibleExemptionsByQualification(studentCourse, qualificationId, codeType);
+            httpStatus = Response.Status.OK;
+        } catch (Exception ex) {
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        json = mapper.writeValueAsString(anyResponse);
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAll() throws JsonProcessingException {
         List<StudentCourse> studentCourses = studentCourseFacade.findAll();
@@ -205,30 +223,9 @@ public class StudentCourseRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        json = mapper.writeValueAsString(anyResponse);
-        return Response
-                .status(httpStatus)
-                .entity(json)
-                .build();
-    }
-
-    @GET
-    @Path("eligible_exemptions/{studentCourseId}/{qualification_id}/{code_type}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getEligibleExemptions(@PathParam("studentCourseId") Integer studentCourseId, @PathParam("qualification_id") String qualificationId, @PathParam("code_type") Integer codeType) throws JsonProcessingException {
-        try {
-            anyResponse = studentCourseFacade.getEligibleExemptionsByQualification(studentCourseId, qualificationId, codeType);
-            httpStatus = Response.Status.OK;
-        } catch (CustomHttpException ex) {
-            anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-            httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
@@ -248,9 +245,9 @@ public class StudentCourseRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            // Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

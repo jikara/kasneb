@@ -16,8 +16,6 @@ import com.kasneb.client.Sex;
 import com.kasneb.entity.AlertType;
 import com.kasneb.entity.Communication;
 import com.kasneb.entity.CommunicationType;
-import com.kasneb.entity.Course;
-import com.kasneb.entity.CourseExemption;
 import com.kasneb.entity.Currency;
 import com.kasneb.entity.Invoice;
 import com.kasneb.entity.InvoiceDetail;
@@ -510,31 +508,24 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
     }
 
-    public Set<Paper> getEligibleExemptionsByQualification(Integer studentCourseId, String qualificationId, Integer codeType) throws CustomHttpException {
-        Set<Paper> papers = new HashSet<>();
-        StudentCourse studentCourse = super.find(studentCourseId);
-        Course course = em.find(Course.class, qualificationId);
-        if (studentCourse == null) { 
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student course does not exist");
-        }
-        if (course == null) {
-            throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Qualification course does not exist");
-        }
-        TypedQuery<CourseExemption> query = em.createQuery("SELECT c FROM CourseExemption c LEFT JOIN FETCH c.paper WHERE c.qualification =:qualification AND c.course =:course", CourseExemption.class);
-        query.setParameter("qualification", course);
-        query.setParameter("course", studentCourse.getCourse());
-        papers.removeAll(studentCourse.getExemptedPapers()); 
+    public List<Paper> getEligibleExemptionsByQualification(StudentCourse studentCourse, String qualificationId, Integer codeType) throws CustomHttpException {
+        TypedQuery<Paper> query = em.createQuery("SELECT c.paper FROM CourseExemption c WHERE c.qualification.id =:qualificationId AND c.course.id =:courseCode", Paper.class);
+        query.setParameter("qualificationId", qualificationId);
+        query.setParameter("courseCode", studentCourse.getCourse().getId());
+        List<Paper> papers = query.getResultList();
         return papers;
     }
 
     public List<Paper> getEligibleExemptions(Integer studentCourseId, List<String> qualificationIds) throws CustomHttpException {
+        StudentCourse studentCourse = super.find(studentCourseId);
         Set<Paper> papers = new HashSet<>();
         List<Paper> papersList = new ArrayList<>();
         for (String qualificationId : qualificationIds) {
-            Set<Paper> papersByQualification = getEligibleExemptionsByQualification(studentCourseId, qualificationId, 1);
+            List<Paper> papersByQualification = getEligibleExemptionsByQualification(studentCourse, qualificationId, 1);
             papers.addAll(papersByQualification);
         }
         papersList.addAll(papers);
+        papers.removeAll(studentCourse.getExemptedPapers());
         Collections.sort(papersList, (Paper p1, Paper p2) -> p1.getCode().compareTo(p2.getCode()));
         return papersList;
     }
