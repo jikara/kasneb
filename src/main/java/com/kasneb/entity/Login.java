@@ -78,11 +78,11 @@ public class Login implements Serializable {
     @Basic(optional = false)
     @Column(name = "emailActivated", nullable = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private boolean emailActivated = false;
+    private boolean emailActivated = true;
     @Basic(optional = false)
     @Column(name = "phoneNumberActivated", nullable = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private boolean phoneNumberActivated = false;
+    private boolean phoneNumberActivated = true;
     @Basic(optional = false)
     @Column(name = "banned", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

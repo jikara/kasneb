@@ -44,12 +44,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
 /**
@@ -90,8 +88,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
 
     public void doSynch(Student managed) {
         try {
-            Collection<StudentCourse> studentCourses = new ArrayList<>();
-            StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());
+            StudentCourse currentCourse = managed.getCurrentCourse();
             String sexCode = "1";
             Registration registration = CoreUtil.getStudentCourse(currentCourse.getRegistrationNumber(), currentCourse.getCourse());
             if (registration == null) {
@@ -146,13 +143,10 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             currentCourse.setElligiblePapers(new ArrayList<>());
             List<Paper> papers = getElligiblePapers(currentCourse, registration); //Elligible Papers
             currentCourse.setElligiblePapers(papers);
-            currentCourse = em.merge(currentCourse);
-            studentCourses.add(currentCourse);//Add to collection
-            managed.setStudentCourses(studentCourses);
-            em.merge(managed);
+            em.merge(currentCourse);
         } catch (ParseException | CustomHttpException | IOException ex) {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
+        }
     }
 
     public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
