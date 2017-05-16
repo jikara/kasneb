@@ -27,7 +27,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.Transient;
 
 /**
  *
@@ -66,8 +65,8 @@ public class StudentCourseSitting implements Serializable {
     private Payment payment;
     @JsonInclude
     private transient String fullRegNo;
-    @Transient
-    private Boolean hasBooking = false;
+    @JsonInclude
+    private transient Boolean hasBooking = false;
     @JsonInclude
     private transient Student student;
     @Column(name = "created", updatable = false)
