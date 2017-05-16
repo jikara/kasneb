@@ -172,7 +172,7 @@ public class StudentCourseSittingRest {
         json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(entity)
+                .entity(json)
                 .build();
     }
 }
