@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.FeeCode;
 import com.kasneb.entity.Student;
 import com.kasneb.util.PredicateUtil;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.Response;
 public class TransactionRest {
 
     ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
@@ -40,6 +42,8 @@ public class TransactionRest {
      * Creates a new instance of TransactionRest
      */
     public TransactionRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -56,17 +60,14 @@ public class TransactionRest {
     @GET
     @Path("student/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStudentTransactions(@PathParam("id") Integer id, @QueryParam("feeCode") String feeCode) {
-        try {
-            if (PredicateUtil.isSet(feeCode)) {
-                anyResponse = paymentFacade.findAll(new Student(id), new FeeCode(feeCode));
-            } else {
-                anyResponse = paymentFacade.findAll(new Student(id));
-            }
-            json = mapper.writeValueAsString(anyResponse);
-            httpStatus = Response.Status.OK;
-        } catch (JsonProcessingException e) {
+    public Response getStudentTransactions(@PathParam("id") Integer id, @QueryParam("feeCode") String feeCode) throws JsonProcessingException {
+        if (PredicateUtil.isSet(feeCode)) {
+            anyResponse = paymentFacade.findAll(new Student(id), new FeeCode(feeCode));
+        } else {
+            anyResponse = paymentFacade.findAll(new Student(id));
         }
+        json = mapper.writeValueAsString(anyResponse);
+        httpStatus = Response.Status.OK;
         return Response
                 .status(httpStatus)
                 .entity(json)
