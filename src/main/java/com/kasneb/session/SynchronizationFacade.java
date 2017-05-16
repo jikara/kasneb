@@ -176,8 +176,12 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             for (StudentCourseSitting studentCourseSitting : sittings) {
                 //Get managed
                 StudentCourseSitting managed = studentCourseSittingFacade.find(studentCourseSitting.getId());
-                if (managed != null && !managed.getNewEntry()) {
-                    managed.setStatus(StudentCourseSittingStatus.PAST);
+                if (managed != null) {
+                    if (managed.getHasBooking()) {
+                        managed.setStatus(StudentCourseSittingStatus.PAID);
+                    } else {
+                        managed.setStatus(StudentCourseSittingStatus.PAST);
+                    }
                     studentCourseSittingFacade.edit(managed);
                 }
             }
