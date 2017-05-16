@@ -126,6 +126,7 @@ public class StudentRest {
             studentCourse.getDocuments().size();
             studentCourse.getStudentRequirements().size();
             studentCourse.getElligiblePapers().size();
+            studentCourse.getStudentCourseSittings().size();
         }
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
