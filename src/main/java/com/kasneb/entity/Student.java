@@ -125,7 +125,7 @@ public class Student implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", targetEntity = StudentQualification.class, fetch = FetchType.LAZY)
     private Set<OtherStudentQualification> otherQualifications;
     @JsonManagedReference(value = "student-current-course")
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currentCourseId", referencedColumnName = "id")
     private StudentCourse currentCourse;
     @JsonInclude

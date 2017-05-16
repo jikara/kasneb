@@ -123,16 +123,20 @@ public class StudentCourse implements Serializable {
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Sitting firstSitting;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Part currentPart;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Level currentLevel;
+    @Column(name = "partId")
+    private Integer currentPartId;
+    @Column(name = "levelId")
+    private Integer currentLevelId;
     @JsonInclude
     private transient ElligiblePart eligiblePart;
     @JsonInclude
@@ -552,6 +556,22 @@ public class StudentCourse implements Serializable {
 
     public void setCurrentLevel(Level currentLevel) {
         this.currentLevel = currentLevel;
+    }
+
+    public Integer getCurrentPartId() {
+        return currentPartId;
+    }
+
+    public void setCurrentPartId(Integer currentPartId) {
+        this.currentPartId = currentPartId;
+    }
+
+    public Integer getCurrentLevelId() {
+        return currentLevelId;
+    }
+
+    public void setCurrentLevelId(Integer currentLevelId) {
+        this.currentLevelId = currentLevelId;
     }
 
     //Transient fields  //test

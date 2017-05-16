@@ -12,11 +12,8 @@ import com.kasneb.client.Registration;
 import com.kasneb.client.Renewal;
 import com.kasneb.entity.ExamCentre;
 import com.kasneb.entity.KasnebStudentQualification;
-import com.kasneb.entity.Level;
-import com.kasneb.entity.LevelPK;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.PaperStatus;
-import com.kasneb.entity.Part;
 import com.kasneb.entity.Payment;
 import com.kasneb.entity.PaymentDetail;
 import com.kasneb.entity.Sitting;
@@ -28,7 +25,6 @@ import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.entity.StudentCourseStatus;
 import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.Synchronization;
-import com.kasneb.entity.pk.PartPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.entity.pk.StudentQualificationPK;
 import com.kasneb.exception.CustomHttpException;
@@ -124,16 +120,11 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 managed.setCurrentCourse(null);
             }
             if (registration.getCurrentPart() != null) {
-                PartPK partPK = new PartPK(registration.getCurrentPart().getId(), managed.getCurrentCourse().getCourse().getId());
-                Part part = em.find(Part.class, partPK);
-                managed.getCurrentCourse().setCurrentPart(part);
+                managed.getCurrentCourse().setCurrentPartId(registration.getCurrentPart().getId());
             }
             if (registration.getCurrentLevel() != null) {
-                LevelPK levelPK = new LevelPK(registration.getCurrentLevel().getId(), managed.getCurrentCourse().getCourse().getId());
-                Level level = em.find(Level.class, levelPK);
-                managed.getCurrentCourse().setCurrentLevel(level);
+                managed.getCurrentCourse().setCurrentLevelId(registration.getCurrentLevel().getId());
             }
-
             managed.getCurrentCourse().setCourseStatus(courseStatus);
             this.updateStudentCourseSittings(managed.getCurrentCourse(), registration);//Add sittings        
             //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
