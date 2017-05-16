@@ -204,7 +204,7 @@ public class StudentCourseSitting implements Serializable {
     }
 
     public Boolean getHasBooking() {
-        if (getInvoice() != null && getInvoice().getStatus().getStatus().equals("PAID") && this.getSittingCentre() == null) {
+        if (this.getStatus().equals(StudentCourseSittingStatus.PAID) && this.getSittingCentre() == null) {
             hasBooking = true;
         }
         return hasBooking;
