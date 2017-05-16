@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Exemption;
 import com.kasneb.entity.ExemptionPaper;
 import com.kasneb.entity.Invoice;
+import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.ExemptionPaperPK;
@@ -126,16 +127,16 @@ public class ExemptionRest {
                     exemptionPaper.setPaper(paper);
                     exemptionPaper.setVerificationStatus(VerificationStatus.APPROVED);
                     exemptionPapers.add(exemptionPaper);
-                    exemptionFacade.createExemptionPaper(exemptionPaper);
+                    //exemptionFacade.createExemptionPaper(exemptionPaper);
                 }
                 entity.setPapers(exemptionPapers);
                 entity = exemptionFacade.createExemption(entity);
                 //Generate invoice
                 Invoice invoice = invoiceFacade.generateExemptionInvoice(entity);
-                invoice = invoiceFacade.find(invoice.getId());
+                invoice.getInvoiceDetails().addAll(invoice.getExemptionInvoiceDetails());
                 entity.setInvoice(invoice);
             }
-            anyResponse=exemptionFacade.find(entity.getId());
+            anyResponse = exemptionFacade.find(entity.getId());
             httpStatus = Response.Status.OK;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();

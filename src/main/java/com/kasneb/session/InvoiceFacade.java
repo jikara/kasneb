@@ -383,4 +383,11 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
         }
     }
 
+    @Override
+    public Invoice find(Object id) {
+        TypedQuery<Invoice> query = em.createQuery("SELECT i FROM Invoice i LEFT JOIN FETCH i.invoiceDetails WHERE i.id =:id", Invoice.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
 }

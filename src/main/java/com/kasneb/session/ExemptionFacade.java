@@ -268,4 +268,11 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
         em.merge(exemptionPaper);
     }
 
+    @Override
+    public Exemption find(Object id) {
+        TypedQuery<Exemption> query = em.createQuery("SELECT e FROM Exemption e WHERE e.id =:id", Exemption.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
 }
