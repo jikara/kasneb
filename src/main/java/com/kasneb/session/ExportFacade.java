@@ -76,7 +76,9 @@ public class ExportFacade {
                     case Constants.EXAM_ENTRY_FEE:
                         StudentCourseSitting sitting = payment.getInvoice().getStudentCourseSitting();
                         doc.setType(Constants.EXAM_ENTRY_FEE);
-                        doc.setCentre(sitting.getSittingCentre().getName());
+                        if (sitting.getSittingCentre() != null) {
+                            doc.setCentre(sitting.getSittingCentre().getName());
+                        }
                         break;
                     case Constants.REGISTRATION_FEE:
                         doc.setType(Constants.REGISTRATION_FEE);
@@ -166,7 +168,7 @@ public class ExportFacade {
                     break;
             }
         }
-        ExemptionDocument document = new ExemptionDocument(studentCourse.getCourse().getName(), reference, DateUtil.getString(exemption.getDateVerified()), studentCourse.getFullRegistrationNumber(),student.getFullName(), contact.getPostalAddress() + " - " + contact.getPostalCode(), contact.getTown(), contact.getCountryId().getName(), "Test");
+        ExemptionDocument document = new ExemptionDocument(studentCourse.getCourse().getName(), reference, DateUtil.getString(exemption.getDateVerified()), studentCourse.getFullRegistrationNumber(), student.getFullName(), contact.getPostalAddress() + " - " + contact.getPostalCode(), contact.getTown(), contact.getCountryId().getName(), "Test");
         Set<ExemptionPart> exemptionParts = new HashSet<>();
         Set<ExemptionSection> exemptionSections = new HashSet<>();
         Set<ExemptionLevel> exemptionLevels = new HashSet<>();

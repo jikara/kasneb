@@ -51,7 +51,7 @@ public class StudentCourseSitting implements Serializable {
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private StudentCourse studentCourse;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "centreId", referencedColumnName = "code", nullable = true)
     private ExamCentre sittingCentre;
     @OneToMany(mappedBy = "studentCourseSitting", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
