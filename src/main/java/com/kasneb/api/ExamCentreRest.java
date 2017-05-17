@@ -46,8 +46,8 @@ public class ExamCentreRest {
      * Creates a new instance of ExamCentreRest
      */
     public ExamCentreRest() {
-        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
-        mapper.registerModule(hbm);
+        //hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        //mapper.registerModule(hbm);
     }
 
     /**

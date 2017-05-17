@@ -5,6 +5,7 @@
  */
 package com.kasneb.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -18,7 +19,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
@@ -34,7 +34,8 @@ public class CentreZone implements Serializable {
     @Id
     @Column(name = "code")
     private String code;
-    @Transient
+    @JsonInclude
+    @Column(name = "code", insertable = false, updatable = false)
     private String id;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
@@ -51,7 +52,11 @@ public class CentreZone implements Serializable {
     }
 
     public String getId() {
-        return code;
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

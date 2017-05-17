@@ -10,13 +10,12 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -35,8 +34,7 @@ public class ExamCentre implements Serializable {
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
-    @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "zoneCode", referencedColumnName = "code")
     private CentreZone zone;
 
