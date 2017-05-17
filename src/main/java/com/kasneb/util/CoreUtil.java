@@ -295,7 +295,7 @@ public class CoreUtil {
         return Integer.parseInt(session + "" + firstSitting.getSittingYear());
     }
 
-    public static ExamEntry createExamEntry(ExamEntry examEntry, KasnebCourse course) throws JsonProcessingException, IOException, CustomHttpException {
+    public static ExamEntry createCoreExamEntry(ExamEntry examEntry, KasnebCourse course) throws JsonProcessingException, IOException, CustomHttpException {
         Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
         ObjectMapper mapper = new ObjectMapper();
         String jsonReq = mapper.writeValueAsString(examEntry);

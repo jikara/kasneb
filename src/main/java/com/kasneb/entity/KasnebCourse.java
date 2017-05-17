@@ -131,12 +131,9 @@ public class KasnebCourse extends Course {
     public Integer getCourseTypeCode() {
         if (getKasnebCourseType() != null) {
             courseTypeCode = getKasnebCourseType().getCode();
+            return courseTypeCode;
         }
         return courseTypeCode;
-    }
-
-    public void setCourseTypeCode(Integer courseTypeCode) {
-        this.courseTypeCode = courseTypeCode;
     }
 
     @Override

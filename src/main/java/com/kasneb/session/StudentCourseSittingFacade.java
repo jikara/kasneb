@@ -136,7 +136,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 sittingPaper.setPk(pk);
                 sittingPaper.setPaper(paper);
                 sittingPaper.setPaperStatus(PaperStatus.PENDING);
-                sittingPaper=em.merge(sittingPaper);
+                sittingPaper = em.merge(sittingPaper);
                 managed.getPapers().add(sittingPaper);
             });
             map = getBillingMethod(managed.getPapers());
@@ -148,7 +148,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     }
 
     public StudentCourseSitting updateCentre(StudentCourseSitting entity) throws CustomHttpException, MessagingException, IOException, JsonProcessingException, ParseException {
-        StudentCourseSitting managed = em.find(StudentCourseSitting.class, entity.getId());
+        StudentCourseSitting managed = find(entity.getId());
         if (managed == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student sitting does not exist");
         }
@@ -378,8 +378,28 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         return query.getSingleResult();
     }
 
+    public List<com.kasneb.dto.StudentCourseSitting> findByStudentCourse(StudentCourse studentCourse) {
+        TypedQuery<com.kasneb.dto.StudentCourseSitting> query = em.createQuery("SELECT new com.kasneb.dto.StudentCourseSitting(s.id,s.sitting) FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse AND s.status =:status", com.kasneb.dto.StudentCourseSitting.class);
+        query.setParameter("studentCourse", studentCourse);
+        query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
+        return query.getResultList();
+    }
+
+    public List<StudentCourseSitting> findSittings(StudentCourse studentCourse) {
+        TypedQuery<StudentCourseSitting> query = getEntityManager().createQuery("SELECT s FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse", StudentCourseSitting.class);
+        query.setParameter("studentCourse", studentCourse);
+        return query.getResultList();
+    }
+
+    @Override
+    public StudentCourseSitting find(Object id) {
+        TypedQuery<StudentCourseSitting> query = em.createQuery("SELECT s FROM StudentCourseSitting s LEFT JOIN FETCH s.papers WHERE s.id =:id", StudentCourseSitting.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
     public void createExamEntry(StudentCourseSitting studentCourseSitting) throws IOException, JsonProcessingException, CustomHttpException, ParseException {
-        StudentCourse studentCourse = studentCourseFacade.find(studentCourseSitting.getStudentCourse().getId());
+        StudentCourse studentCourse = studentCourseSitting.getStudentCourse();
         Sitting sitting = studentCourseSitting.getSitting();
         String papers = "";
         List<ExamPaper> examPapers = new ArrayList<>();
@@ -389,7 +409,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         Integer sectionId = 1;
         Integer partId = 1;
         for (StudentCourseSittingPaper paper : studentCourseSitting.getPapers()) {
-            switch (studentCourseSitting.getStudentCourse().getCourse().getCourseTypeCode()) {
+            switch (studentCourseSitting.getStudentCourse().getCourse().getKasnebCourseType().getCode()) {
                 case 100:
                     sectionSet.add(paper.getPaper().getSection().getSectionPK().getId());
                     break;
@@ -400,7 +420,7 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
             }
             ExamPaperPK pk = new ExamPaper().new ExamPaperPK(studentCourse.getRegistrationNumber(), paper.getPaper().getCode());
             ExamPaper examPaper = new ExamPaper();
-            switch (studentCourse.getCourse().getCourseTypeCode()) {
+            switch (studentCourse.getCourse().getKasnebCourseType().getCode()) {
                 case 100:
                     examPaper = new ExamPaper(pk, paper.getPaper().getSection().getSectionPK().getId(), null, "N");
                     break;
@@ -428,22 +448,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 break;
         }
         ExamEntry examEntry = new ExamEntry(studentCourse.getRegistrationNumber(), partId, sectionId, sitting.getSittingYear(), period, new Centre(studentCourseSitting.getSittingCentre().getCode()), studentCourseSitting.getInvoice().getPayment().getReceiptNo(), "Y", 2, papers, papers, examPapers, examBookings);
-       
         //Create Exam entry
-        CoreUtil.createExamEntry(examEntry, studentCourse.getCourse());
-    }
-
-    public List<com.kasneb.dto.StudentCourseSitting> findByStudentCourse(StudentCourse studentCourse) {
-        TypedQuery<com.kasneb.dto.StudentCourseSitting> query = em.createQuery("SELECT new com.kasneb.dto.StudentCourseSitting(s.id,s.sitting) FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse AND s.status =:status", com.kasneb.dto.StudentCourseSitting.class);
-        query.setParameter("studentCourse", studentCourse);
-        query.setParameter("status", StudentCourseSittingStatus.CONFIRMED);
-        return query.getResultList();
-    }
-
-    public List<StudentCourseSitting> findSittings(StudentCourse studentCourse) {
-        TypedQuery<StudentCourseSitting> query = getEntityManager().createQuery("SELECT s FROM StudentCourseSitting s WHERE s.studentCourse =:studentCourse", StudentCourseSitting.class);
-        query.setParameter("studentCourse", studentCourse);
-        return query.getResultList();
+        CoreUtil.createCoreExamEntry(examEntry, studentCourse.getCourse());
     }
 
 }

@@ -24,7 +24,6 @@ import com.kasneb.entity.LevelPK;
 import com.kasneb.entity.Notification;
 import com.kasneb.entity.NotificationStatus;
 import com.kasneb.entity.NotificationType;
-import com.kasneb.entity.PaperStatus;
 import com.kasneb.entity.Permission;
 import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
@@ -367,14 +366,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             // Logger.getLogger(StudentCourseFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         return nextRenewalDate;
-    }
-
-    public Collection<Paper> getPassedPapers(StudentCourse studentCourse) {
-        TypedQuery<Paper> query
-                = em.createQuery("SELECT p FROM Paper p JOIN p.studentCourseSittingPaper sp WHERE sp.studentCourseSitting.studentCourse=:studentCourse AND sp.paperStatus =:paperStatus", Paper.class);
-        query.setParameter("studentCourse", studentCourse);
-        query.setParameter("paperStatus", PaperStatus.PASS);
-        return query.getResultList();
     }
 
     public Collection<Paper> getEligiblePapers(Collection<Paper> papers, Collection<Paper> exempted, Collection<Paper> passedPapers) {
