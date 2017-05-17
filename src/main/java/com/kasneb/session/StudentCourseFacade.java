@@ -40,6 +40,7 @@ import com.kasneb.entity.pk.PartPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.BatchStudentCourse;
+import com.kasneb.util.Constants;
 import com.kasneb.util.CoreUtil;
 import static com.kasneb.util.CoreUtil.getFirstExemDate;
 import com.kasneb.util.DateUtil;
@@ -259,6 +260,12 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             Student student = managed.getStudent();
             student.setCurrentCourse(managed);
             studentFacade.edit(student);
+            for (Invoice invoice : managed.getInvoices()) {
+                if (invoice.getFeeCode().getCode().equals(Constants.REGISTRATION_FEE)) {
+                    //Create receipt
+                    paymentFacade.createReceipt(invoice.getPayment());
+                }
+            }
         } else {
             managed.setCourseStatus(StudentCourseStatus.REJECTED);
             switch (managed.getRejectCode()) {

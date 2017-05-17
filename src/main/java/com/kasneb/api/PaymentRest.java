@@ -135,11 +135,14 @@ public class PaymentRest {
                     communicationFacade.create(communication);
                     communication.setAlertType(AlertType.EMAIL);
                     communicationFacade.create(communication);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.REGISTRATION_FEE:
                     //update invoice as paid
                     invoice.setStatus(new InvoiceStatus("PAID"));
                     invoiceFacade.edit(invoice);
+                    //Note Receipt is not issued here since reg no has not been generated yet
                     break;
                 case Constants.REGISTRATION_RENEWAL_FEE:
                     //update invoice as paid
@@ -151,6 +154,8 @@ public class PaymentRest {
                     communicationFacade.create(communication);
                     communication.setAlertType(AlertType.EMAIL);
                     communicationFacade.create(communication);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.EXAM_ENTRY_FEE:
                     invoice.getStudentCourseSitting().setStatus(StudentCourseSittingStatus.PAID);
@@ -162,17 +167,19 @@ public class PaymentRest {
                     //update invoice as paid
                     invoice.setStatus(new InvoiceStatus("PAID"));
                     invoiceFacade.edit(invoice);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.PUBLICATION_FEE:
                     //update invoice as paid
                     invoice.setStatus(new InvoiceStatus("PAID"));
                     invoiceFacade.edit(invoice);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 default:
                     break;
             }
-            //Create receipt
-            paymentFacade.createReceipt(entity);
             httpStatus = Response.Status.OK;
             anyResponse = entity;
         } catch (CustomHttpException ex) {
@@ -233,6 +240,8 @@ public class PaymentRest {
                     communicationFacade.create(communication);
                     communication.setAlertType(AlertType.EMAIL);
                     communicationFacade.create(communication);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.REGISTRATION_FEE:
                     //update invoice as paid
@@ -249,6 +258,8 @@ public class PaymentRest {
                     communicationFacade.create(communication);
                     communication.setAlertType(AlertType.EMAIL);
                     communicationFacade.create(communication);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.EXAM_ENTRY_FEE:
                     if (PredicateUtil.isSet(appKey) && appKey.equals(Constants.BANK_APP_KEY)) {
@@ -263,17 +274,19 @@ public class PaymentRest {
                     //update invoice as paid
                     invoice.setStatus(new InvoiceStatus("PAID"));
                     invoiceFacade.edit(invoice);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 case Constants.PUBLICATION_FEE:
                     //update invoice as paid
                     invoice.setStatus(new InvoiceStatus("PAID"));
                     invoiceFacade.edit(invoice);
+                    //Create receipt
+                    paymentFacade.createReceipt(entity);
                     break;
                 default:
                     break;
             }
-            //Create receipt
-            paymentFacade.createReceipt(entity);
             httpStatus = Response.Status.OK;
             anyResponse = entity;
         } catch (CustomHttpException ex) {
