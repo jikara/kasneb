@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Produces;
@@ -26,6 +27,7 @@ public class CountryRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -35,22 +37,21 @@ public class CountryRest {
      * Creates a new instance of CountryRest
      */
     public CountryRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
      * Retrieves representation of an instance of com.kasneb.api.CountryRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        try {
-            anyResponse = countryFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CountryRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findAll() throws JsonProcessingException {
+        anyResponse = countryFacade.findAll();
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)

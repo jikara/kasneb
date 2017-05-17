@@ -5,6 +5,9 @@
  */
 package com.kasneb.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.dto.ExemptionData;
 import com.kasneb.entity.Course;
 import com.kasneb.entity.CourseExemption;
@@ -36,7 +39,9 @@ public class CourseExemptionRest {
 
     @Context
     private UriInfo context;
+    ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -48,6 +53,8 @@ public class CourseExemptionRest {
      * Creates a new instance of CourseExemptionRest
      */
     public CourseExemptionRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -56,14 +63,16 @@ public class CourseExemptionRest {
      *
      * @param id
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@PathParam("id") String id) {
+    public Response find(@PathParam("id") String id) throws JsonProcessingException {
         Course course = courseFacade.find(id);
         anyResponse = courseExemptionFacade.findByQualification(course);
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -75,14 +84,16 @@ public class CourseExemptionRest {
      *
      * @param entity
      * @return
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(CourseExemption entity) {
+    public Response edit(CourseExemption entity) throws JsonProcessingException {
         entity = courseExemptionFacade.edit(entity);
         anyResponse = entity;
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(entity)
@@ -92,29 +103,31 @@ public class CourseExemptionRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(ExemptionData entity) {
+    public Response create(ExemptionData entity) throws JsonProcessingException {
         CourseExemptionPK pk = new CourseExemptionPK(entity.getQualification().getId(), entity.getCourse().getId(), entity.getPaper().getCode());
         CourseExemption courseExemption = new CourseExemption(pk);
         courseExemptionFacade.create(courseExemption);
         anyResponse = courseExemption;
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(courseExemption)
+                .entity(json)
                 .build();
     }
 
     @DELETE
     @Path("{qualificationId}/{paperCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("qualificationId") String qualificationId, @PathParam("paperCode") String paperCode) {
+    public Response delete(@PathParam("qualificationId") String qualificationId, @PathParam("paperCode") String paperCode) throws JsonProcessingException {
         CourseExemption courseExemption = courseFacade.findCourseExemption(qualificationId, paperCode);
         courseExemptionFacade.remove(courseExemption);
         anyResponse = new CustomMessage(200, "Record removed successfully");
         httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
-                .entity(anyResponse)
+                .entity(json)
                 .build();
     }
 

@@ -49,6 +49,7 @@ public class RoleRest {
      * Retrieves representation of an instance of com.kasneb.api.RoleRest
      *
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)

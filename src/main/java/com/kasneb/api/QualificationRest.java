@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
@@ -30,6 +31,7 @@ public class QualificationRest {
     @Context
     private UriInfo context;
     ObjectMapper mapper = new ObjectMapper();
+    Hibernate5Module hbm = new Hibernate5Module();
     Object anyResponse = new Object();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
@@ -40,6 +42,8 @@ public class QualificationRest {
      * Creates a new instance of QualificationRest
      */
     public QualificationRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -48,16 +52,13 @@ public class QualificationRest {
      *
      * @param typeId
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("type_id") Integer typeId) {
-        try {
+    public Response findAll(@QueryParam("type_id") Integer typeId) throws JsonProcessingException {
             anyResponse = qualificationFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(QualificationRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            json = mapper.writeValueAsString(anyResponse);       
         return Response
                 .status(Response.Status.OK)
                 .entity(json)

@@ -7,10 +7,13 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
@@ -36,6 +39,7 @@ public class CentreZoneRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -47,6 +51,8 @@ public class CentreZoneRest {
      * Creates a new instance of CentrezoneResource
      */
     public CentreZoneRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**
@@ -54,10 +60,11 @@ public class CentreZoneRest {
      *
      * @param studentId
      * @return an instance of javax.ws.rs.core.Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll(@QueryParam("studentId") Integer studentId) {
+    public Response findAll(@QueryParam("studentId") Integer studentId) throws JsonProcessingException {
         StudentCourse currentCourse = null;
         try {
             if (studentId != null) {
@@ -69,12 +76,10 @@ public class CentreZoneRest {
             } else {
                 anyResponse = centreZoneFacade.findZones();
             }
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(CentreZoneRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | CustomHttpException ex) {
-           // Logger.getLogger(CentreZoneRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CentreZoneRest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)

@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.Student;
 import com.kasneb.entity.StudentCourse;
 import com.kasneb.exception.CustomHttpException;
@@ -31,6 +32,7 @@ public class ResourceRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
     @EJB
@@ -44,6 +46,8 @@ public class ResourceRest {
      * Creates a new instance of ResourcesRest
      */
     public ResourceRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     @GET
@@ -65,7 +69,7 @@ public class ResourceRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-           // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
@@ -93,7 +97,7 @@ public class ResourceRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-           // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(UserRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

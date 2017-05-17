@@ -7,6 +7,7 @@ package com.kasneb.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.kasneb.entity.FeeTypePK;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Paper;
@@ -33,6 +34,7 @@ public class FeeTypeRest {
 
     ObjectMapper mapper = new ObjectMapper();
     Object anyResponse = new Object();
+    Hibernate5Module hbm = new Hibernate5Module();
     Response.Status httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
     String json;
 
@@ -43,6 +45,8 @@ public class FeeTypeRest {
      * Creates a new instance of FeeTypeRest
      */
     public FeeTypeRest() {
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     private FeeTypePK getPrimaryKey(PathSegment pathSegment) {
@@ -71,18 +75,10 @@ public class FeeTypeRest {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        try {
-            anyResponse = feeFacade.findAll();
-            httpStatus = Response.Status.OK;
-        } catch (Exception e) {
-            httpStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findAll() throws JsonProcessingException {
+        anyResponse = feeFacade.findAll();
+        httpStatus = Response.Status.OK;
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -92,7 +88,7 @@ public class FeeTypeRest {
     @GET
     @Path("registration")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRegistrationFee() {
+    public Response findRegistrationFee() throws JsonProcessingException {
         try {
             anyResponse = feeFacade.getCourseRegistrationFee(new KasnebCourse("01"));
             httpStatus = Response.Status.OK;
@@ -100,13 +96,9 @@ public class FeeTypeRest {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
             httpStatus = e.getStatusCode();
         } catch (IOException ex) {
-           // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -116,7 +108,7 @@ public class FeeTypeRest {
     @GET
     @Path("registration/renewal")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRenewalFee() {
+    public Response findRenewalFee() throws JsonProcessingException {
         try {
             anyResponse = feeFacade.getAnnualRegistrationRenewalFee(new KasnebCourse("02"), 2017);
             httpStatus = Response.Status.OK;
@@ -124,11 +116,7 @@ public class FeeTypeRest {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
             httpStatus = e.getStatusCode();
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)
@@ -138,7 +126,7 @@ public class FeeTypeRest {
     @GET
     @Path("examentry/paper")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findExamEntryFee() {
+    public Response findExamEntryFee() throws JsonProcessingException {
         try {
             anyResponse = feeFacade.getExamEntryFeePerPaper(new Paper("CA11"), true);
             httpStatus = Response.Status.OK;
@@ -146,11 +134,7 @@ public class FeeTypeRest {
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
             httpStatus = e.getStatusCode();
         }
-        try {
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-           // Logger.getLogger(FeeTypeRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(httpStatus)
                 .entity(json)

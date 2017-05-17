@@ -82,7 +82,7 @@ public class StudentCourseRest {
             StudentCourse studentCourse = studentCourseFacade.find(studentCourseId);
             anyResponse = studentCourseFacade.getEligibleExemptionsByQualification(studentCourse, qualificationId, codeType);
             httpStatus = Response.Status.OK;
-        } catch (Exception ex) {
+        } catch (CustomHttpException ex) {
             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);

@@ -45,17 +45,14 @@ public class SittingRest {
      * Retrieves representation of an instance of com.kasneb.api.SittingRest
      *
      * @return an instance of Response
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAll() {
-        try {
-            anyResponse = sittingFacade.findAll();
-            json = mapper.writeValueAsString(anyResponse);
-        } catch (JsonProcessingException ex) {
-            // Logger.getLogger(SittingRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Response findAll() throws JsonProcessingException {
+        anyResponse = sittingFacade.findAll();
+        json = mapper.writeValueAsString(anyResponse);
         return Response
                 .status(Response.Status.OK)
                 .entity(json)
