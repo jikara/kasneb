@@ -8,6 +8,7 @@ package com.kasneb.session;
 import com.kasneb.client.LearnAbout;
 import com.kasneb.client.Nation;
 import com.kasneb.client.Qualification;
+import com.kasneb.client.Receipt;
 import com.kasneb.client.Registration;
 import com.kasneb.client.Sex;
 import com.kasneb.entity.AlertType;
@@ -260,12 +261,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             Student student = managed.getStudent();
             student.setCurrentCourse(managed);
             studentFacade.edit(student);
-            for (Invoice invoice : managed.getInvoices()) {
-                if (invoice.getFeeCode().getCode().equals(Constants.REGISTRATION_FEE)) {
-                    //Create receipt
-                    paymentFacade.createReceipt(invoice.getPayment());
-                }
-            }
         } else {
             managed.setCourseStatus(StudentCourseStatus.REJECTED);
             switch (managed.getRejectCode()) {
@@ -301,6 +296,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     }
 
     private Registration createRegistration(StudentCourse studentCourse) throws ParseException, IOException, CustomHttpException {
+        List<Receipt> receipts = new ArrayList<>();
         Student student = studentCourse.getStudent();
         com.kasneb.client.Course previousCourse = new com.kasneb.client.Course("00");
         if (student.getPreviousCourseCode() != null) {
@@ -348,11 +344,19 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 new LearnAbout(4), //learnt 
                 new Nation(student.getCountryId().getCode()), //Nationality
                 new Qualification(5),
-                null,//receipts
+                new ArrayList<>(),//receipts
                 null,//eligiblePapers
                 null,//examBookings
                 null//cpaExamEntry
         );
+        for (Invoice invoice : studentCourse.getInvoices()) {
+            if (invoice.getFeeCode().getCode().equals(Constants.REGISTRATION_FEE)) {
+                //Add Registration receipt
+                Receipt receipt = paymentFacade.createRegistrationReceipt(invoice.getPayment());
+                receipts.add(receipt);
+            }
+        }
+        registration.setReceipts(receipts);
         return CoreUtil.createCoreRegistration(registration, studentCourse.getCourse());
     }
 
@@ -597,4 +601,5 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return managed;
     }
+
 }
