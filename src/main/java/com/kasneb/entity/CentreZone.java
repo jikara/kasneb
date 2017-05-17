@@ -35,8 +35,7 @@ public class CentreZone implements Serializable {
     @Column(name = "code")
     private String code;
     @JsonInclude
-    @Column(name = "code", insertable = false, updatable = false)
-    private String id;
+    private transient String id;
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     private String name;
@@ -52,11 +51,7 @@ public class CentreZone implements Serializable {
     }
 
     public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        return this.getCode();
     }
 
     public String getName() {

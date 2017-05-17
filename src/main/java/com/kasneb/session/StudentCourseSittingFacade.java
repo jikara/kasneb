@@ -427,9 +427,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
                 period = 2;
                 break;
         }
-        ExamEntry examEntry = new ExamEntry(studentCourse.getRegistrationNumber(), partId, sectionId, sitting.getSittingYear(), period, new Centre(studentCourseSitting.getSittingCentre().getCode()), studentCourseSitting.getInvoice().getPayments().get(0).getReceiptNo(), "Y", 2, papers, papers, examPapers, examBookings);
-        //Create receipt 
-        paymentFacade.createReceipt(studentCourseSitting.getInvoice());
+        ExamEntry examEntry = new ExamEntry(studentCourse.getRegistrationNumber(), partId, sectionId, sitting.getSittingYear(), period, new Centre(studentCourseSitting.getSittingCentre().getCode()), studentCourseSitting.getInvoice().getPayment().getReceiptNo(), "Y", 2, papers, papers, examPapers, examBookings);
+       
         //Create Exam entry
         CoreUtil.createExamEntry(examEntry, studentCourse.getCourse());
     }

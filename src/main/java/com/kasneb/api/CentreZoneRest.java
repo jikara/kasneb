@@ -51,8 +51,8 @@ public class CentreZoneRest {
      * Creates a new instance of CentrezoneResource
      */
     public CentreZoneRest() {
-        // hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
-        //mapper.registerModule(hbm);
+        hbm.enable(Hibernate5Module.Feature.REPLACE_PERSISTENT_COLLECTIONS);
+        mapper.registerModule(hbm);
     }
 
     /**

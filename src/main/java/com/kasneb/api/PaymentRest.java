@@ -84,6 +84,31 @@ public class PaymentRest {
         mapper.registerModule(hbm);
     }
 
+    @GET
+    @Path("bill")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response prepare(@Context HttpHeaders headers, @QueryParam("bill_number") String reference) throws IOException {
+        Invoice invoice = null;
+        try {
+            invoice = invoiceFacade.findByReference(reference);
+            List<ExamCentre> examCentres = examCentreFacade.findCentres(invoice.getStudentCourse());
+            if (invoice.getFeeCode().getCode().equals(Constants.EXAM_ENTRY_FEE)) {
+                invoice.setExamCentres(examCentres);
+            }
+            httpStatus = Response.Status.OK;
+            anyResponse = invoice;
+        } catch (CustomHttpException ex) {
+            httpStatus = ex.getStatusCode();
+            anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        json = mapper.writeValueAsString(anyResponse);
+        return Response
+                .status(httpStatus)
+                .entity(json)
+                .build();
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,6 +171,8 @@ public class PaymentRest {
                 default:
                     break;
             }
+            //Create receipt
+            paymentFacade.createReceipt(entity);
             httpStatus = Response.Status.OK;
             anyResponse = entity;
         } catch (CustomHttpException ex) {
@@ -153,31 +180,6 @@ public class PaymentRest {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException ex) {
-            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        json = mapper.writeValueAsString(anyResponse);
-        return Response
-                .status(httpStatus)
-                .entity(json)
-                .build();
-    }
-
-    @GET
-    @Path("bill")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response prepare(@Context HttpHeaders headers, @QueryParam("bill_number") String reference) throws IOException {
-        Invoice invoice = null;
-        try {
-            invoice = invoiceFacade.findByReference(reference);
-            List<ExamCentre> examCentres = examCentreFacade.findCentres(invoice.getStudentCourse());
-            if (invoice.getFeeCode().getCode().equals(Constants.EXAM_ENTRY_FEE)) {
-                invoice.setExamCentres(examCentres);
-            }
-            httpStatus = Response.Status.OK;
-            anyResponse = invoice;
-        } catch (CustomHttpException ex) {
-            httpStatus = ex.getStatusCode();
-            anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
@@ -270,14 +272,16 @@ public class PaymentRest {
                 default:
                     break;
             }
+            //Create receipt
+            paymentFacade.createReceipt(entity);
             httpStatus = Response.Status.OK;
-            anyResponse=entity;
+            anyResponse = entity;
         } catch (CustomHttpException ex) {
             httpStatus = ex.getStatusCode();
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
-             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException ex) {
-             Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

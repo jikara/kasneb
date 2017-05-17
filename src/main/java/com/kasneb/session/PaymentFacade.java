@@ -173,7 +173,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         entity.setStudentCourse(invoice.getStudentCourse());
         entity.setPaymentDetails(paymentDetails);
         entity.setReceiptNo(GeneratorUtil.generateReceiptNumber());
-        completeJambopayPayment(entity, invoice);
+        //completeJambopayPayment(entity, invoice);
         em.persist(entity);
         return entity;
     }
@@ -186,7 +186,7 @@ public class PaymentFacade extends AbstractFacade<Payment> {
             //Prepare transaction
             WalletUtil.completePayment(loginResponse, preparePaymentResponse, entity.getPhoneNumber(), entity.getPin());
         } catch (IOException ex) {
-           // Logger.getLogger(PaymentFacade.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(PaymentFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -258,8 +258,9 @@ public class PaymentFacade extends AbstractFacade<Payment> {
         return query.getResultList();
     }
 
-    public Receipt createReceipt(Invoice invoice) throws ParseException, IOException, CustomHttpException {
+    public Receipt createReceipt(Payment payment) throws ParseException, IOException, CustomHttpException {
         String category = null;
+        Invoice invoice = invoiceFacade.find(payment.getInvoice().getId());
         switch (invoice.getFeeCode().getCode()) {
             case Constants.REGISTRATION_FEE:
                 category = "REG";
@@ -275,24 +276,22 @@ public class PaymentFacade extends AbstractFacade<Payment> {
                 break;
         }
         Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
-        Invoice managed = invoiceFacade.find(invoice.getId());
-        Payment payment = managed.getPayments().get(0);
         String currency = "KSH";
         if (payment.getCurrency().equals("KES")) {
             currency = "KSH";
         }
-        String studentName = managed.getStudentCourse().getStudent().getFullName();
-        Receipt receipt = new Receipt(new com.kasneb.client.Course(managed.getStudentCourse().getCourse().getId()), studentName, String.valueOf(managed.getStudentCourse().getRegistrationNumber()), "", "MOBILE", DateUtil.getString(new Date()), payment.getAmount(), new com.kasneb.client.Currency(currency), new BigDecimal(0));
+        String studentName = payment.getStudentCourse().getStudent().getFullName();
+        Receipt receipt = new Receipt(new com.kasneb.client.Course(payment.getStudentCourse().getCourse().getId()), studentName, String.valueOf(payment.getStudentCourse().getRegistrationNumber()), "", "MOBILE", DateUtil.getString(new Date()), payment.getAmount(), new com.kasneb.client.Currency(currency), new BigDecimal(0));
         for (PaymentDetail paymentDetail : payment.getPaymentDetails()) {
             //Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency            
-            ReceiptDetail rcpDetail = new ReceiptDetail(receipt.getCourse(), "MOBILE", DateUtil.getString(new Date()), studentName, new ReceiptCategory(category), paymentDetail.getDescription(), paymentDetail.getAmount(), new Registration(managed.getStudentCourse().getRegistrationNumber()), "", "", new com.kasneb.client.Currency(currency));
+            ReceiptDetail rcpDetail = new ReceiptDetail(receipt.getCourse(), "MOBILE", DateUtil.getString(new Date()), studentName, new ReceiptCategory(category), paymentDetail.getDescription(), paymentDetail.getAmount(), new Registration(payment.getStudentCourse().getRegistrationNumber()), "", "", new com.kasneb.client.Currency(currency));
             if (!rcpDetail.getDescription().equals("Administrative fee")) {
                 receiptDetails.add(rcpDetail);
             }
         }
         receipt.setReceiptDetails(receiptDetails);
         if (receipt.getAmount().compareTo(BigDecimal.ZERO) == 1) {
-            receipt = CoreUtil.createReceipt(receipt, managed.getStudentCourse().getCourse());
+            receipt = CoreUtil.createCoreReceipt(receipt, payment.getStudentCourse().getCourse());
         }
         return receipt;
     }

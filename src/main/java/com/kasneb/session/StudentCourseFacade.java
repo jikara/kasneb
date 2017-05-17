@@ -8,17 +8,12 @@ package com.kasneb.session;
 import com.kasneb.client.LearnAbout;
 import com.kasneb.client.Nation;
 import com.kasneb.client.Qualification;
-import com.kasneb.client.Receipt;
-import com.kasneb.client.ReceiptCategory;
-import com.kasneb.client.ReceiptDetail;
 import com.kasneb.client.Registration;
 import com.kasneb.client.Sex;
 import com.kasneb.entity.AlertType;
 import com.kasneb.entity.Communication;
 import com.kasneb.entity.CommunicationType;
-import com.kasneb.entity.Currency;
 import com.kasneb.entity.Invoice;
-import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Paper;
@@ -51,7 +46,6 @@ import static com.kasneb.util.CoreUtil.getFirstExemDate;
 import com.kasneb.util.DateUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -302,8 +296,6 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
 
     private Registration createRegistration(StudentCourse studentCourse) throws ParseException, IOException, CustomHttpException {
         Student student = studentCourse.getStudent();
-        //Create core object
-        Set<Receipt> receipts = new HashSet<>();
         com.kasneb.client.Course previousCourse = new com.kasneb.client.Course("00");
         if (student.getPreviousCourseCode() != null) {
             previousCourse = new com.kasneb.client.Course(student.getPreviousCourseCode());
@@ -355,27 +347,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
                 null,//examBookings
                 null//cpaExamEntry
         );
-        for (Invoice invoice : studentCourse.getInvoices()) {
-            if ("PAID".equals(invoice.getStatus().getStatus())) {
-                Collection<ReceiptDetail> receiptDetails = new ArrayList<>();
-                String receiptNumber = invoice.getPayments().get(0).getReceiptNo();
-                //String receiptNo, Course course, String receivedFrom, Registration registration, String fullRegistrationNumber, String lastUser, Date mdate, String paymentType, BigDecimal amount, String referenceNumber, Currency currency, BigDecimal amount2, List<ReceiptDetail> receiptDetails
-                Receipt receipt = new Receipt(new com.kasneb.client.Course(studentCourse.getCourse().getId()), studentCourse.getStudent().getFirstName(), String.valueOf(registration.getRegNo()), "", "MOBILE", DateUtil.getString(new Date()), invoice.getNetAmount(), new com.kasneb.client.Currency(Currency.KSH.toString()), new BigDecimal(0));
-                receipt.setRegistration(registration);
-                for (InvoiceDetail invDetail : invoice.getInvoiceDetails()) {
-                    //Receipt receipt, Course course, String lastUser, Date created, String studentName, ReceiptCategory category, String description, BigDecimal amount, Registration registration, String postingCode, String fullRegNo, Currency currency
-                    String studentName = studentCourse.getStudent().getFirstName();
-                    ReceiptDetail rcpDetail = new ReceiptDetail(new com.kasneb.client.Course(studentCourse.getCourse().getId()), "MOBILE", DateUtil.getString(new Date()), studentName, new ReceiptCategory("REG"), invDetail.getDescription(), invDetail.getKesAmount(), registration, "", "", new com.kasneb.client.Currency(Currency.KSH.toString()));
-                    if (!rcpDetail.getDescription().equals("Administrative fee")) {
-                        receiptDetails.add(rcpDetail);
-                    }
-                }
-                receipt.setReceiptDetails(receiptDetails);
-                receipts.add(receipt);
-            }
-        }
-        registration.setReceipts(receipts);
-        return CoreUtil.createRegistration(registration, studentCourse.getCourse());
+        return CoreUtil.createCoreRegistration(registration, studentCourse.getCourse());
     }
 
     private Date getNextRenewalDate(StudentCourse entity) {

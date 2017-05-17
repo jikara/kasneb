@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -89,8 +88,8 @@ public class Invoice implements Serializable {
     @ManyToOne
     @JoinColumn(name = "feeCode", referencedColumnName = "code", nullable = false)
     private FeeCode feeCode;
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Payment> payments;
+    @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Payment payment;
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private StudentCourseSubscription studentCourseSubscription;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -103,12 +102,6 @@ public class Invoice implements Serializable {
     @ManyToOne
     @JoinColumn(name = "studentCourseId")
     private StudentCourse studentCourse;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<RenewalInvoiceDetail> renewalInvoiceDetails;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "invoice", targetEntity = InvoiceDetail.class, orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<ExemptionInvoiceDetail> exemptionInvoiceDetails;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "Africa/Nairobi")
     @Column(name = "dueDate")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -231,14 +224,6 @@ public class Invoice implements Serializable {
         }
     }
 
-    public Collection<RenewalInvoiceDetail> getRenewalInvoiceDetails() {
-        return renewalInvoiceDetails;
-    }
-
-    public void setRenewalInvoiceDetails(Collection<RenewalInvoiceDetail> renewalInvoiceDetails) {
-        this.renewalInvoiceDetails = renewalInvoiceDetails;
-    }
-
     public StudentCourseSitting getStudentCourseSitting() {
         return studentCourseSitting;
     }
@@ -264,12 +249,12 @@ public class Invoice implements Serializable {
         this.feeCode = feeCode;
     }
 
-    public List<Payment> getPayments() {
-        return payments;
+    public Payment getPayment() {
+        return payment;
     }
 
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public StudentCourseSubscription getStudentCourseSubscription() {
@@ -286,14 +271,6 @@ public class Invoice implements Serializable {
 
     public void setStudentCourse(StudentCourse studentCourse) {
         this.studentCourse = studentCourse;
-    }
-
-    public Collection<ExemptionInvoiceDetail> getExemptionInvoiceDetails() {
-        return exemptionInvoiceDetails;
-    }
-
-    public void setExemptionInvoiceDetails(Collection<ExemptionInvoiceDetail> exemptionInvoiceDetails) {
-        this.exemptionInvoiceDetails = exemptionInvoiceDetails;
     }
 
     public Date getDueDate() {
@@ -318,26 +295,6 @@ public class Invoice implements Serializable {
                 invoiceDetails = new LinkedList<>();
             }
             invoiceDetails.add(invoiceDetail);
-            invoiceDetail.setInvoice(this);
-        }
-    }//Helper
-
-    public void addInvoiceDetail(RenewalInvoiceDetail invoiceDetail) {
-        if (invoiceDetail != null) {
-            if (renewalInvoiceDetails == null) {
-                renewalInvoiceDetails = new LinkedList<>();
-            }
-            renewalInvoiceDetails.add(invoiceDetail);
-            invoiceDetail.setInvoice(this);
-        }
-    }//Helper
-
-    public void addInvoiceDetail(ExemptionInvoiceDetail invoiceDetail) {
-        if (invoiceDetail != null) {
-            if (exemptionInvoiceDetails == null) {
-                exemptionInvoiceDetails = new LinkedList<>();
-            }
-            exemptionInvoiceDetails.add(invoiceDetail);
             invoiceDetail.setInvoice(this);
         }
     }

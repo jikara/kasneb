@@ -263,7 +263,7 @@ public class CoreUtil {
         return gson.fromJson(responseJson, Registration.class);
     }
 
-    public static Registration createRegistration(Registration registration, KasnebCourse course) throws IOException, CustomHttpException, ParseException {
+    public static Registration createCoreRegistration(Registration registration, KasnebCourse course) throws IOException, CustomHttpException, ParseException {
         Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
         ObjectMapper mapper = new ObjectMapper();
         String jsonReq = mapper.writeValueAsString(registration);
@@ -274,7 +274,7 @@ public class CoreUtil {
         return created;
     }
 
-    public static Receipt createReceipt(Receipt entity, KasnebCourse course) throws IOException, CustomHttpException, ParseException {
+    public static Receipt createCoreReceipt(Receipt entity, KasnebCourse course) throws IOException, CustomHttpException, ParseException {
         Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
         ObjectMapper mapper = new ObjectMapper();
         String jsonReq = mapper.writeValueAsString(entity);

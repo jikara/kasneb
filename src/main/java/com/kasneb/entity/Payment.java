@@ -7,6 +7,7 @@ package com.kasneb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -79,9 +80,11 @@ public class Payment implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "paymentTimestamp", nullable = false, updatable = false)
     private Date paymentTimestamp;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "studentCourseId", referencedColumnName = "id")
     private StudentCourse studentCourse;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId", referencedColumnName = "id")
     private Invoice invoice;

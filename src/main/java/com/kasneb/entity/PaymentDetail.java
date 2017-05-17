@@ -5,7 +5,7 @@
  */
 package com.kasneb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class PaymentDetail implements Serializable {
     private FeeCode feeCode;
     @Column(name = "description")
     private String description;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false)
     @JoinColumn(name = "paymentId", referencedColumnName = "id")
     private Payment payment;

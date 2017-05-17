@@ -12,9 +12,9 @@ import com.kasneb.entity.ExemptionInvoiceDetail;
 import com.kasneb.entity.ExemptionPaper;
 import com.kasneb.entity.ExemptionStatus;
 import com.kasneb.entity.Invoice;
+import com.kasneb.entity.InvoiceDetail;
 import com.kasneb.entity.Paper;
 import com.kasneb.entity.StudentCourse;
-import com.kasneb.entity.Synchronization;
 import com.kasneb.entity.User;
 import com.kasneb.entity.VerificationStatus;
 import com.kasneb.entity.pk.ExemptionPaperPK;
@@ -198,11 +198,14 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
     }
 
     public void updatePaidPapers(Invoice invoice) {
-        for (ExemptionInvoiceDetail invDetail : invoice.getExemptionInvoiceDetails()) {
-            //Get managed 
-            ExemptionPaper managed = em.find(ExemptionPaper.class, invDetail.getPaper().getExemptionPaperPK());
-            managed.setPaid(Boolean.TRUE);
-            em.merge(managed);
+        for (InvoiceDetail invDetail : invoice.getInvoiceDetails()) {
+            if (invDetail instanceof ExemptionInvoiceDetail) {
+                ExemptionInvoiceDetail ExemInvDetail = (ExemptionInvoiceDetail) invDetail;
+                //Get managed 
+                ExemptionPaper managed = em.find(ExemptionPaper.class, ExemInvDetail.getPaper().getExemptionPaperPK());
+                managed.setPaid(Boolean.TRUE);
+                em.merge(managed);
+            }
         }
     }
 
@@ -239,13 +242,10 @@ public class ExemptionFacade extends AbstractFacade<Exemption> {
             coreExemption.setPk(pk);
             exemptions.add(coreExemption);
         }
-        //Create receipt
-        paymentFacade.createReceipt(managed.getInvoice());
         //Create Exemption
         CoreUtil.createExemption(exemptions, managed.getStudentCourse().getCourse());
         //Remove exempted papers
-        Synchronization synchronization = new Synchronization(managed.getStudentCourse().getStudent(), false);
-        synchronizationFacade.create(synchronization);
+        synchronizationFacade.doSynch(managed.getStudentCourse().getStudent());
     }
 
     public void removeExemptedPapers(Exemption exemption) {
