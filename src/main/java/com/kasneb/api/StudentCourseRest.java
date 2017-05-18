@@ -186,7 +186,6 @@ public class StudentCourseRest {
         StudentCourse studentCourse;
         try {
             studentCourse = studentCourseFacade.findActive(id);
-            studentCourse.getEligiblePart();
             studentCourse.getStudentCourseSittings().size();
             if (studentCourse == null) {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This student has no active course");

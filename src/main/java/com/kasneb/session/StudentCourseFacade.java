@@ -76,7 +76,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
-
+    
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
@@ -97,30 +97,32 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
     com.kasneb.session.PaymentFacade paymentFacade;
     @EJB
     com.kasneb.session.CommunicationFacade communicationFacade;
-
+    @EJB
+    com.kasneb.session.SynchronizationFacade synchronizationFacade;
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     public StudentCourseFacade() {
         super(StudentCourse.class);
     }
-
+    
     @Override
     public List<StudentCourse> findAll() {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s", StudentCourse.class);
         query.setMaxResults(100);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findAll(Integer userId) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("user", new User(userId));
         query.setMaxResults(100);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findAll(Date startDate, Date endDate) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.created BETWEEN :startDate AND :endDate ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("startDate", startDate);
@@ -128,7 +130,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setMaxResults(100);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findAll(Date startDate, Date endDate, Integer userId) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy =:user AND s.created BETWEEN :startDate AND :endDate ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("startDate", startDate);
@@ -137,7 +139,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setMaxResults(10);
         return query.getResultList();
     }
-
+    
     public StudentCourse createStudentCourse(StudentCourse entity) throws CustomHttpException {
         if (entity.getStudent() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Student cannot be null.");
@@ -167,7 +169,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         em.persist(entity);
         return entity;
     }
-
+    
     public StudentCourse updateStudentCourse(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException {
         StudentCourse managed = super.find(entity.getId());
         if (managed == null) {
@@ -177,7 +179,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         if (last != null && last.getInvoice() != null && last.getInvoice().getStatus().getStatus().equals("PAID")) {
             //Current Suscription has already been verified and course cannot be changed so get by course id
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "This course registration has already been paid for and cannot be updated.");
-
+            
         }
         em.detach(managed);
         super.copy(entity, managed);
@@ -212,14 +214,14 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return super.edit(managed);
     }
-
+    
     public StudentCourse updateStudentCourseDocuments(StudentCourse entity) throws CustomHttpException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException {
         StudentCourse managed = super.find(entity.getId());
         super.copy(entity, managed);
         managed = em.merge(managed);
         return managed;
     }
-
+    
     public StudentCourse verifyStudentCourse(StudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException, IllegalAccessException, InvocationTargetException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
@@ -294,7 +296,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         communicationFacade.create(emailCommunication);
         return em.merge(managed);
     }
-
+    
     private Registration createRegistration(StudentCourse studentCourse) throws ParseException, IOException, CustomHttpException {
         List<Receipt> receipts = new ArrayList<>();
         Student student = studentCourse.getStudent();
@@ -359,7 +361,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         registration.setReceipts(receipts);
         return CoreUtil.createCoreRegistration(registration, studentCourse.getCourse());
     }
-
+    
     private Date getNextRenewalDate(StudentCourse entity) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -378,20 +380,20 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return nextRenewalDate;
     }
-
+    
     public Collection<Paper> getEligiblePapers(Collection<Paper> papers, Collection<Paper> exempted, Collection<Paper> passedPapers) {
         papers.removeAll(exempted); //remove exempted
         papers.removeAll(passedPapers); //remove passed
         return papers;
     }
-
+    
     public Collection<Paper> getPartPapers(Part part) {
         TypedQuery<Paper> query
                 = em.createQuery("SELECT p FROM Paper p WHERE p.section.part =:part", Paper.class);
         query.setParameter("part", part);
         return query.getResultList();
     }
-
+    
     public Collection getSectionPapers(Section section) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Paper.class);
@@ -400,7 +402,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<Paper> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public Collection<Paper> getLevelPapers(Level level) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Paper.class);
@@ -408,7 +410,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<Paper> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public StudentCourse findActive(Integer id) {
         try {
             TypedQuery<StudentCourse> query = em.createQuery("select s from StudentCourse s left join fetch s.elligiblePapers WHERE s.id =:id", StudentCourse.class);
@@ -419,7 +421,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return null;
         }
     }
-
+    
     public List<StudentCourse> findPending() {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT DISTINCT s FROM StudentCourse s JOIN s.invoices i WHERE i.studentCourse=s AND s.verified =:verified AND i.status = :status", StudentCourse.class);
         query.setParameter("status", new InvoiceStatus("PAID"));
@@ -427,14 +429,14 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setMaxResults(20);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findPendingIdentification() {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s LEFT JOIN fetch s.student WHERE s.courseStatus =:courseStatus ORDER BY s.id DESC", StudentCourse.class);
         query.setParameter("courseStatus", StudentCourseStatus.PENDING_IDENTIFICATION);
         query.setMaxResults(20);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findVerified() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -443,7 +445,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public StudentCourse findStudentCourse(Integer id) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -453,7 +455,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setMaxResults(1);
         return query.getSingleResult();
     }
-
+    
     public StudentCourse findActiveCourse(Student entity) {
         TypedQuery<StudentCourse> query
                 = em.createQuery("SELECT s FROM StudentCourse s WHERE s.student =:student AND s.active =:active", StudentCourse.class);
@@ -468,7 +470,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return query.getResultList().get(0);
         }
     }
-
+    
     public StudentCourse findByStudentCourse(StudentCourse entity) {
         TypedQuery<StudentCourse> query
                 = em.createQuery("SELECT s FROM StudentCourse s WHERE s.student =:student AND s.course =:course", StudentCourse.class);
@@ -481,7 +483,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return null;
         }
     }
-
+    
     public List<Paper> getEligibleExemptionsByQualification(StudentCourse studentCourse, String qualificationId, Integer codeType) throws CustomHttpException {
         TypedQuery<Paper> query = em.createQuery("SELECT c.paper FROM CourseExemption c WHERE c.qualification.id =:qualificationId AND c.course.id =:courseCode", Paper.class);
         query.setParameter("qualificationId", qualificationId);
@@ -489,7 +491,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         List<Paper> papers = query.getResultList();
         return papers;
     }
-
+    
     public List<Paper> getEligibleExemptions(Integer studentCourseId, List<String> qualificationIds) throws CustomHttpException {
         StudentCourse studentCourse = super.find(studentCourseId);
         Set<Paper> papers = new HashSet<>();
@@ -503,7 +505,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         Collections.sort(papersList, (Paper p1, Paper p2) -> p1.getCode().compareTo(p2.getCode()));
         return papersList;
     }
-
+    
     public List<StudentCourse> findVerificationByUser(User user) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(StudentCourse.class);
@@ -512,7 +514,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         TypedQuery<StudentCourse> query = em.createQuery(cq);
         return query.getResultList();
     }
-
+    
     public void verifyBatchStudentCourse(BatchStudentCourse entity) throws CustomHttpException, IOException, MessagingException, ParseException {
         if (entity.getVerifiedBy() == null) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Verification failed.Verified by cannot be null");
@@ -553,13 +555,13 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             em.merge(managed);
         }
     }
-
+    
     public List<StudentCourse> findVerifications(Integer userId) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.verifiedBy.id =:userId ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
-
+    
     public List<StudentCourse> findVerifications(Integer userId, Date startDate, Date endDate) {
         TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.dateVerified BETWEEN :startDate AND :endDate ORDER BY s.dateVerified DESC", StudentCourse.class);
         query.setParameter("startDate", startDate);
@@ -567,7 +569,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         query.setMaxResults(20);
         return query.getResultList();
     }
-
+    
     public Boolean registrationExists(Student entity) {
         try {
             TypedQuery<StudentCourse> query = em.createQuery("SELECT s FROM StudentCourse s WHERE s.registrationNumber =:registrationNumber AND s.course.id =:courseId AND s.verificationStatus =:verificationStatus", StudentCourse.class);
@@ -581,7 +583,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             return false;
         }
     }
-
+    
     public StudentCourse identify(StudentCourse managed) {
         if (managed.getCourseStatus().equals(StudentCourseStatus.ACTIVE)) {
             managed.setVerified(Boolean.TRUE);
@@ -589,6 +591,7 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
             managed.setVerificationStatus(VerificationStatus.APPROVED);
             managed.setRemarks("Approved by administrator");
             super.edit(managed);
+            synchronizationFacade.doSynch(managed.getStudent());
             Communication communication = new Communication(managed.getStudent(), managed, null, null, CommunicationType.IDENTIFICATION, AlertType.SMS, false);
             communicationFacade.create(communication);
             communication.setAlertType(AlertType.EMAIL);
@@ -601,5 +604,5 @@ public class StudentCourseFacade extends AbstractFacade<StudentCourse> {
         }
         return managed;
     }
-
+    
 }
