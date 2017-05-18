@@ -123,12 +123,12 @@ public class StudentCourse implements Serializable {
     @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Sitting firstSitting;
-    @ManyToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
     private Part currentPart;
-    @ManyToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "levelId", referencedColumnName = "id", insertable = false, updatable = false)
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})

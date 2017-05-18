@@ -118,15 +118,11 @@ public class StudentRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response find(@PathParam("id") Integer id) throws JsonProcessingException {
         Student student = studentFacade.find(id);
-        if (student.getCurrentCourse() != null) {
-            StudentCourse currentCourse = studentCourseFacade.findActive(student.getCurrentCourse().getId());
-            student.setCurrentCourse(currentCourse);
-        }
         for (StudentCourse studentCourse : student.getStudentCourses()) {
             studentCourse.getDocuments().size();
             studentCourse.getStudentRequirements().size();
             studentCourse.getStudentCourseSittings().size();
-            studentCourse.getElligiblePapers().size();
+            //studentCourse.getElligiblePapers().size();
         }
         json = mapper.writeValueAsString(student);
         httpStatus = Response.Status.OK;
@@ -215,10 +211,10 @@ public class StudentRest {
         } catch (CustomHttpException ex) {
             anyResponse = new CustomMessage(ex.getStatusCode().getStatusCode(), ex.getMessage());
             httpStatus = ex.getStatusCode();
-             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ParseException | IllegalAccessException | InvocationTargetException ex) {
             anyResponse = new CustomMessage(httpStatus.getStatusCode(), ex.getMessage());
-             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, ex);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response
@@ -261,7 +257,7 @@ public class StudentRest {
         } catch (CustomHttpException e) {
             httpStatus = e.getStatusCode();
             anyResponse = new CustomMessage(e.getStatusCode().getStatusCode(), e.getMessage());
-             Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(StudentRest.class.getName()).log(Level.SEVERE, null, e);
         }
         json = mapper.writeValueAsString(anyResponse);
         return Response

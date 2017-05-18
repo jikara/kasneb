@@ -104,21 +104,22 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 managed.getCurrentCourse().setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
             } else {
+                StudentCourse currentCourse = studentCourseFacade.findActive(managed.getCurrentCourse().getId());
                 if (registration.getCurrentPart() != null) {
-                    managed.getCurrentCourse().setCurrentPartId(registration.getCurrentPart().getId());
+                    currentCourse.setCurrentPartId(registration.getCurrentPart().getId());
                 }
                 if (registration.getCurrentLevel() != null) {
-                    managed.getCurrentCourse().setCurrentLevelId(registration.getCurrentLevel().getId());
+                    currentCourse.setCurrentLevelId(registration.getCurrentLevel().getId());
                 }
-                managed.getCurrentCourse().setElligiblePapers(new ArrayList<>());
-                managed.getCurrentCourse().setCourseStatus(courseStatus);
-                this.updateStudentCourseSittings(managed.getCurrentCourse(), registration);//Add sittings        
+                currentCourse.setElligiblePapers(new ArrayList<>());
+                currentCourse.setCourseStatus(courseStatus);
+                this.updateStudentCourseSittings(currentCourse, registration);//Add sittings        
                 //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
-                this.updateSubscriptions(managed.getCurrentCourse(), registration);  //Add subscriptions
-                this.updatePayments(managed.getCurrentCourse(), registration);  //Add payments  
-                List<Paper> papers = getElligiblePapers(managed.getCurrentCourse(), registration); //Elligible Papers
-                managed.getCurrentCourse().setElligiblePapers(papers);
-                em.merge(managed.getCurrentCourse());
+                this.updateSubscriptions(currentCourse, registration);  //Add subscriptions
+                this.updatePayments(currentCourse, registration);  //Add payments  
+                List<Paper> papers = getElligiblePapers(currentCourse, registration); //Elligible Papers
+                currentCourse.setElligiblePapers(papers);
+                em.merge(currentCourse);
             }
         } catch (ParseException | CustomHttpException | IOException ex) {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
