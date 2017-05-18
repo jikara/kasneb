@@ -44,6 +44,7 @@ public class Section implements Serializable {
     private String name;
     @Transient
     private Boolean optional = true;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false)
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)

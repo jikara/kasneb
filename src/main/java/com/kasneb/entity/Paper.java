@@ -39,7 +39,7 @@ public class Paper implements Serializable {
     @Column(name = "code", nullable = false)
     private String code;
     @Column(name = "name", nullable = false)
-    private String name;  
+    private String name;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @MapsId("id")
     @ManyToOne
@@ -48,7 +48,7 @@ public class Paper implements Serializable {
         ,@JoinColumn(name = "partId", referencedColumnName = "partId")
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Section section;  
+    private Section section;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @MapsId("id")
     @ManyToOne
@@ -56,7 +56,7 @@ public class Paper implements Serializable {
         @JoinColumn(name = "levelId", referencedColumnName = "id")
         ,@JoinColumn(name = "courseId", referencedColumnName = "courseId")
     })
-    private Level level;  
+    private Level level;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", referencedColumnName = "id", nullable = false)
