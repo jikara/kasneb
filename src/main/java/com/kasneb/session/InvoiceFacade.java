@@ -287,6 +287,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                         gbpTotal = gbpTotal.add(fee.getGbpAmount());
                     }
                 }
+                break;
                 case "PER_SECTION": {
                     Section section = papers.get(0).getSection();
                     Fee fee = feeFacade.getExamEntryFeePerSection(section, isLate);
@@ -335,7 +336,7 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
                 gbpTotal = gbpTotal.add(invDetail.getGbpAmount());
             }
         }
-        Fee adminFee = feeFacade.find(1);
+        Fee adminFee = feeFacade.find(1); 
         invoice.addInvoiceDetail(new InvoiceDetail(adminFee.getKesAmount(), adminFee.getUsdAmount(), adminFee.getGbpAmount(), "Administrative fee"));
         //Add administrative fee
         kesTotal = kesTotal.add(adminFee.getKesAmount());
