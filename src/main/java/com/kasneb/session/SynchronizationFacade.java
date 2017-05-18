@@ -43,7 +43,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.core.Response;
 
 /**
@@ -75,13 +74,6 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         super(Synchronization.class);
     }
 
-    public List<Synchronization> getSynchronizations() {
-        TypedQuery<Synchronization> query = em.createQuery("SELECT s FROM Synchronization s WHERE s.synched =:synched", Synchronization.class);
-        query.setParameter("synched", false);
-        query.setMaxResults(5);
-        return query.getResultList();
-    }
-
     public void doSynch(Student managed) {
         try {
             String sexCode = "1";
@@ -90,14 +82,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Registration number does not exist");
             }
             if (registration.getSex() != null) {
-                switch (registration.getSex().getCode()) {
-                    case "M":
-                        sexCode = "1";
-                        break;
-                    case "F":
-                        sexCode = "2";
-                        break;
-                }
+                sexCode = registration.getSex().getCode().equals("M") ? "1" : "2";
             }
             String phoneNumber = registration.getCellphone();
             if (managed.getPhoneNumber() != null) {
@@ -118,22 +103,23 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                 managed.setKasnebQualifications(qs);
                 managed.getCurrentCourse().setCourseStatus(courseStatus);
                 managed.setCurrentCourse(null);
+            } else {
+                if (registration.getCurrentPart() != null) {
+                    managed.getCurrentCourse().setCurrentPartId(registration.getCurrentPart().getId());
+                }
+                if (registration.getCurrentLevel() != null) {
+                    managed.getCurrentCourse().setCurrentLevelId(registration.getCurrentLevel().getId());
+                }
+                managed.getCurrentCourse().setElligiblePapers(new ArrayList<>());
+                managed.getCurrentCourse().setCourseStatus(courseStatus);
+                this.updateStudentCourseSittings(managed.getCurrentCourse(), registration);//Add sittings        
+                //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
+                this.updateSubscriptions(managed.getCurrentCourse(), registration);  //Add subscriptions
+                this.updatePayments(managed.getCurrentCourse(), registration);  //Add payments  
+                List<Paper> papers = getElligiblePapers(managed.getCurrentCourse(), registration); //Elligible Papers
+                managed.getCurrentCourse().setElligiblePapers(papers);
+                em.merge(managed.getCurrentCourse());
             }
-            if (registration.getCurrentPart() != null) {
-                managed.getCurrentCourse().setCurrentPartId(registration.getCurrentPart().getId());
-            }
-            if (registration.getCurrentLevel() != null) {
-                managed.getCurrentCourse().setCurrentLevelId(registration.getCurrentLevel().getId());
-            }
-            managed.getCurrentCourse().setCourseStatus(courseStatus);
-            this.updateStudentCourseSittings(managed.getCurrentCourse(), registration);//Add sittings        
-            //currentCourse.setExemptions(getExemptions(currentCourse, registration));//Add exemptions       
-            this.updateSubscriptions(managed.getCurrentCourse(), registration);  //Add subscriptions
-            this.updatePayments(managed.getCurrentCourse(), registration);  //Add payments  
-            managed.getCurrentCourse().setElligiblePapers(new ArrayList<>());
-            List<Paper> papers = getElligiblePapers(managed.getCurrentCourse(), registration); //Elligible Papers
-            managed.getCurrentCourse().setElligiblePapers(papers);
-            em.merge(managed.getCurrentCourse());
         } catch (ParseException | CustomHttpException | IOException ex) {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -235,5 +221,4 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             em.merge(subscription);
         }
     }
-
 }
