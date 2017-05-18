@@ -79,6 +79,8 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
     @EJB
     com.kasneb.session.SectionFacade sectionFacade;
     @EJB
+    com.kasneb.session.PartFacade partFacade;
+    @EJB
     com.kasneb.session.LevelFacade levelFacade;
     @EJB
     com.kasneb.session.PaperFacade paperFacade;
@@ -210,21 +212,35 @@ public class StudentCourseSittingFacade extends AbstractFacade<StudentCourseSitt
         if (parts.size() > 1) {
             throw new CustomHttpException(Response.Status.INTERNAL_SERVER_ERROR, "Two parts cannot be combined");
         }
-        //Check each section
-        sectionsList.addAll(sections);
-        //two sections can be combined
-        for (Section section : sectionsList) {
-            Section managed = sectionFacade.find(section.getSectionPK());
+
+        partsList.addAll(parts);
+        for (Part part : partsList) {
+            part = partFacade.find(part.getPartPK());
+            for (Section section : part.getSectionCollection()) {
+                section = sectionFacade.find(section.getSectionPK());
+                partPapers.addAll(section.getPaperCollection());
+            }
             //Check each section
-            if (sittingPapers.containsAll(managed.getPaperCollection())) {
-                map.put("PER_SECTION", managed.getPaperCollection());
-                //remove 
-                sittingPapers.removeAll(managed.getPaperCollection());
-            } else {
-                //bill per paper
-                map.put("PER_PAPER", sittingPapers);
+            if (sittingPapers.containsAll(partPapers)) {
+                map.put("PER_PART", partPapers);
+            } else {  //Bill per section
+                sectionsList.addAll(sections);
+                //two sections can be combined
+                for (Section section : sectionsList) {
+                    Section managed = sectionFacade.find(section.getSectionPK());
+                    //Check each section
+                    if (sittingPapers.containsAll(section.getPaperCollection())) {
+                        map.put("PER_SECTION", section.getPaperCollection());
+                        //remove 
+                        sittingPapers.removeAll(section.getPaperCollection());
+                    } else {
+                        //bill per paper
+                        map.put("PER_PAPER", sittingPapers);
+                    }
+                }
             }
         }
+
         levelsList.addAll(levels);
         for (Level level : levelsList) {
             Level managed = levelFacade.find(level.getLevelPK());

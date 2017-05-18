@@ -40,10 +40,10 @@ public class StudentCourseSitting implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "sittingId", referencedColumnName = "id", nullable = false) 
     @ManyToOne(optional = false)
-    private Sitting sitting;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Sitting sitting;  
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
     @JoinColumn(name = "invoiceId", unique = true, nullable = true)
     private Invoice invoice;
     @ManyToOne(fetch = FetchType.LAZY)

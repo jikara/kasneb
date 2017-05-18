@@ -49,7 +49,7 @@ public class Section implements Serializable {
     @JoinColumns({
         @JoinColumn(name = "partId", referencedColumnName = "id", insertable = false, updatable = false)
         , @JoinColumn(name = "courseId", referencedColumnName = "courseId", insertable = false, updatable = false)})
-    private Part part;    
+    private Part part;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "section")
     private Collection<Paper> paperCollection;
@@ -96,7 +96,7 @@ public class Section implements Serializable {
     public void setPart(Part part) {
         this.part = part;
     }
-    
+
     public Collection<Paper> getPaperCollection() {
         return paperCollection;
     }

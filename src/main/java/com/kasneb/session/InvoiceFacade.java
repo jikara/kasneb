@@ -17,6 +17,7 @@ import com.kasneb.entity.InvoiceStatus;
 import com.kasneb.entity.KasnebCourse;
 import com.kasneb.entity.Level;
 import com.kasneb.entity.Paper;
+import com.kasneb.entity.Part;
 import com.kasneb.entity.RenewalInvoiceDetail;
 import com.kasneb.entity.Section;
 import com.kasneb.entity.Sitting;
@@ -273,13 +274,25 @@ public class InvoiceFacade extends AbstractFacade<Invoice> {
             papers.addAll(papersCollection);
             String description = "Examination Fee";
             switch (key) {
+                case "PER_PART": {
+                    Part part = papers.get(0).getSection().getPart();
+                    if (isLate) {
+                        description = "Late Examination Fee";
+                    }
+                    for (Section section : part.getSectionCollection()) {
+                        Fee fee = feeFacade.getExamEntryFeePerSection(section, isLate);
+                        invoice.addInvoiceDetail(new ExamInvoiceDetail(null, section, null, fee.getKesAmount(), fee.getUsdAmount(), fee.getGbpAmount(), description + " | " + section.getName()));
+                        kesTotal = kesTotal.add(fee.getKesAmount());
+                        usdTotal = usdTotal.add(fee.getUsdAmount());
+                        gbpTotal = gbpTotal.add(fee.getGbpAmount());
+                    }
+                }
                 case "PER_SECTION": {
                     Section section = papers.get(0).getSection();
                     Fee fee = feeFacade.getExamEntryFeePerSection(section, isLate);
                     kesTotal = fee.getKesAmount();
                     usdTotal = fee.getUsdAmount();
                     gbpTotal = fee.getGbpAmount();
-
                     if (isLate) {
                         description = "Late Examination Fee";
                     }

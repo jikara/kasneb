@@ -9,6 +9,7 @@ import com.kasneb.entity.Part;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,6 +28,18 @@ public class PartFacade extends AbstractFacade<Part> {
 
     public PartFacade() {
         super(Part.class);
+    }
+
+    @Override
+    public Part find(Object pk) {
+        try {
+            TypedQuery<Part> query = em.createQuery("select p from Part p left join fetch p.sectionCollection WHERE p.partPK =:pk", Part.class);
+            query.setParameter("pk", pk);
+            Part part = query.getSingleResult();
+            return part;
+        } catch (javax.persistence.NoResultException ex) {
+            return null;
+        }
     }
 
 }
