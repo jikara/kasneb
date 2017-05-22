@@ -25,6 +25,7 @@ import com.kasneb.entity.StudentCourseSittingStatus;
 import com.kasneb.entity.StudentCourseStatus;
 import com.kasneb.entity.StudentCourseSubscription;
 import com.kasneb.entity.Synchronization;
+import com.kasneb.entity.pk.StudentCourseSittingPaperPK;
 import com.kasneb.entity.pk.StudentCourseSubscriptionPK;
 import com.kasneb.entity.pk.StudentQualificationPK;
 import com.kasneb.exception.CustomHttpException;
@@ -51,7 +52,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 public class SynchronizationFacade extends AbstractFacade<Synchronization> {
-
+    
     @PersistenceContext(unitName = "com.kasneb_kasneb_new_war_1.0-SNAPSHOTPU")
     private EntityManager em;
     @EJB
@@ -64,16 +65,16 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
     com.kasneb.session.StudentCourseSittingFacade studentCourseSittingFacade;
     @EJB
     com.kasneb.session.PaperFacade paperFacade;
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     public SynchronizationFacade() {
         super(Synchronization.class);
     }
-
+    
     public void doSynch(Student managed) {
         try {
             String sexCode = "1";
@@ -125,7 +126,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             Logger.getLogger(SynchronizationFacade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-
+    
     public List<Paper> getElligiblePapers(StudentCourse studentCourse, Registration registration) throws ParseException {
         Collection<com.kasneb.client.StudentCoursePaper> coreStudentPapers = registration.getEligiblePapers();
         List<Paper> papers = new ArrayList<>();
@@ -139,7 +140,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
         }
         return papers;
     }
-
+    
     public void updateStudentCourseSittings(StudentCourse studentCourse, Registration registration) {
         List<StudentCourseSitting> studentCourseSittings = new ArrayList<>(); //Sittings array 
         if (registration.getExamEntry() != null) {
@@ -151,10 +152,10 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
                     StudentCourseSitting studentCourseSitting = new StudentCourseSitting(studentCourse, sitting, new ExamCentre(registration.getExamEntry().getCentre().getCode()), StudentCourseSittingStatus.CONFIRMED, null);
                     for (ExamPaper examPaper : registration.getExamEntry().getExamPapers()) {
                         Paper paper = paperFacade.findPaper(examPaper.getPaper().getCode());
-                        StudentCourseSittingPaper StudentCourseSittingPaper = new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting);
-                        papers.add(StudentCourseSittingPaper);
-                        // studentCourseSitting.setPapers(papers);
+                        StudentCourseSittingPaper studentCourseSittingPaper = new StudentCourseSittingPaper(paper, PaperStatus.PENDING, studentCourseSitting);
+                        papers.add(studentCourseSittingPaper);
                     }
+                    studentCourseSitting.setPapers(papers);
                     em.merge(studentCourseSitting);
                 }
             }
@@ -174,7 +175,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             }
         }
     }
-
+    
     public void updatePayments(StudentCourse studentCourse, Registration registration) throws ParseException {
         for (Receipt receipt : registration.getReceipts()) {
             List<PaymentDetail> paymentDetails = new ArrayList<>();
@@ -187,7 +188,7 @@ public class SynchronizationFacade extends AbstractFacade<Synchronization> {
             em.merge(payment);
         }
     }
-
+    
     public void updateSubscriptions(StudentCourse studentCourse, Registration registration) throws ParseException {
         List<StudentCourseSubscription> subscriptions = new ArrayList<>(); //Subscriptions array
         Integer currentYear = DateUtil.getYear(new Date());

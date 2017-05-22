@@ -17,14 +17,20 @@ import com.kasneb.exception.CustomHttpException;
 import com.kasneb.model.Email;
 import com.kasneb.model.Sms;
 import com.kasneb.util.Constants;
+import com.kasneb.util.GeneratorUtil;
 import com.kasneb.util.RestUtil;
+import com.kasneb.util.SmsUtil;
 import com.kasneb.util.WalletUtil;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -61,22 +67,22 @@ public class CommunicationFacade extends AbstractFacade<Communication> {
         return query.getResultList();
     }
 
-//    @Transactional
-//    @Schedule(hour = "*", minute = "*", second = "*/39", persistent = false)
-//    public void sendSms() {
-//        for (Integer pk : findPendingSms()) {
-//            Communication communication = super.find(pk);
-//            try {
-//                String randomPin = GeneratorUtil.generateRandomPin();
-//                communication.setPin(randomPin);
-//                SmsUtil.sendSMS(getSms(communication));
-//                communication.setStatus(Boolean.TRUE);
-//                super.edit(communication);
-//            } catch (IOException | CustomHttpException ex) {
-//                Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
+    @Transactional
+    @Schedule(hour = "*", minute = "*", second = "*/39", persistent = false)
+    public void sendSms() {
+        for (Integer pk : findPendingSms()) {
+            Communication communication = super.find(pk);
+            try {
+                String randomPin = GeneratorUtil.generateRandomPin();
+                communication.setPin(randomPin);
+                SmsUtil.sendSMS(getSms(communication));
+                communication.setStatus(Boolean.TRUE);
+                super.edit(communication);
+            } catch (IOException | CustomHttpException ex) {
+                Logger.getLogger(CommunicationFacade.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 //
 //    @Transactional
 //    @Schedule(hour = "*", minute = "*", second = "*/59", persistent = false)

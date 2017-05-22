@@ -19,10 +19,10 @@ import javax.persistence.Embeddable;
 public class StudentCourseSittingPaperPK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "paperCode")
+    @Column(name = "paperCode", insertable = false, updatable = false)
     private String paperCode;
     @Basic(optional = false)
-    @Column(name = "studentCourseSittingId")
+    @Column(name = "studentCourseSittingId", insertable = false, updatable = false)
     private Integer studentCourseSittingId;
 
     public StudentCourseSittingPaperPK() {
