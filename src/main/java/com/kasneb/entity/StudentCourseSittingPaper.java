@@ -18,6 +18,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.NotFound;
@@ -38,13 +39,15 @@ public class StudentCourseSittingPaper implements Serializable {
     @Basic(optional = false)
     @Column(name = "paperStatus", nullable = false)
     private PaperStatus paperStatus;
+    @MapsId(value = "id")
     @ManyToOne(optional = false)
-    @JoinColumn(name = "paperCode", referencedColumnName = "code", insertable = false, updatable = false)
+    @JoinColumn(name = "paperCode", referencedColumnName = "code")
     private Paper paper;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotFound(action = NotFoundAction.IGNORE)
+    @MapsId(value = "id")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "studentCourseSittingId", referencedColumnName = "id")
     private StudentCourseSitting studentCourseSitting;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private transient String paperCode;
